@@ -3,3 +3,7 @@
     port = "8080"
 [logger]
     level = "info"
+[postgres]
+    max_conns = 10
+    min_conns = 3
+    max_idle_conn_time = "5m"

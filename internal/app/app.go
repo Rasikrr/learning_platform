@@ -3,7 +3,9 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
+	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	usersS "github.com/Rasikrr/learning_platform/internal/services/users"
@@ -23,8 +25,9 @@ type Starter interface {
 }
 
 type App struct {
-	name   string
-	config configs.Config
+	name     string
+	config   configs.Config
+	postgres *databases.Postgres
 
 	workers         []workers.Worker
 	usersRepository usersR.Repository
@@ -42,6 +45,7 @@ func InitApp(ctx context.Context, name string) *App {
 		config: cfg,
 	}
 	for _, init := range []func(ctx context.Context) error{
+		app.InitPostgres,
 		app.InitRepositories,
 		app.InitServices,
 		app.InitHTTPServer,
@@ -110,6 +114,18 @@ func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
 	}
 	cancel()
 	close(s)
+}
+
+func (a *App) InitPostgres(ctx context.Context) error {
+	var err error
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?%s",
+		"postgres", "postgres", "localhost", "5432", "postgres", "sslmode=disable")
+	a.postgres, err = databases.NewPostgres(ctx, &a.config, dsn)
+	if err != nil {
+		return err
+	}
+	log.Println("Postgres connected")
+	return nil
 }
 
 func runParallel(ctx context.Context, fns ...any) error {

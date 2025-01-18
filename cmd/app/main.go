@@ -16,5 +16,4 @@ func main() {
 	if err := a.Start(ctx); err != nil {
 		log.Fatal(err)
 	}
-
 }

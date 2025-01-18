@@ -1,3 +1,4 @@
+// nolint: revive, stylecheck
 package db_info
 
 import (

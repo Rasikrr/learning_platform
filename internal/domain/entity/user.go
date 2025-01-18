@@ -1,7 +1,6 @@
-package entities
+package entity
 
 import (
-	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/google/uuid"
 	"time"
 )
@@ -9,20 +8,21 @@ import (
 type User struct {
 	ID        uuid.UUID
 	Name      string
+	LastName  string
 	Email     string
 	Password  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
-func NewUser(name, email, password string) *User {
-	hPassword, _ := util.Hash(password)
-
+func NewUser(name, lastName, email, password string) *User {
 	return &User{
 		ID:        uuid.New(),
 		Name:      name,
+		LastName:  lastName,
 		Email:     email,
-		Password:  hPassword,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

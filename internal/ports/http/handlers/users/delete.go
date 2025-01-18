@@ -7,7 +7,6 @@ import (
 )
 
 func (c *controller) DeleteUser(w http.ResponseWriter, r *http.Request) {
-
 	email := r.PathValue("email")
 	if email == "" {
 		api.SendError(w, http.StatusBadRequest, errors.New("email is required"))

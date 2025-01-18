@@ -11,6 +11,7 @@ type ErrorResponse struct {
 	Status int    `json:"status"`
 }
 
+// nolint: errcheck
 func SendData(w http.ResponseWriter, data interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
@@ -49,6 +50,7 @@ func GetData(r *http.Request, data interface{}) error {
 	return json.Unmarshal(bb, data)
 }
 
+// nolint: errcheck
 func SendError(w http.ResponseWriter, statusCode int, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)

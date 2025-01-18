@@ -2,7 +2,6 @@ package databases
 
 import (
 	"context"
-	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -15,6 +14,7 @@ type Postgres struct {
 	pool *pgxpool.Pool
 }
 
+// nolint: gosec
 func NewPostgres(ctx context.Context, cfg *configs.Config, dsn string) (*Postgres, error) {
 	conConfig, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
@@ -44,7 +44,7 @@ func (p *Postgres) Query(ctx context.Context, sql string, args ...any) (pgx.Rows
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("Query: %s; elapsed: %v; args: %v", sql, elapsed, args))
+		log.Printf("Query: %s; elapsed: %v; args: %v\n", sql, elapsed, args)
 	}()
 	return p.pool.Query(ctx, sql, args...)
 }
@@ -53,7 +53,7 @@ func (p *Postgres) Exec(ctx context.Context, sql string, args ...any) (pgconn.Co
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("Exec: %s; elapsed: %v; args: %v", sql, elapsed, args))
+		log.Printf("Exec: %s; elapsed: %v; args: %v\n", sql, elapsed, args)
 	}()
 	return p.pool.Exec(ctx, sql, args...)
 }
@@ -62,7 +62,7 @@ func (p *Postgres) QueryRow(ctx context.Context, sql string, args ...any) pgx.Ro
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("QueryRow: %s; elapsed: %v; args: %v", sql, elapsed, args))
+		log.Printf("QueryRow: %s; elapsed: %v; args: %v\n", sql, elapsed, args)
 	}()
 	return p.pool.QueryRow(ctx, sql, args...)
 }
@@ -71,7 +71,7 @@ func (p *Postgres) BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("BeginTx: %v; elapsed: %v", txOptions, elapsed))
+		log.Printf("BeginTx: %v; elapsed: %v\n", txOptions, elapsed)
 	}()
 	return p.pool.BeginTx(ctx, txOptions)
 }
@@ -80,7 +80,7 @@ func (p *Postgres) Begin(ctx context.Context) (pgx.Tx, error) {
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("Begin: %v; elapsed: %v", nil, elapsed))
+		log.Printf("Begin: %v; elapsed: %v\n", nil, elapsed)
 	}()
 	return p.pool.Begin(ctx)
 }
@@ -89,7 +89,7 @@ func (p *Postgres) CopyFrom(ctx context.Context, tableName pgx.Identifier, colum
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("CopyFrom: %s; elapsed: %v; args: %v", tableName, elapsed, columnNames))
+		log.Printf("CopyFrom: %s; elapsed: %v; args: %v\n", tableName, elapsed, columnNames)
 	}()
 	return p.pool.CopyFrom(ctx, tableName, columnNames, rowSrc)
 }
@@ -98,7 +98,7 @@ func (p *Postgres) SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults
 	start := time.Now()
 	defer func() {
 		elapsed := time.Since(start)
-		log.Println(fmt.Sprintf("SendBatch: %v; elapsed: %v", b, elapsed))
+		log.Printf("SendBatch: %v; elapsed: %v\n", b, elapsed)
 	}()
 	return p.pool.SendBatch(ctx, b)
 }

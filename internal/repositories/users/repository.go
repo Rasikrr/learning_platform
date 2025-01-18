@@ -3,7 +3,7 @@ package users
 import (
 	"context"
 	"errors"
-	"github.com/Rasikrr/learning_platform/internal/domain/entities"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"sync"
 	"time"
 )
@@ -11,9 +11,9 @@ import (
 //go:generate mockgen -destination ../mocks/users/mock.go -package mocks -source=./repository.go
 
 type Repository interface {
-	GetByEmail(ctx context.Context, email string) (*entities.User, error)
-	GetAll(ctx context.Context) ([]*entities.User, error)
-	Create(ctx context.Context, user *entities.User) error
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	GetAll(ctx context.Context) ([]*entity.User, error)
+	Create(ctx context.Context, user *entity.User) error
 	Delete(ctx context.Context, email string) error
 	UpdateName(ctx context.Context, email, name string) error
 }
@@ -30,7 +30,7 @@ func NewRepository() Repository {
 	}
 }
 
-func (r *repository) GetByEmail(_ context.Context, email string) (*entities.User, error) {
+func (r *repository) GetByEmail(_ context.Context, email string) (*entity.User, error) {
 	r.mut.RLock()
 	defer r.mut.RUnlock()
 
@@ -41,7 +41,7 @@ func (r *repository) GetByEmail(_ context.Context, email string) (*entities.User
 	return convertModel(m), nil
 }
 
-func (r *repository) GetAll(_ context.Context) ([]*entities.User, error) {
+func (r *repository) GetAll(_ context.Context) ([]*entity.User, error) {
 	r.mut.RLock()
 	defer r.mut.RUnlock()
 
@@ -52,7 +52,7 @@ func (r *repository) GetAll(_ context.Context) ([]*entities.User, error) {
 	return convertModels(out), nil
 }
 
-func (r *repository) Create(_ context.Context, user *entities.User) error {
+func (r *repository) Create(_ context.Context, user *entity.User) error {
 	r.mut.Lock()
 	defer r.mut.Unlock()
 	m := convertToModel(user)

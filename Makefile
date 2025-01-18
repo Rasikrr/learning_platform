@@ -7,3 +7,8 @@ migrations_up:
 
 migrations_down:
 	goose -dir migrations postgres "$(DSN)" down
+
+
+lint:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	golangci-lint run

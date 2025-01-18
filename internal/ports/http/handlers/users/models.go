@@ -1,7 +1,7 @@
 package users
 
 import (
-	"github.com/Rasikrr/learning_platform/internal/domain/entities"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"time"
 )
 
@@ -31,7 +31,7 @@ type getAllUsersResponse struct {
 	Result []User `json:"result"`
 }
 
-func convertEntity(e *entities.User) User {
+func convertEntity(e *entity.User) User {
 	return User{
 		Email:     e.Email,
 		Name:      e.Name,
@@ -41,7 +41,7 @@ func convertEntity(e *entities.User) User {
 	}
 }
 
-func newGetAllUsersResponse(users []*entities.User) getAllUsersResponse {
+func newGetAllUsersResponse(users []*entity.User) getAllUsersResponse {
 	out := make([]User, 0, len(users))
 	for _, u := range users {
 		out = append(out, convertEntity(u))

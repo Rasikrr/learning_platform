@@ -3,15 +3,15 @@ package users
 import (
 	"context"
 	"errors"
-	"github.com/Rasikrr/learning_platform/internal/domain/entities"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/repositories/users"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"strings"
 )
 
 type Service interface {
-	GetByEmail(ctx context.Context, email string) (*entities.User, error)
-	GetAll(ctx context.Context) ([]*entities.User, error)
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	GetAll(ctx context.Context) ([]*entity.User, error)
 	Create(ctx context.Context, name, email, password string) error
 	Delete(ctx context.Context, email string) error
 	UpdateName(ctx context.Context, email, name, password string) error
@@ -27,7 +27,7 @@ func NewService(userRepository users.Repository) Service {
 	}
 }
 
-func (s *service) GetByEmail(ctx context.Context, email string) (*entities.User, error) {
+func (s *service) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
 	user, err := s.userRepository.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (s *service) GetByEmail(ctx context.Context, email string) (*entities.User,
 	return user, nil
 }
 
-func (s *service) GetAll(ctx context.Context) ([]*entities.User, error) {
+func (s *service) GetAll(ctx context.Context) ([]*entity.User, error) {
 	out, err := s.userRepository.GetAll(ctx)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (s *service) Create(ctx context.Context, name, email, password string) erro
 	if u != nil {
 		return errors.New("user with this email already exists")
 	}
-	user := entities.NewUser(name, email, password)
+	user := entity.NewUser(name, email, "", password)
 	if err := s.userRepository.Create(ctx, user); err != nil {
 		return err
 	}

@@ -15,8 +15,8 @@ type Postgres struct {
 }
 
 // nolint: gosec
-func NewPostgres(ctx context.Context, cfg *configs.Config, dsn string) (*Postgres, error) {
-	conConfig, err := pgxpool.ParseConfig(dsn)
+func NewPostgres(ctx context.Context, cfg *configs.Config) (*Postgres, error) {
+	conConfig, err := pgxpool.ParseConfig(cfg.Postgres.DSN)
 	if err != nil {
 		return nil, err
 	}

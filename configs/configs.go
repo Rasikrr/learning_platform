@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/joho/godotenv"
 	"os"
@@ -8,17 +9,25 @@ import (
 )
 
 const (
-	fileName = "./configs/cfg.toml"
+	fileName = "./configs/config.toml"
 )
 
 type Config struct {
 	Server   ServerConfig   `toml:"server"`
 	Postgres PostgresConfig `toml:"postgres"`
+	Redis    RedisConfig    `toml:"redis"`
 }
 
 type ServerConfig struct {
 	Host string `toml:"host"`
 	Port string `toml:"port"`
+}
+
+type RedisConfig struct {
+	Host     string `toml:"host"`
+	Port     string `toml:"port"`
+	Password string `toml:"password"`
+	DB       int    `toml:"db"`
 }
 
 type PostgresConfig struct {
@@ -30,6 +39,7 @@ type PostgresConfig struct {
 	MaxConns            int           `toml:"max_conns"`
 	MinConns            int           `toml:"min_conns"`
 	MaxIdleConnIdleTime time.Duration `toml:"max_idle_conn_time"`
+	DSN                 string        `toml:"dsn"`
 }
 
 func Parse() (Config, error) {
@@ -46,5 +56,7 @@ func Parse() (Config, error) {
 	config.Postgres.Password = os.Getenv("POSTGRES_PASSWORD")
 	config.Postgres.Host = os.Getenv("POSTGRES_HOST")
 	config.Postgres.Port = os.Getenv("POSTGRES_PORT")
+	config.Postgres.DSN = os.Getenv("POSTGRES_DSN")
+	fmt.Printf("config: %+v\n", config)
 	return config, nil
 }

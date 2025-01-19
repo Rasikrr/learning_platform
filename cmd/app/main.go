@@ -8,6 +8,7 @@ import (
 
 const (
 	appName = "assigment_2"
+	c       = "0123456789"
 )
 
 func main() {

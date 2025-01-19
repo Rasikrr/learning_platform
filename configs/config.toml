@@ -7,3 +7,8 @@
     max_conns = 10
     min_conns = 3
     max_idle_conn_time = "5m"
+[redis]
+    host = "localhost"
+    port = "6379"
+    password = ""
+    db = 0

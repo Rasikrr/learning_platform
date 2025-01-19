@@ -3,15 +3,19 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
+	"github.com/Rasikrr/learning_platform/internal/cache"
+	authC "github.com/Rasikrr/learning_platform/internal/cache/auth"
+	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
-	usersS "github.com/Rasikrr/learning_platform/internal/services/users"
+	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	dbInfo "github.com/Rasikrr/learning_platform/internal/workers/db_info"
 	"github.com/hashicorp/go-multierror"
+	"github.com/redis/go-redis/v9"
 	"log"
 	HTTP "net/http"
 	"os"
@@ -31,8 +35,14 @@ type App struct {
 
 	workers         []workers.Worker
 	usersRepository usersR.Repository
-	userService     usersS.Service
-	httpServer      *http.Server
+	redisClient     *redis.Client
+	cacheClient     cache.Cache
+	authCache       authC.Cache
+	hasher          util.Hasher
+
+	mailClient  mail.Client
+	authService authS.Service
+	httpServer  *http.Server
 }
 
 func InitApp(ctx context.Context, name string) *App {
@@ -46,7 +56,11 @@ func InitApp(ctx context.Context, name string) *App {
 	}
 	for _, init := range []func(ctx context.Context) error{
 		app.InitPostgres,
+		app.InitRedis,
 		app.InitRepositories,
+		app.InitUtil,
+		app.InitCache,
+		app.InitClients,
 		app.InitServices,
 		app.InitHTTPServer,
 		app.InitWorkers,
@@ -63,13 +77,39 @@ func (a *App) InitRepositories(_ context.Context) error {
 	return nil
 }
 
+func (a *App) InitUtil(_ context.Context) error {
+	a.hasher = util.NewHasher()
+	return nil
+}
+
+func (a *App) InitClients(_ context.Context) error {
+	a.mailClient = mail.NewClient()
+	return nil
+}
+
+func (a *App) InitRedis(ctx context.Context) error {
+	var err error
+	a.redisClient, err = databases.NewRedis(ctx, &a.config)
+	if err != nil {
+		return err
+	}
+	log.Println("Redis connected")
+	return nil
+}
+
+func (a *App) InitCache(_ context.Context) error {
+	a.cacheClient = cache.NewRedisCache(a.redisClient)
+	a.authCache = authC.NewCache(a.cacheClient)
+	return nil
+}
+
 func (a *App) InitServices(_ context.Context) error {
-	a.userService = usersS.NewService(a.usersRepository)
+	a.authService = authS.NewService(a.mailClient, a.hasher)
 	return nil
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(&a.config, a.userService)
+	a.httpServer = http.NewServer(&a.config, a.authService)
 	return nil
 }
 
@@ -118,9 +158,7 @@ func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
 
 func (a *App) InitPostgres(ctx context.Context) error {
 	var err error
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?%s",
-		"postgres", "postgres", "localhost", "5432", "postgres", "sslmode=disable")
-	a.postgres, err = databases.NewPostgres(ctx, &a.config, dsn)
+	a.postgres, err = databases.NewPostgres(ctx, &a.config)
 	if err != nil {
 		return err
 	}

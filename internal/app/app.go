@@ -13,7 +13,6 @@ import (
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
-	dbInfo "github.com/Rasikrr/learning_platform/internal/workers/db_info"
 	"github.com/hashicorp/go-multierror"
 	"github.com/redis/go-redis/v9"
 	"log"
@@ -45,6 +44,7 @@ type App struct {
 	httpServer  *http.Server
 }
 
+// nolint: gocritic
 func InitApp(ctx context.Context, name string) *App {
 	cfg, err := configs.Parse()
 	if err != nil {
@@ -63,7 +63,7 @@ func InitApp(ctx context.Context, name string) *App {
 		app.InitClients,
 		app.InitServices,
 		app.InitHTTPServer,
-		app.InitWorkers,
+		//app.InitWorkers,
 	} {
 		if err := init(ctx); err != nil {
 			log.Fatal(ctx, "init app", err)
@@ -73,7 +73,7 @@ func InitApp(ctx context.Context, name string) *App {
 }
 
 func (a *App) InitRepositories(_ context.Context) error {
-	a.usersRepository = usersR.NewRepository()
+	a.usersRepository = usersR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -83,7 +83,7 @@ func (a *App) InitUtil(_ context.Context) error {
 }
 
 func (a *App) InitClients(_ context.Context) error {
-	a.mailClient = mail.NewClient()
+	a.mailClient = mail.NewClient(&a.config)
 	return nil
 }
 
@@ -104,7 +104,7 @@ func (a *App) InitCache(_ context.Context) error {
 }
 
 func (a *App) InitServices(_ context.Context) error {
-	a.authService = authS.NewService(a.mailClient, a.hasher)
+	a.authService = authS.NewService(a.mailClient, a.usersRepository, a.hasher, a.authCache)
 	return nil
 }
 
@@ -113,12 +113,13 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 	return nil
 }
 
-func (a *App) InitWorkers(_ context.Context) error {
-	a.workers = []workers.Worker{
-		dbInfo.NewWorker(a.usersRepository),
-	}
-	return nil
-}
+// nolint
+//func (a *App) InitWorkers(_ context.Context) error {
+//	a.workers = []workers.Worker{
+//		dbInfo.NewWorker(a.usersRepository),
+//	}
+//	return nil
+//}
 
 func (a *App) Start(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)

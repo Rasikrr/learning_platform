@@ -16,11 +16,9 @@ type User struct {
 	DeletedAt *time.Time
 }
 
-func NewUser(name, lastName, email, password string) *User {
+func NewUser(email, password string) *User {
 	return &User{
 		ID:        uuid.New(),
-		Name:      name,
-		LastName:  lastName,
 		Email:     email,
 		Password:  password,
 		CreatedAt: time.Now(),

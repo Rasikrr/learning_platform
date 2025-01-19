@@ -3,31 +3,34 @@ package mail
 import (
 	"context"
 	"crypto/tls"
+	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/go-gomail/gomail"
 )
 
 type Client interface {
-	Send(ctx context.Context, from string, to []string, subject, body string) error
+	Send(ctx context.Context, to []string, subject, body string) error
 }
 
 type client struct {
-	srv *gomail.Dialer
+	srv  *gomail.Dialer
+	from string
 }
 
-func NewClient() Client {
-	srv := gomail.NewDialer("smtp.yandex.ru", 587, "mail.denser.com", "rasik1234")
+func NewClient(cfg *configs.Config) Client {
+	srv := gomail.NewDialer(cfg.Mail.Host, cfg.Mail.Port, cfg.Mail.User, cfg.Mail.Password)
 	srv.TLSConfig = &tls.Config{
-		ServerName: "mail.denser.com",
+		ServerName: cfg.Mail.Host,
 		MinVersion: tls.VersionTLS12,
 	}
 	return &client{
-		srv: srv,
+		srv:  srv,
+		from: cfg.Mail.From,
 	}
 }
 
-func (c *client) Send(_ context.Context, from string, to []string, subject, body string) error {
+func (c *client) Send(_ context.Context, to []string, subject, body string) error {
 	m := gomail.NewMessage()
-	m.SetHeader("From", from)
+	m.SetHeader("From", c.from)
 	m.SetHeader("To", to...)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", body)

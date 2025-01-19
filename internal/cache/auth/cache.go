@@ -3,13 +3,17 @@ package auth
 import (
 	"context"
 	"errors"
+	"fmt"
 	cache2 "github.com/Rasikrr/learning_platform/internal/cache"
 	"github.com/redis/go-redis/v9"
 	"time"
 )
 
 const (
-	codeAndCredsLifeTime = time.Minute * 5
+	codeLifeTime    = time.Minute * 5
+	credsLifeTime   = time.Minute * 6
+	codeKey         = "code:%s"
+	passwordHashKey = "password:%s"
 )
 
 type Cache interface {
@@ -30,7 +34,8 @@ func NewCache(client cache2.Cache) Cache {
 }
 
 func (c *cache) GetCode(ctx context.Context, email string) (string, error) {
-	code, err := c.client.Get(ctx, email)
+	key := c.genCodeKey(email)
+	code, err := c.client.Get(ctx, key)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return "", errors.New("code is empty")
@@ -45,11 +50,13 @@ func (c *cache) GetCode(ctx context.Context, email string) (string, error) {
 }
 
 func (c *cache) SetCode(ctx context.Context, email string, code string) error {
-	return c.client.SetWithExpiration(ctx, email, code, codeAndCredsLifeTime)
+	key := c.genCodeKey(email)
+	return c.client.SetWithExpiration(ctx, key, code, codeLifeTime)
 }
 
 func (c *cache) GetPasswordHash(ctx context.Context, email string) (string, error) {
-	pass, err := c.client.Get(ctx, email)
+	key := c.genPasswordKey(email)
+	pass, err := c.client.Get(ctx, key)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return "", errors.New("password hash is empty")
@@ -64,5 +71,14 @@ func (c *cache) GetPasswordHash(ctx context.Context, email string) (string, erro
 }
 
 func (c *cache) SetPasswordHash(ctx context.Context, email string, passwordHash string) error {
-	return c.client.SetWithExpiration(ctx, email, passwordHash, codeAndCredsLifeTime)
+	key := c.genPasswordKey(email)
+	return c.client.SetWithExpiration(ctx, key, passwordHash, credsLifeTime)
+}
+
+func (c *cache) genCodeKey(email string) string {
+	return fmt.Sprintf(codeKey, email)
+}
+
+func (c *cache) genPasswordKey(email string) string {
+	return fmt.Sprintf(passwordHashKey, email)
 }

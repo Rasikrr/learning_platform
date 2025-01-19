@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     password text,
     created_at timestamptz NOT NULL DEFAULT NOW(),
     updated_at timestamptz NOT NULL DEFAULT NOW(),
-    deleted_at timestamptz,
+    deleted_at timestamptz DEFAULT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 -- +goose StatementEnd

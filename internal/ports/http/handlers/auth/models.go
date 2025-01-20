@@ -1,5 +1,7 @@
 package auth
 
+import "github.com/Rasikrr/learning_platform/internal/domain/entity"
+
 //go:generate easyjson -all models.go
 
 type Auth struct {
@@ -21,4 +23,11 @@ type ConfirmRegisterRequest struct {
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+func convertToModel(auth *entity.Auth) Auth {
+	return Auth{
+		RefreshToken: auth.RefreshToken,
+		AccessToken:  auth.AccessToken,
+	}
 }

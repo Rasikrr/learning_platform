@@ -3,6 +3,6 @@ package auth
 import "net/http"
 
 // nolint
-func (c *Controller) Logout(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) logout(w http.ResponseWriter, r *http.Request) {
 
 }

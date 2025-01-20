@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (c *Controller) Register(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) register(w http.ResponseWriter, r *http.Request) {
 	var req RegisterRequest
 	if err := api.GetData(r, &req); err != nil {
 		api.SendError(w, http.StatusBadRequest, err)

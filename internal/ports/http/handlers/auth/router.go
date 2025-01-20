@@ -17,8 +17,8 @@ func NewController(authService authS.Service) *Controller {
 }
 
 func (c *Controller) Init(r *http.ServeMux) {
-	r.HandleFunc("POST /auth/login", c.Login)
-	r.HandleFunc("POST /auth/register", c.Register)
-	r.HandleFunc("POST /auth/logout", c.Logout)
-	r.HandleFunc("POST /auth/confirm", c.ConfirmRegister)
+	r.HandleFunc("POST /auth/login", c.login)
+	r.HandleFunc("POST /auth/register", c.register)
+	r.HandleFunc("POST /auth/logout", c.logout)
+	r.HandleFunc("POST /auth/confirm", c.confirmRegister)
 }

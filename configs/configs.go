@@ -3,6 +3,7 @@ package configs
 import (
 	"github.com/BurntSushi/toml"
 	"github.com/joho/godotenv"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -16,9 +17,15 @@ type Config struct {
 	Server   ServerConfig   `toml:"server"`
 	Postgres PostgresConfig `toml:"postgres"`
 	Redis    RedisConfig    `toml:"redis"`
+	Auth     AuthConfig     `toml:"auth"`
 	Mail     MailConfig
 }
 
+type AuthConfig struct {
+	Secret               string        `toml:"secret"`
+	AccessTokenLifeTime  time.Duration `toml:"access_token_lifetime"`
+	RefreshTokenLifeTime time.Duration `toml:"refresh_token_lifetime"`
+}
 type ServerConfig struct {
 	Host string `toml:"host"`
 	Port string `toml:"port"`
@@ -76,5 +83,8 @@ func Parse() (Config, error) {
 	config.Mail.User = os.Getenv("MAIL_USER")
 	config.Mail.Password = os.Getenv("MAIL_PASSWORD")
 	config.Mail.From = os.Getenv("MAIL_FROM")
+
+	config.Auth.Secret = os.Getenv("JWT_SECRET")
+	log.Printf("config.Auth: %+v\n", config.Auth)
 	return config, nil
 }

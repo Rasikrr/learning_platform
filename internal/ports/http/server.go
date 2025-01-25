@@ -2,9 +2,12 @@ package http
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	"log"
 	"net/http"
@@ -29,8 +32,9 @@ func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
 ) *Server {
-	authController := auth.NewController(authService)
+	authMiddleware := middlewares.NewAuthMiddleware(authService)
 
+	authController := auth.NewController(authService, authMiddleware)
 	router := http.NewServeMux()
 	authController.Init(router)
 
@@ -63,4 +67,16 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func GetSession(ctx context.Context) (*entity.Session, error) {
+	token := ctx.Value(middlewares.SessionKey)
+	if token == nil {
+		return nil, errors.New("session is empty")
+	}
+	s, ok := token.(*entity.Session)
+	if !ok {
+		return nil, errors.New("session is not Session")
+	}
+	return s, nil
 }

@@ -25,6 +25,10 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+type RefreshRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
 func convertToModel(auth *entity.Auth) Auth {
 	return Auth{
 		RefreshToken: auth.RefreshToken,

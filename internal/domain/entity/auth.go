@@ -19,6 +19,16 @@ type Claims struct {
 }
 
 func NewClaims(user *User, lifetime time.Duration, isRefresh bool) *Claims {
+	if isRefresh {
+		return &Claims{
+			Email:     user.Email,
+			IsRefresh: isRefresh,
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(lifetime).Unix(),
+				IssuedAt:  time.Now().Unix(),
+			},
+		}
+	}
 	return &Claims{
 		UserID:      user.ID.String(),
 		Email:       user.Email,

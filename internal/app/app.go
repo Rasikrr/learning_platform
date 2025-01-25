@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/Rasikrr/learning_platform/internal/cache"
 	authC "github.com/Rasikrr/learning_platform/internal/cache/auth"
@@ -91,7 +92,7 @@ func (a *App) InitRedis(ctx context.Context) error {
 	var err error
 	a.redisClient, err = databases.NewRedis(ctx, &a.config)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to init redis: %w", err)
 	}
 	log.Println("Redis connected")
 	return nil
@@ -104,7 +105,11 @@ func (a *App) InitCache(_ context.Context) error {
 }
 
 func (a *App) InitServices(_ context.Context) error {
-	a.authService = authS.NewService(a.mailClient, a.usersRepository, a.hasher, a.authCache)
+	a.authService = authS.NewService(
+		a.config.Auth.Secret,
+		a.config.Auth.AccessTokenLifeTime,
+		a.config.Auth.RefreshTokenLifeTime,
+		a.mailClient, a.usersRepository, a.hasher, a.authCache)
 	return nil
 }
 
@@ -161,7 +166,7 @@ func (a *App) InitPostgres(ctx context.Context) error {
 	var err error
 	a.postgres, err = databases.NewPostgres(ctx, &a.config)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to init postgres: %w", err)
 	}
 	log.Println("Postgres connected")
 	return nil

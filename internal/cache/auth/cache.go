@@ -34,7 +34,7 @@ func NewCache(client cache2.Cache) Cache {
 }
 
 func (c *cache) GetCode(ctx context.Context, email string) (string, error) {
-	key := c.genCodeKey(email)
+	key := c.genKey(codeKey, email)
 	code, err := c.client.Get(ctx, key)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
@@ -50,12 +50,12 @@ func (c *cache) GetCode(ctx context.Context, email string) (string, error) {
 }
 
 func (c *cache) SetCode(ctx context.Context, email string, code string) error {
-	key := c.genCodeKey(email)
+	key := c.genKey(codeKey, email)
 	return c.client.SetWithExpiration(ctx, key, code, codeLifeTime)
 }
 
 func (c *cache) GetPasswordHash(ctx context.Context, email string) (string, error) {
-	key := c.genPasswordKey(email)
+	key := c.genKey(passwordHashKey, email)
 	pass, err := c.client.Get(ctx, key)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
@@ -71,14 +71,10 @@ func (c *cache) GetPasswordHash(ctx context.Context, email string) (string, erro
 }
 
 func (c *cache) SetPasswordHash(ctx context.Context, email string, passwordHash string) error {
-	key := c.genPasswordKey(email)
+	key := c.genKey(passwordHashKey, email)
 	return c.client.SetWithExpiration(ctx, key, passwordHash, credsLifeTime)
 }
 
-func (c *cache) genCodeKey(email string) string {
-	return fmt.Sprintf(codeKey, email)
-}
-
-func (c *cache) genPasswordKey(email string) string {
-	return fmt.Sprintf(passwordHashKey, email)
+func (c *cache) genKey(format, arg string) string {
+	return fmt.Sprintf(format, arg)
 }

@@ -2,8 +2,13 @@ package cache
 
 import (
 	"context"
+	"errors"
 	"github.com/redis/go-redis/v9"
 	"time"
+)
+
+var (
+	ErrNotFound = errors.New("not found")
 )
 
 type Cache interface {
@@ -24,7 +29,14 @@ func NewRedisCache(client *redis.Client) *RedisCache {
 }
 
 func (r *RedisCache) Get(ctx context.Context, key string) (any, error) {
-	return r.client.Get(ctx, key).Result()
+	val, err := r.redisStringCmd(ctx, key).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+	return val, nil
 }
 
 func (r *RedisCache) Set(ctx context.Context, key string, value any) error {
@@ -37,4 +49,8 @@ func (r *RedisCache) SetWithExpiration(ctx context.Context, key string, value an
 
 func (r *RedisCache) Delete(ctx context.Context, key string) error {
 	return r.client.Del(ctx, key).Err()
+}
+
+func (r *RedisCache) redisStringCmd(ctx context.Context, key string) *redis.StringCmd {
+	return r.client.Get(ctx, key)
 }

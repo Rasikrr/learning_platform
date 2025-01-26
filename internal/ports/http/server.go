@@ -38,9 +38,11 @@ func NewServer(
 	router := http.NewServeMux()
 	authController.Init(router)
 
+	routerWithCORS := middlewares.CORSMiddleware(router)
+
 	srv := &http.Server{
 		Addr:         address(cfg.Server.Host, cfg.Server.Port),
-		Handler:      router,
+		Handler:      routerWithCORS,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,

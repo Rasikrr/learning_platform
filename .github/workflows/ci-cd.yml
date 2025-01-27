@@ -43,11 +43,13 @@ jobs:
         run: go mod tidy
 
       - name: Run tests
-        run: go test ./... -v
+        run: make tests
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - build
+      - lint
 
     steps:
       - name: Checkout code

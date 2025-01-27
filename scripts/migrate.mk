@@ -1,5 +1,5 @@
 #export $(shell sed 's/=.*//' .env)
-include .env
+-include .env
 
 
 migrations_up:

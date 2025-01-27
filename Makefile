@@ -1,8 +1,5 @@
+#export $(shell sed 's/=.*//' .env)
 include .env
-
-migrations_up:
-	goose -dir migrations postgres "$(POSTGRES_DSN)" up
-
 
 coverage:
 	go test ./... -coverprofile=coverage.out
@@ -20,3 +17,6 @@ lint:
 
 creat_migration:
 	goose -dir "./migrations" create $(NAME) sql
+
+print_dsn:
+	@echo $(POSTGRES_DSN)

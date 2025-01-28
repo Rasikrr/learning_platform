@@ -32,9 +32,9 @@ func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
 ) *Server {
-	authMiddleware := middlewares.NewAuthMiddleware(authService)
+	// authMiddleware := middlewares.NewAuthMiddleware(authService)
 
-	authController := auth.NewController(authService, authMiddleware)
+	authController := auth.NewController(authService)
 	router := http.NewServeMux()
 	authController.Init(router)
 

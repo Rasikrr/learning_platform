@@ -8,7 +8,7 @@ migrations_up:
 migrations_down:
 	goose -dir migrations postgres "$(POSTGRES_DSN)" down
 
-creat_migration:
+create_migration:
 	goose -dir "./migrations" create $(NAME) sql
 
 print_dsn:

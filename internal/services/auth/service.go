@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"time"
+	"unicode"
 
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"math/rand/v2"
@@ -18,8 +19,9 @@ import (
 )
 
 const (
-	codeLength = 4
-	codeChars  = "0123456789"
+	codeLength        = 4
+	codeChars         = "0123456789"
+	passwordMinLength = 8
 )
 
 type Service interface {
@@ -87,6 +89,11 @@ func (s *service) Register(ctx context.Context, email, password, passwordConfirm
 	if user != nil {
 		return errors.New("user already exists")
 	}
+
+	if err := s.validatePassword(ctx, password); err != nil {
+		return err
+	}
+
 	code := s.GenerateCode(ctx)
 	if err := s.mailClient.Send(ctx, []string{email}, "registration", code); err != nil {
 		return err
@@ -203,6 +210,31 @@ func (s *service) parseJWT(tokenString string) (jwt.MapClaims, bool, error) {
 		return nil, false, errors.New("is_refresh is empty")
 	}
 	return claims, isRefresh, nil
+}
+
+func (s *service) validatePassword(_ context.Context, password string) error {
+	if len(password) < passwordMinLength {
+		return errors.New("password is too short")
+	}
+	var (
+		hasUppercase, hasLowercase, hasDigit, hasSpecial bool
+	)
+	for _, r := range password {
+		switch {
+		case unicode.IsUpper(r):
+			hasUppercase = true
+		case unicode.IsLower(r):
+			hasLowercase = true
+		case unicode.IsDigit(r):
+			hasDigit = true
+		case unicode.IsPunct(r) || unicode.IsSymbol(r):
+			hasSpecial = true
+		}
+	}
+	if !hasUppercase || !hasLowercase || !hasDigit || !hasSpecial {
+		return errors.New("password must contain at least one uppercase, lowercase, digit and special character")
+	}
+	return nil
 }
 
 func getSession(claims jwt.MapClaims) (*entity.Session, error) {

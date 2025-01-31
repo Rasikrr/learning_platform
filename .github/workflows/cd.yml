@@ -10,6 +10,7 @@ on:
 jobs:
   migrations:
     if: github.event.workflow_run.conclusion == 'success'
+    environment: prod
     runs-on: ubuntu-latest
 
     env:

@@ -17,6 +17,7 @@ FROM golang:1.23-alpine as runner
 
 WORKDIR /app
 
+COPY --from=builder /app/configs ./configs
 COPY --from=builder /app/bin ./bin
 
 CMD ["./bin/main"]

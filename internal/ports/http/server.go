@@ -2,10 +2,13 @@ package http
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
-	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/users"
-	usersS "github.com/Rasikrr/learning_platform/internal/services/users"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
+	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	"log"
 	"net/http"
 	"time"
@@ -27,16 +30,19 @@ type Server struct {
 
 func NewServer(
 	cfg *configs.Config,
-	usersService usersS.Service,
+	authService authS.Service,
 ) *Server {
-	usersController := users.New(usersService)
+	// authMiddleware := middlewares.NewAuthMiddleware(authService)
 
+	authController := auth.NewController(authService)
 	router := http.NewServeMux()
-	usersController.Init(router)
+	authController.Init(router)
+
+	routerWithCORS := middlewares.CORSMiddleware(router)
 
 	srv := &http.Server{
 		Addr:         address(cfg.Server.Host, cfg.Server.Port),
-		Handler:      router,
+		Handler:      routerWithCORS,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
@@ -63,4 +69,16 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func GetSession(ctx context.Context) (*entity.Session, error) {
+	token := ctx.Value(middlewares.SessionKey)
+	if token == nil {
+		return nil, errors.New("session is empty")
+	}
+	s, ok := token.(*entity.Session)
+	if !ok {
+		return nil, errors.New("session is not Session")
+	}
+	return s, nil
 }

@@ -16,6 +16,8 @@ type Postgres struct {
 
 // nolint: gosec
 func NewPostgres(ctx context.Context, cfg *configs.Config) (*Postgres, error) {
+	log.Printf("connecting to postgres %s", cfg.Postgres.DSN)
+	log.Printf("port: %s\n", cfg.Postgres.Port)
 	conConfig, err := pgxpool.ParseConfig(cfg.Postgres.DSN)
 	if err != nil {
 		return nil, err

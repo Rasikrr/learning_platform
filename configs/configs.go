@@ -69,7 +69,7 @@ type MailConfig struct {
 func Parse() (Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		return Config{}, err
+		log.Println("failed to load .env file")
 	}
 
 	env := os.Getenv("ENV")

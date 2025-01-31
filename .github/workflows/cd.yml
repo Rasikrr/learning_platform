@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: ["CI Pipeline"]
     branches: [main]
+    env: prod
     types:
       - completed
 

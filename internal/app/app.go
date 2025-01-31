@@ -67,7 +67,7 @@ func InitApp(ctx context.Context, name string) *App {
 		//app.InitWorkers,
 	} {
 		if err := init(ctx); err != nil {
-			log.Fatal(ctx, "init app", err)
+			log.Fatalf("init app error: %v", err)
 		}
 	}
 	return app

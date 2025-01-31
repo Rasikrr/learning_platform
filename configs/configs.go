@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/joho/godotenv"
 	"log"
@@ -10,7 +11,13 @@ import (
 )
 
 const (
-	fileName = "./configs/config.toml"
+	devFileConfig  = "./configs/config.toml"
+	prodFileConfig = "./configs/config_prod.toml"
+)
+
+const (
+	Development string = "dev"
+	Production         = "prod"
 )
 
 type Config struct {
@@ -34,6 +41,7 @@ type ServerConfig struct {
 type RedisConfig struct {
 	Host     string `toml:"host"`
 	Port     string `toml:"port"`
+	User     string `toml:"user"`
 	Password string `toml:"password"`
 	DB       int    `toml:"db"`
 }
@@ -59,14 +67,28 @@ type MailConfig struct {
 }
 
 func Parse() (Config, error) {
-	var config Config
-	if _, err := toml.DecodeFile(fileName, &config); err != nil {
-		return Config{}, err
-	}
 	err := godotenv.Load()
 	if err != nil {
 		return Config{}, err
 	}
+
+	env := os.Getenv("ENV")
+
+	var config Config
+	switch env {
+	case Development:
+		if _, err := toml.DecodeFile(devFileConfig, &config); err != nil {
+			return Config{}, err
+		}
+	case Production:
+		if _, err := toml.DecodeFile(prodFileConfig, &config); err != nil {
+			return Config{}, err
+		}
+	default:
+		return Config{}, fmt.Errorf("invalid environment: %s", env)
+	}
+	log.Printf("Initializing config for env: %s\n", env)
+
 	config.Postgres.DBName = os.Getenv("POSTGRES_DB")
 	config.Postgres.User = os.Getenv("POSTGRES_USER")
 	config.Postgres.Password = os.Getenv("POSTGRES_PASSWORD")
@@ -84,7 +106,10 @@ func Parse() (Config, error) {
 	config.Mail.Password = os.Getenv("MAIL_PASSWORD")
 	config.Mail.From = os.Getenv("MAIL_FROM")
 
+	config.Redis.User = os.Getenv("REDIS_USER")
+	config.Redis.Password = os.Getenv("REDIS_PASSWORD")
+
 	config.Auth.Secret = os.Getenv("JWT_SECRET")
-	log.Printf("config.Auth: %+v\n", config.Auth)
+
 	return config, nil
 }

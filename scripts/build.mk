@@ -9,3 +9,8 @@ lint:
 
 tests:
 	go test ./... -v
+
+
+build:
+	mkdir -p ./bin
+	go build -o ./bin ./cmd/app/main.go

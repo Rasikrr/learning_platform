@@ -16,8 +16,8 @@ const (
 )
 
 const (
-	Development string = "dev"
-	Production         = "prod"
+	Development = "dev"
+	Production  = "prod"
 )
 
 type Config struct {

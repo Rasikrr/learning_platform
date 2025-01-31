@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/Rasikrr/learning_platform/internal/app"
 	"log"
 )
@@ -15,5 +16,4 @@ func main() {
 	if err := a.Start(ctx); err != nil {
 		log.Fatal(err)
 	}
-
 }

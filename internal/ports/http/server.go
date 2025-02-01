@@ -3,15 +3,19 @@ package http
 // nolint: revive
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	httpSwagger "github.com/swaggo/http-swagger"
+	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
+
 	"log"
 	"net/http"
 	"time"
@@ -48,6 +52,7 @@ type Server struct {
 func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
+	courseService coursesS.Service,
 	faqService faqS.Service,
 ) *Server {
 	router := http.NewServeMux()
@@ -60,10 +65,15 @@ func NewServer(
 	authController := auth.NewController(authService)
 
 	// Init controllers
+
+	authController := auth.NewController(authService)
 	authController.Init(router)
 	faqController.Init(router)
 
 	// CORS
+	coursesController := courses.NewController(courseService)
+	coursesController.Init(router)
+
 	routerWithCORS := middlewares.CORSMiddleware(router)
 
 	srv := &http.Server{

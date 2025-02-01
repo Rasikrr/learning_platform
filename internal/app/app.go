@@ -10,11 +10,13 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
+	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
 	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
 	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
 	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
@@ -42,6 +44,8 @@ type App struct {
 	answersRepository            answers.Repository
 	questionsRepository          question.Repository
 	questionCategoriesRepository questionCategories.Repository
+	courseRepository coursesR.Repository
+
 
 	redisClient *redis.Client
 	cacheClient cache.Cache
@@ -51,7 +55,8 @@ type App struct {
 	mailClient  mail.Client
 	authService authS.Service
 	faqService  faqS.Service
-	httpServer  *http.Server
+	courseService coursesS.Service
+	httpServer    *http.Server
 }
 
 // nolint: gocritic
@@ -84,6 +89,7 @@ func InitApp(ctx context.Context, name string) *App {
 
 func (a *App) InitRepositories(_ context.Context) error {
 	a.usersRepository = usersR.NewRepository(a.postgres)
+	a.courseRepository = coursesR.NewRepository(a.postgres)
 	a.answersRepository = answers.NewRepository(a.postgres)
 	a.questionsRepository = question.NewRepository(a.postgres)
 	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
@@ -128,11 +134,13 @@ func (a *App) InitServices(_ context.Context) error {
 		a.questionCategoriesRepository,
 		a.answersRepository,
 	)
+
+	a.courseService = coursesS.NewService(a.courseRepository)
 	return nil
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(&a.config, a.authService, a.faqService)
+	a.httpServer = http.NewServer(&a.config, a.authService, a.courseService)
 	return nil
 }
 

@@ -11,6 +11,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	"github.com/google/uuid"
 	"github.com/samber/lo"
+	"golang.org/x/sync/errgroup"
 )
 
 type Service interface {
@@ -100,9 +101,35 @@ func (s *service) mergeCourse(ctx context.Context, course *entity.Course) error 
 	topicIDs := lo.Map(topics, func(t *entity.Topic, _ int) uuid.UUID {
 		return t.ID
 	})
+	var (
+		g       errgroup.Group
+		content []*entity.TopicContent
+		quizzes []*entity.Quiz
+		tasks   []*entity.PracticalTask
+	)
+	g.Go(func() error {
+		content, err = s.contentRepository.GetByTopicIDs(ctx, topicIDs)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	g.Go(func() error {
+		quizzes, err = s.quizzesRepository.GetByTopicIDs(ctx, topicIDs)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	g.Go(func() error {
+		tasks, err = s.tasksRepository.GetByTopicIDs(ctx, topicIDs)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 
-	content, err := s.contentRepository.GetByTopicIDs(ctx, topicIDs)
-	if err != nil {
+	if err = g.Wait(); err != nil {
 		return err
 	}
 
@@ -114,6 +141,18 @@ func (s *service) mergeCourse(ctx context.Context, course *entity.Course) error 
 		topic, ok := topicMap[c.TopicID]
 		if ok {
 			topic.Content = c
+		}
+	}
+	for _, q := range quizzes {
+		topic, ok := topicMap[q.TopicID]
+		if ok {
+			topic.Quizzes = append(topic.Quizzes, q)
+		}
+	}
+	for _, p := range tasks {
+		topic, ok := topicMap[p.TopicID]
+		if ok {
+			topic.PracticalTasks = append(topic.PracticalTasks, p)
 		}
 	}
 

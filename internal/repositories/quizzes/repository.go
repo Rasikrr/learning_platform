@@ -1,8 +1,17 @@
 package quizzes
 
-import "github.com/Rasikrr/learning_platform/internal/databases"
+import (
+	"context"
+	"github.com/Rasikrr/learning_platform/internal/databases"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"github.com/georgysavva/scany/v2/pgxscan"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
+)
 
 type Repository interface {
+	GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.Quiz, error)
+	GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Quiz, error)
 }
 
 type repository struct {
@@ -13,4 +22,20 @@ func NewRepository(db *databases.Postgres) Repository {
 	return &repository{
 		db: db,
 	}
+}
+
+func (r *repository) GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.Quiz, error) {
+	var m model
+	if err := pgxscan.Select(ctx, r.db, &m, getByTopicIDStmt, id); err != nil {
+		return nil, err
+	}
+	return m.convert()
+}
+
+func (r *repository) GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Quiz, error) {
+	var mm models
+	if err := pgxscan.Select(ctx, r.db, &mm, getByTopicIDsStmt, pq.Array(ids)); err != nil {
+		return nil, err
+	}
+	return mm.convert()
 }

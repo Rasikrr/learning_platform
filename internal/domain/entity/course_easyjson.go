@@ -283,16 +283,24 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				in.Delim('[')
 				if out.Quizzes == nil {
 					if !in.IsDelim(']') {
-						out.Quizzes = make([]Quiz, 0, 0)
+						out.Quizzes = make([]*Quiz, 0, 8)
 					} else {
-						out.Quizzes = []Quiz{}
+						out.Quizzes = []*Quiz{}
 					}
 				} else {
 					out.Quizzes = (out.Quizzes)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v10 Quiz
-					(v10).UnmarshalEasyJSON(in)
+					var v10 *Quiz
+					if in.IsNull() {
+						in.Skip()
+						v10 = nil
+					} else {
+						if v10 == nil {
+							v10 = new(Quiz)
+						}
+						(*v10).UnmarshalEasyJSON(in)
+					}
 					out.Quizzes = append(out.Quizzes, v10)
 					in.WantComma()
 				}
@@ -306,16 +314,24 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				in.Delim('[')
 				if out.PracticalTasks == nil {
 					if !in.IsDelim(']') {
-						out.PracticalTasks = make([]PracticalTask, 0, 0)
+						out.PracticalTasks = make([]*PracticalTask, 0, 8)
 					} else {
-						out.PracticalTasks = []PracticalTask{}
+						out.PracticalTasks = []*PracticalTask{}
 					}
 				} else {
 					out.PracticalTasks = (out.PracticalTasks)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v11 PracticalTask
-					(v11).UnmarshalEasyJSON(in)
+					var v11 *PracticalTask
+					if in.IsNull() {
+						in.Skip()
+						v11 = nil
+					} else {
+						if v11 == nil {
+							v11 = new(PracticalTask)
+						}
+						(*v11).UnmarshalEasyJSON(in)
+					}
 					out.PracticalTasks = append(out.PracticalTasks, v11)
 					in.WantComma()
 				}
@@ -360,14 +376,10 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		out.RawString(prefix)
 		out.String(string(in.Title))
 	}
-	{
+	if in.Content != nil {
 		const prefix string = ",\"content\":"
 		out.RawString(prefix)
-		if in.Content == nil {
-			out.RawString("null")
-		} else {
-			(*in.Content).MarshalEasyJSON(out)
-		}
+		(*in.Content).MarshalEasyJSON(out)
 	}
 	if len(in.Quizzes) != 0 {
 		const prefix string = ",\"quizzes\":"
@@ -378,7 +390,11 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				if v12 > 0 {
 					out.RawByte(',')
 				}
-				(v13).MarshalEasyJSON(out)
+				if v13 == nil {
+					out.RawString("null")
+				} else {
+					(*v13).MarshalEasyJSON(out)
+				}
 			}
 			out.RawByte(']')
 		}
@@ -392,7 +408,11 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				if v14 > 0 {
 					out.RawByte(',')
 				}
-				(v15).MarshalEasyJSON(out)
+				if v15 == nil {
+					out.RawString("null")
+				} else {
+					(*v15).MarshalEasyJSON(out)
+				}
 			}
 			out.RawByte(']')
 		}

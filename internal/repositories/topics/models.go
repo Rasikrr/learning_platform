@@ -17,6 +17,7 @@ type model struct {
 
 type models []model
 
+// nolint
 func (m model) convert() (*entity.Topic, error) {
 	return &entity.Topic{
 		ID:          m.ID,

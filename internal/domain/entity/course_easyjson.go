@@ -154,9 +154,9 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				}
 				*out.ImageURL = string(in.String())
 			}
-		case "topic_id":
+		case "category_id":
 			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.TopicID).UnmarshalText(data))
+				in.AddError((out.CategoryID).UnmarshalText(data))
 			}
 		case "topic":
 			(out.Topic).UnmarshalEasyJSON(in)
@@ -208,9 +208,9 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		}
 	}
 	{
-		const prefix string = ",\"topic_id\":"
+		const prefix string = ",\"category_id\":"
 		out.RawString(prefix)
-		out.RawText((in.TopicID).MarshalText())
+		out.RawText((in.CategoryID).MarshalText())
 	}
 	{
 		const prefix string = ",\"topic\":"

@@ -10,7 +10,7 @@ type course struct {
 	ID          uuid.UUID
 	Title       string
 	ImageURL    *string
-	TopicID     uuid.UUID
+	CategoryID  uuid.UUID
 	Description string
 	CreatedBy   uuid.UUID
 	CreatedAt   time.Time
@@ -24,7 +24,7 @@ func (c course) convert() (*entities.Course, error) {
 		ID:          c.ID,
 		Title:       c.Title,
 		ImageURL:    c.ImageURL,
-		TopicID:     c.TopicID,
+		CategoryID:  c.CategoryID,
 		Description: c.Description,
 		CreatedBy:   c.CreatedBy,
 		CreatedAt:   c.CreatedAt,
@@ -54,6 +54,7 @@ type topic struct {
 
 type topics []topic
 
+// nolint
 func (t topic) convert() (*entities.Topic, error) {
 	return &entities.Topic{
 		ID:        t.ID,

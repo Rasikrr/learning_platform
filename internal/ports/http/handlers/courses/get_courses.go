@@ -2,7 +2,6 @@ package courses
 
 import (
 	"github.com/Rasikrr/learning_platform/api"
-	"log"
 	"net/http"
 )
 
@@ -12,8 +11,9 @@ func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	log.Println("req", req)
-	courses, err := c.coursesService.GetCourses(r.Context(), req.Limit, req.Offset)
+	ctx := r.Context()
+	params := req.toParams()
+	courses, err := c.coursesService.GetByParams(ctx, params)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return

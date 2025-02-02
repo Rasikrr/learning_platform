@@ -11,7 +11,7 @@ type Course struct {
 	ID          uuid.UUID `json:"id"`
 	Title       string    `json:"title"`
 	ImageURL    *string   `json:"image_url"`
-	TopicID     uuid.UUID `json:"topic_id"`
+	CategoryID  uuid.UUID `json:"category_id"`
 	Topic       Topic     `json:"topic"`
 	Description string    `json:"description"`
 	CreatedBy   uuid.UUID `json:"created_by"`

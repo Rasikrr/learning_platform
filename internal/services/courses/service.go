@@ -9,7 +9,9 @@ import (
 )
 
 type Service interface {
-	GetCourses(ctx context.Context, limit, offset int) ([]*entity.Course, error)
+	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
+	GetByID(ctx context.Context, id string) (*entity.Course, error)
+	GetAllTopics(ctx context.Context) ([]*entity.Topic, error)
 }
 
 type service struct {
@@ -22,8 +24,8 @@ func NewService(coursesRepository courses.Repository) Service {
 	}
 }
 
-func (s *service) GetCourses(ctx context.Context, limit, offset int) ([]*entity.Course, error) {
-	courses, err := s.coursesRepository.GetCourses(ctx, limit, offset)
+func (s *service) GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error) {
+	courses, err := s.coursesRepository.GetByParams(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -33,11 +35,26 @@ func (s *service) GetCourses(ctx context.Context, limit, offset int) ([]*entity.
 	return courses, nil
 }
 
+func (s *service) GetByID(ctx context.Context, id string) (*entity.Course, error) {
+	course, err := s.coursesRepository.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.mergeCourses(ctx, course); err != nil {
+		return nil, err
+	}
+	return course, nil
+}
+
+func (s *service) GetAllTopics(ctx context.Context) ([]*entity.Topic, error) {
+	return s.coursesRepository.GetAllCategories(ctx)
+}
+
 func (s *service) mergeCourses(ctx context.Context, course ...*entity.Course) error {
 	topicsIDs := lo.Uniq(lo.Map(course, func(c *entity.Course, _ int) uuid.UUID {
-		return c.TopicID
+		return c.CategoryID
 	}))
-	topics, err := s.coursesRepository.GetTopicsByIds(ctx, topicsIDs)
+	topics, err := s.coursesRepository.GetCategoriesByIDs(ctx, topicsIDs)
 	if err != nil {
 		return err
 	}
@@ -45,7 +62,7 @@ func (s *service) mergeCourses(ctx context.Context, course ...*entity.Course) er
 		return t.ID, t
 	})
 	for _, c := range course {
-		if t, ok := topicsMap[c.TopicID]; ok && t != nil {
+		if t, ok := topicsMap[c.CategoryID]; ok && t != nil {
 			c.Topic = *t
 		}
 	}

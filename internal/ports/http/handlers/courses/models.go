@@ -1,13 +1,15 @@
 package courses
 
 import (
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"net/http"
 	"strconv"
 )
 
 type getCoursesRequest struct {
-	Limit  int
-	Offset int
+	Limit    int
+	Offset   int
+	Category *string
 }
 
 func (r *getCoursesRequest) GetParameters(req *http.Request) error {
@@ -19,7 +21,19 @@ func (r *getCoursesRequest) GetParameters(req *http.Request) error {
 	if err != nil {
 		offset = 0
 	}
+	category := req.URL.Query().Get("category")
+	if category != "" {
+		r.Category = &category
+	}
 	r.Limit = limit
 	r.Offset = offset
 	return nil
+}
+
+func (r *getCoursesRequest) toParams() *entity.GetCoursesParams {
+	return &entity.GetCoursesParams{
+		Limit:    r.Limit,
+		Offset:   r.Offset,
+		Category: r.Category,
+	}
 }

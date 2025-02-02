@@ -15,7 +15,7 @@ func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	params := req.toParams()
 	log.Println(params)
-	courses, err := c.coursesService.GetByParams(ctx, params)
+	courses, err := c.coursesService.GetCoursesByParams(ctx, params)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return

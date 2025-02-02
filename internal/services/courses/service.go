@@ -13,8 +13,8 @@ import (
 )
 
 type Service interface {
-	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
-	GetByID(ctx context.Context, id string) (*entity.Course, error)
+	GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
+	GetCourseByID(ctx context.Context, id string) (*entity.Course, error)
 	GetAllCategories(ctx context.Context) ([]*entity.Category, error)
 }
 
@@ -42,7 +42,7 @@ func NewService(
 	}
 }
 
-func (s *service) GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error) {
+func (s *service) GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error) {
 	courses, err := s.coursesRepository.GetByParams(ctx, params)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (s *service) GetByParams(ctx context.Context, params *entity.GetCoursesPara
 	return courses, nil
 }
 
-func (s *service) GetByID(ctx context.Context, id string) (*entity.Course, error) {
+func (s *service) GetCourseByID(ctx context.Context, id string) (*entity.Course, error) {
 	course, err := s.coursesRepository.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -65,18 +65,19 @@ func (s *service) GetByID(ctx context.Context, id string) (*entity.Course, error
 }
 
 func (s *service) GetAllCategories(ctx context.Context) ([]*entity.Category, error) {
-	return s.coursesRepository.GetAllCategories(ctx)
+	return s.categoriesRepository.GetAll(ctx)
 }
 
 func (s *service) mergeCourses(ctx context.Context, course ...*entity.Course) error {
-	topicsIDs := lo.Uniq(lo.Map(course, func(c *entity.Course, _ int) uuid.UUID {
+	categoriesIDs := lo.Uniq(lo.Map(course, func(c *entity.Course, _ int) uuid.UUID {
 		return c.CategoryID
 	}))
-	topics, err := s.coursesRepository.GetCategoriesByIDs(ctx, topicsIDs)
+	categories, err := s.categoriesRepository.GetByIDs(ctx, categoriesIDs)
 	if err != nil {
 		return err
 	}
-	topicsMap := lo.SliceToMap(topics, func(t *entity.Category) (uuid.UUID, *entity.Category) {
+
+	topicsMap := lo.SliceToMap(categories, func(t *entity.Category) (uuid.UUID, *entity.Category) {
 		return t.ID, t
 	})
 	for _, c := range course {
@@ -84,5 +85,6 @@ func (s *service) mergeCourses(ctx context.Context, course ...*entity.Course) er
 			c.Category = *t
 		}
 	}
+
 	return nil
 }

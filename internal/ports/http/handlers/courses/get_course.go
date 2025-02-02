@@ -13,7 +13,7 @@ func (c *Controller) getCourse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := r.Context()
-	courses, err := c.coursesService.GetByID(ctx, courseID)
+	courses, err := c.coursesService.GetCourseByID(ctx, courseID)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return

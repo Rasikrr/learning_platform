@@ -26,7 +26,7 @@ func NewRepository(db *databases.Postgres) Repository {
 
 func (r *repository) GetByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Category, error) {
 	var mm models
-	if err := pgxscan.Select(ctx, r.db, &mm, getCategoriesByIdsStmt, pq.Array(ids)); err != nil {
+	if err := pgxscan.Select(ctx, r.db, &mm, getCategoriesByIDsStmt, pq.Array(ids)); err != nil {
 		return nil, err
 	}
 	return mm.convert()

@@ -5,15 +5,11 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 type Repository interface {
 	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetByID(ctx context.Context, id string) (*entity.Course, error)
-	GetAllCategories(ctx context.Context) ([]*entity.Category, error)
-	GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Category, error)
 }
 
 type repository struct {

@@ -17,7 +17,151 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(in *jlexer.Lexer, out *Topic) {
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(in *jlexer.Lexer, out *Course) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			if data := in.UnsafeBytes(); in.Ok() {
+				in.AddError((out.ID).UnmarshalText(data))
+			}
+		case "title":
+			out.Title = string(in.String())
+		case "image_url":
+			if in.IsNull() {
+				in.Skip()
+				out.ImageURL = nil
+			} else {
+				if out.ImageURL == nil {
+					out.ImageURL = new(string)
+				}
+				*out.ImageURL = string(in.String())
+			}
+		case "category_id":
+			if data := in.UnsafeBytes(); in.Ok() {
+				in.AddError((out.CategoryID).UnmarshalText(data))
+			}
+		case "category":
+			(out.Category).UnmarshalEasyJSON(in)
+		case "description":
+			out.Description = string(in.String())
+		case "created_by":
+			if data := in.UnsafeBytes(); in.Ok() {
+				in.AddError((out.CreatedBy).UnmarshalText(data))
+			}
+		case "created_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreatedAt).UnmarshalJSON(data))
+			}
+		case "updated_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdatedAt).UnmarshalJSON(data))
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(out *jwriter.Writer, in Course) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.RawText((in.ID).MarshalText())
+	}
+	{
+		const prefix string = ",\"title\":"
+		out.RawString(prefix)
+		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"image_url\":"
+		out.RawString(prefix)
+		if in.ImageURL == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.ImageURL))
+		}
+	}
+	{
+		const prefix string = ",\"category_id\":"
+		out.RawString(prefix)
+		out.RawText((in.CategoryID).MarshalText())
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		(in.Category).MarshalEasyJSON(out)
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"created_by\":"
+		out.RawString(prefix)
+		out.RawText((in.CreatedBy).MarshalText())
+	}
+	{
+		const prefix string = ",\"created_at\":"
+		out.RawString(prefix)
+		out.Raw((in.CreatedAt).MarshalJSON())
+	}
+	{
+		const prefix string = ",\"updated_at\":"
+		out.RawString(prefix)
+		out.Raw((in.UpdatedAt).MarshalJSON())
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Course) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Course) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Course) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Course) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(l, v)
+}
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1(in *jlexer.Lexer, out *Category) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -64,7 +208,7 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(
 		in.Consumed()
 	}
 }
-func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(out *jwriter.Writer, in Topic) {
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1(out *jwriter.Writer, in Category) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -97,169 +241,25 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v Topic) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Topic) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *Topic) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Topic) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity(l, v)
-}
-func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1(in *jlexer.Lexer, out *Course) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "id":
-			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.ID).UnmarshalText(data))
-			}
-		case "title":
-			out.Title = string(in.String())
-		case "image_url":
-			if in.IsNull() {
-				in.Skip()
-				out.ImageURL = nil
-			} else {
-				if out.ImageURL == nil {
-					out.ImageURL = new(string)
-				}
-				*out.ImageURL = string(in.String())
-			}
-		case "category_id":
-			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.CategoryID).UnmarshalText(data))
-			}
-		case "topic":
-			(out.Topic).UnmarshalEasyJSON(in)
-		case "description":
-			out.Description = string(in.String())
-		case "created_by":
-			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.CreatedBy).UnmarshalText(data))
-			}
-		case "created_at":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.CreatedAt).UnmarshalJSON(data))
-			}
-		case "updated_at":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.UpdatedAt).UnmarshalJSON(data))
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1(out *jwriter.Writer, in Course) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"id\":"
-		out.RawString(prefix[1:])
-		out.RawText((in.ID).MarshalText())
-	}
-	{
-		const prefix string = ",\"title\":"
-		out.RawString(prefix)
-		out.String(string(in.Title))
-	}
-	{
-		const prefix string = ",\"image_url\":"
-		out.RawString(prefix)
-		if in.ImageURL == nil {
-			out.RawString("null")
-		} else {
-			out.String(string(*in.ImageURL))
-		}
-	}
-	{
-		const prefix string = ",\"category_id\":"
-		out.RawString(prefix)
-		out.RawText((in.CategoryID).MarshalText())
-	}
-	{
-		const prefix string = ",\"topic\":"
-		out.RawString(prefix)
-		(in.Topic).MarshalEasyJSON(out)
-	}
-	{
-		const prefix string = ",\"description\":"
-		out.RawString(prefix)
-		out.String(string(in.Description))
-	}
-	{
-		const prefix string = ",\"created_by\":"
-		out.RawString(prefix)
-		out.RawText((in.CreatedBy).MarshalText())
-	}
-	{
-		const prefix string = ",\"created_at\":"
-		out.RawString(prefix)
-		out.Raw((in.CreatedAt).MarshalJSON())
-	}
-	{
-		const prefix string = ",\"updated_at\":"
-		out.RawString(prefix)
-		out.Raw((in.UpdatedAt).MarshalJSON())
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v Course) MarshalJSON() ([]byte, error) {
+func (v Category) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
 	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Course) MarshalEasyJSON(w *jwriter.Writer) {
+func (v Category) MarshalEasyJSON(w *jwriter.Writer) {
 	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *Course) UnmarshalJSON(data []byte) error {
+func (v *Category) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
 	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Course) UnmarshalEasyJSON(l *jlexer.Lexer) {
+func (v *Category) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1(l, v)
 }

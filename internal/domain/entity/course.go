@@ -12,14 +12,14 @@ type Course struct {
 	Title       string    `json:"title"`
 	ImageURL    *string   `json:"image_url"`
 	CategoryID  uuid.UUID `json:"category_id"`
-	Topic       Topic     `json:"topic"`
+	Category    Category  `json:"category"`
 	Description string    `json:"description"`
 	CreatedBy   uuid.UUID `json:"created_by"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-type Topic struct {
+type Category struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
 	CreatedBy uuid.UUID `json:"created_by"`

@@ -11,7 +11,7 @@ import (
 type Service interface {
 	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetByID(ctx context.Context, id string) (*entity.Course, error)
-	GetAllTopics(ctx context.Context) ([]*entity.Topic, error)
+	GetAllTopics(ctx context.Context) ([]*entity.Category, error)
 }
 
 type service struct {
@@ -46,7 +46,7 @@ func (s *service) GetByID(ctx context.Context, id string) (*entity.Course, error
 	return course, nil
 }
 
-func (s *service) GetAllTopics(ctx context.Context) ([]*entity.Topic, error) {
+func (s *service) GetAllTopics(ctx context.Context) ([]*entity.Category, error) {
 	return s.coursesRepository.GetAllCategories(ctx)
 }
 
@@ -58,12 +58,12 @@ func (s *service) mergeCourses(ctx context.Context, course ...*entity.Course) er
 	if err != nil {
 		return err
 	}
-	topicsMap := lo.SliceToMap(topics, func(t *entity.Topic) (uuid.UUID, *entity.Topic) {
+	topicsMap := lo.SliceToMap(topics, func(t *entity.Category) (uuid.UUID, *entity.Category) {
 		return t.ID, t
 	})
 	for _, c := range course {
 		if t, ok := topicsMap[c.CategoryID]; ok && t != nil {
-			c.Topic = *t
+			c.Category = *t
 		}
 	}
 	return nil

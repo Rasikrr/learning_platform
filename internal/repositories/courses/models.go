@@ -55,8 +55,8 @@ type topic struct {
 type topics []topic
 
 // nolint
-func (t topic) convert() (*entities.Topic, error) {
-	return &entities.Topic{
+func (t topic) convert() (*entities.Category, error) {
+	return &entities.Category{
 		ID:        t.ID,
 		Name:      t.Name,
 		CreatedBy: t.CreatedBy,
@@ -65,8 +65,8 @@ func (t topic) convert() (*entities.Topic, error) {
 	}, nil
 }
 
-func (t topics) convert() ([]*entities.Topic, error) {
-	out := make([]*entities.Topic, len(t))
+func (t topics) convert() ([]*entities.Category, error) {
+	out := make([]*entities.Category, len(t))
 	for i, mm := range t {
 		res, err := mm.convert()
 		if err != nil {

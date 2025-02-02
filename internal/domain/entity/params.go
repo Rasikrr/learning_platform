@@ -1,7 +1,7 @@
 package entity
 
 type GetCoursesParams struct {
-	Limit    int
-	Offset   int
-	Category *string
+	Limit         int
+	Offset        int
+	CategoriesIDs []string
 }

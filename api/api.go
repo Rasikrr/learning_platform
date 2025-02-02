@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -49,12 +50,14 @@ func GetData(r *http.Request, data interface{}) error {
 			return err
 		}
 	}
+	log.Println(params)
 	defer r.Body.Close()
 	bb, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
 	if len(bb) > 0 {
+		log.Println(bb)
 		unmarshaller, ok := data.(json.Unmarshaler)
 		if ok {
 			return unmarshaller.UnmarshalJSON(bb)

@@ -3,6 +3,7 @@ package courses
 import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"github.com/lib/pq"
 )
 
 var (
@@ -32,9 +33,8 @@ var (
 
 func generateQuery(params *entity.GetCoursesParams) (string, []interface{}, error) {
 	b := psql.Select(coursesCols...).From(coursesTable)
-	if params.Category != nil {
-		b = b.Join("course_category cc on cc.id = c.category_id")
-		b = b.Where("cc.name = ?", *params.Category)
+	if len(params.CategoriesIDs) > 0 {
+		b = b.Where("c.category_id = ANY($1)", pq.Array(params.CategoriesIDs))
 	}
 	// nolint
 	b = b.Limit(uint64(params.Limit)).Offset(uint64(params.Offset))

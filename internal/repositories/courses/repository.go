@@ -12,8 +12,8 @@ import (
 type Repository interface {
 	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetByID(ctx context.Context, id string) (*entity.Course, error)
-	GetAllCategories(ctx context.Context) ([]*entity.Topic, error)
-	GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Topic, error)
+	GetAllCategories(ctx context.Context) ([]*entity.Category, error)
+	GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Category, error)
 }
 
 type repository struct {
@@ -46,7 +46,7 @@ func (r *repository) GetByID(ctx context.Context, id string) (*entity.Course, er
 	return c.convert()
 }
 
-func (r *repository) GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Topic, error) {
+func (r *repository) GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Category, error) {
 	var tt topics
 	if err := pgxscan.Select(ctx, r.db, &tt, getCoursesTopicsByIdsStmt, pq.Array(ids)); err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (r *repository) GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([
 	return tt.convert()
 }
 
-func (r *repository) GetAllCategories(ctx context.Context) ([]*entity.Topic, error) {
+func (r *repository) GetAllCategories(ctx context.Context) ([]*entity.Category, error) {
 	var tt topics
 	if err := pgxscan.Select(ctx, r.db, &tt, getAllTopicsStmt); err != nil {
 		return nil, err

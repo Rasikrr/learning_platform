@@ -12,8 +12,10 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.0
 	github.com/mailru/easyjson v0.9.0
 	github.com/redis/go-redis/v9 v9.7.0
+	github.com/samber/lo v1.49.1
 	github.com/stretchr/testify v1.10.0
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.4

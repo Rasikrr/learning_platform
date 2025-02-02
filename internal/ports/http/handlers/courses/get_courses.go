@@ -13,9 +13,10 @@ func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("req", req)
-	if err := c.coursesService.GetCourses(r.Context(), req.Limit, req.Offset); err != nil {
+	courses, err := c.coursesService.GetCourses(r.Context(), req.Limit, req.Offset)
+	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, api.NewEmptySuccessResponse(), http.StatusOK)
+	api.SendData(w, courses, http.StatusOK)
 }

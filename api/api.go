@@ -15,6 +15,10 @@ type ErrorResponse struct {
 	Status int    `json:"status"`
 }
 
+type ParametersGetter interface {
+	GetParameters(r *http.Request) error
+}
+
 // nolint: errcheck
 func SendData(w http.ResponseWriter, data interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
@@ -39,6 +43,12 @@ func SendData(w http.ResponseWriter, data interface{}, statusCode int) {
 }
 
 func GetData(r *http.Request, data interface{}) error {
+	params, ok := data.(ParametersGetter)
+	if ok {
+		if err := params.GetParameters(r); err != nil {
+			return err
+		}
+	}
 	defer r.Body.Close()
 	bb, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -49,9 +59,8 @@ func GetData(r *http.Request, data interface{}) error {
 		if ok {
 			return unmarshaller.UnmarshalJSON(bb)
 		}
-		// TODO: get data from query params
 	}
-	return json.Unmarshal(bb, data)
+	return nil
 }
 
 // nolint: errcheck

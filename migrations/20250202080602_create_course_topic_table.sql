@@ -1,19 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS courses (
+CREATE TABLE IF NOT EXISTS course_topics (
     id uuid,
-    title VARCHAR(255) NOT NULL,
-    image_url TEXT,
-    topic_id uuid NOT NULL,
-    description TEXT NOT NULL,
+    name VARCHAR(255) NOT NULL,
     created_by uuid NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    CONSTRAINT courses_pkey PRIMARY KEY (id)
+    CONSTRAINT course_topics_pkey PRIMARY KEY (id)
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS course_topics;
 -- +goose StatementEnd

@@ -266,7 +266,15 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		case "title":
 			out.Title = string(in.String())
 		case "content":
-			(out.Content).UnmarshalEasyJSON(in)
+			if in.IsNull() {
+				in.Skip()
+				out.Content = nil
+			} else {
+				if out.Content == nil {
+					out.Content = new(TopicContent)
+				}
+				(*out.Content).UnmarshalEasyJSON(in)
+			}
 		case "quizzes":
 			if in.IsNull() {
 				in.Skip()
@@ -355,14 +363,16 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 	{
 		const prefix string = ",\"content\":"
 		out.RawString(prefix)
-		(in.Content).MarshalEasyJSON(out)
-	}
-	{
-		const prefix string = ",\"quizzes\":"
-		out.RawString(prefix)
-		if in.Quizzes == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		if in.Content == nil {
 			out.RawString("null")
 		} else {
+			(*in.Content).MarshalEasyJSON(out)
+		}
+	}
+	if len(in.Quizzes) != 0 {
+		const prefix string = ",\"quizzes\":"
+		out.RawString(prefix)
+		{
 			out.RawByte('[')
 			for v12, v13 := range in.Quizzes {
 				if v12 > 0 {
@@ -373,12 +383,10 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 			out.RawByte(']')
 		}
 	}
-	{
+	if len(in.PracticalTasks) != 0 {
 		const prefix string = ",\"practical_tasks\":"
 		out.RawString(prefix)
-		if in.PracticalTasks == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-			out.RawString("null")
-		} else {
+		{
 			out.RawByte('[')
 			for v14, v15 := range in.PracticalTasks {
 				if v14 > 0 {
@@ -786,16 +794,24 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 				in.Delim('[')
 				if out.Topics == nil {
 					if !in.IsDelim(']') {
-						out.Topics = make([]Topic, 0, 0)
+						out.Topics = make([]*Topic, 0, 8)
 					} else {
-						out.Topics = []Topic{}
+						out.Topics = []*Topic{}
 					}
 				} else {
 					out.Topics = (out.Topics)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v22 Topic
-					(v22).UnmarshalEasyJSON(in)
+					var v22 *Topic
+					if in.IsNull() {
+						in.Skip()
+						v22 = nil
+					} else {
+						if v22 == nil {
+							v22 = new(Topic)
+						}
+						(*v22).UnmarshalEasyJSON(in)
+					}
 					out.Topics = append(out.Topics, v22)
 					in.WantComma()
 				}
@@ -861,18 +877,20 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 		out.RawString(prefix)
 		out.String(string(in.Description))
 	}
-	{
+	if len(in.Topics) != 0 {
 		const prefix string = ",\"topics\":"
 		out.RawString(prefix)
-		if in.Topics == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-			out.RawString("null")
-		} else {
+		{
 			out.RawByte('[')
 			for v23, v24 := range in.Topics {
 				if v23 > 0 {
 					out.RawByte(',')
 				}
-				(v24).MarshalEasyJSON(out)
+				if v24 == nil {
+					out.RawString("null")
+				} else {
+					(*v24).MarshalEasyJSON(out)
+				}
 			}
 			out.RawByte(']')
 		}

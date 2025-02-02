@@ -11,6 +11,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
 	categoriesR "github.com/Rasikrr/learning_platform/internal/repositories/categories"
+	contentR "github.com/Rasikrr/learning_platform/internal/repositories/content"
 	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
 	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
@@ -51,6 +52,7 @@ type App struct {
 	quizzesRepository    quizzesR.Repository
 	topicsRepository     topicsR.Repository
 	tasksRepository      tasksR.Repository
+	contentRepository    contentR.Repository
 
 
 	answersRepository            answers.Repository
@@ -108,6 +110,7 @@ func (a *App) InitRepositories(_ context.Context) error {
 	a.answersRepository = answers.NewRepository(a.postgres)
 	a.questionsRepository = question.NewRepository(a.postgres)
 	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
+	a.contentRepository = contentR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -150,6 +153,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.topicsRepository,
 		a.quizzesRepository,
 		a.tasksRepository,
+		a.contentRepository,
 	)
 	a.faqService = faqS.NewService(
 		a.questionsRepository,

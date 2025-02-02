@@ -1,4 +1,4 @@
-package topics
+package content
 
 import (
 	"context"
@@ -6,10 +6,11 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
-	GetByCourseID(ctx context.Context, id uuid.UUID) ([]*entity.Topic, error)
+	GetByTopicIDs(ctx context.Context, topicIDs []uuid.UUID) ([]*entity.TopicContent, error)
 }
 
 type repository struct {
@@ -22,9 +23,9 @@ func NewRepository(db *databases.Postgres) Repository {
 	}
 }
 
-func (r *repository) GetByCourseID(ctx context.Context, ids uuid.UUID) ([]*entity.Topic, error) {
+func (r *repository) GetByTopicIDs(ctx context.Context, topicIDs []uuid.UUID) ([]*entity.TopicContent, error) {
 	var mm models
-	if err := pgxscan.Select(ctx, r.db, &mm, getByCourseIDStmt, ids); err != nil {
+	if err := pgxscan.Select(ctx, r.db, &mm, getByTopicIDsStmt, pq.Array(topicIDs)); err != nil {
 		return nil, err
 	}
 	return mm.convert()

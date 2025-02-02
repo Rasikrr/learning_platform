@@ -15,7 +15,7 @@ type Course struct {
 	CategoryID  uuid.UUID `json:"category_id"`
 	Category    Category  `json:"category"`
 	Description string    `json:"description"`
-	Topics      []Topic   `json:"topics"`
+	Topics      []*Topic  `json:"topics,omitempty"`
 	CreatedBy   uuid.UUID `json:"created_by"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -33,9 +33,9 @@ type Topic struct {
 	ID             uuid.UUID       `json:"id"`
 	CourseID       uuid.UUID       `json:"course_id"`
 	Title          string          `json:"title"`
-	Content        TopicContent    `json:"content"`
-	Quizzes        []Quiz          `json:"quizzes"`
-	PracticalTasks []PracticalTask `json:"practical_tasks"`
+	Content        *TopicContent   `json:"content"`
+	Quizzes        []Quiz          `json:"quizzes,omitempty"`
+	PracticalTasks []PracticalTask `json:"practical_tasks,omitempty"`
 	OrderNumber    int             `json:"order_number"`
 	CreatedAt      time.Time       `json:"created_at"`
 	UpdatedAt      time.Time       `json:"updated_at"`

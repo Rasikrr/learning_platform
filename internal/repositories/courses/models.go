@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type course struct {
+type model struct {
 	ID          uuid.UUID
 	Title       string
 	ImageURL    *string
@@ -17,58 +17,25 @@ type course struct {
 	UpdatedAt   time.Time
 }
 
-type courses []course
+type models []model
 
-func (c course) convert() (*entities.Course, error) {
+func (m model) convert() (*entities.Course, error) {
 	return &entities.Course{
-		ID:          c.ID,
-		Title:       c.Title,
-		ImageURL:    c.ImageURL,
-		CategoryID:  c.CategoryID,
-		Description: c.Description,
-		CreatedBy:   c.CreatedBy,
-		CreatedAt:   c.CreatedAt,
-		UpdatedAt:   c.UpdatedAt,
+		ID:          m.ID,
+		Title:       m.Title,
+		ImageURL:    m.ImageURL,
+		CategoryID:  m.CategoryID,
+		Description: m.Description,
+		CreatedBy:   m.CreatedBy,
+		CreatedAt:   m.CreatedAt,
+		UpdatedAt:   m.UpdatedAt,
 	}, nil
 }
 
-func (c courses) convert() ([]*entities.Course, error) {
-	out := make([]*entities.Course, len(c))
-	for i, mm := range c {
-		res, err := mm.convert()
-		if err != nil {
-			return nil, err
-		}
-		out[i] = res
-	}
-	return out, nil
-}
-
-type topic struct {
-	ID        uuid.UUID
-	Name      string
-	CreatedBy uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type topics []topic
-
-// nolint
-func (t topic) convert() (*entities.Category, error) {
-	return &entities.Category{
-		ID:        t.ID,
-		Name:      t.Name,
-		CreatedBy: t.CreatedBy,
-		CreatedAt: t.CreatedAt,
-		UpdatedAt: t.UpdatedAt,
-	}, nil
-}
-
-func (t topics) convert() ([]*entities.Category, error) {
-	out := make([]*entities.Category, len(t))
-	for i, mm := range t {
-		res, err := mm.convert()
+func (mm models) convert() ([]*entities.Course, error) {
+	out := make([]*entities.Course, len(mm))
+	for i, m := range mm {
+		res, err := m.convert()
 		if err != nil {
 			return nil, err
 		}

@@ -10,7 +10,11 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
+	categoriesR "github.com/Rasikrr/learning_platform/internal/repositories/categories"
 	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
+	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
+	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
 	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
 	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
@@ -39,12 +43,19 @@ type App struct {
 	config   configs.Config
 	postgres *databases.Postgres
 
-	workers                      []workers.Worker
-	usersRepository              usersR.Repository
+	workers []workers.Worker
+
+	usersRepository      usersR.Repository
+	courseRepository     coursesR.Repository
+	categoriesRepository categoriesR.Repository
+	quizzesRepository    quizzesR.Repository
+	topicsRepository     topicsR.Repository
+	tasksRepository      tasksR.Repository
+
+
 	answersRepository            answers.Repository
 	questionsRepository          question.Repository
 	questionCategoriesRepository questionCategories.Repository
-	courseRepository coursesR.Repository
 
 
 	redisClient *redis.Client
@@ -90,6 +101,10 @@ func InitApp(ctx context.Context, name string) *App {
 func (a *App) InitRepositories(_ context.Context) error {
 	a.usersRepository = usersR.NewRepository(a.postgres)
 	a.courseRepository = coursesR.NewRepository(a.postgres)
+	a.categoriesRepository = categoriesR.NewRepository(a.postgres)
+	a.quizzesRepository = quizzesR.NewRepository(a.postgres)
+	a.topicsRepository = topicsR.NewRepository(a.postgres)
+	a.tasksRepository = tasksR.NewRepository(a.postgres)
 	a.answersRepository = answers.NewRepository(a.postgres)
 	a.questionsRepository = question.NewRepository(a.postgres)
 	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
@@ -129,6 +144,13 @@ func (a *App) InitServices(_ context.Context) error {
 		a.config.Auth.RefreshTokenLifeTime,
 		a.mailClient, a.usersRepository, a.hasher, a.authCache)
 
+	a.courseService = coursesS.NewService(
+		a.courseRepository,
+		a.categoriesRepository,
+		a.topicsRepository,
+		a.quizzesRepository,
+		a.tasksRepository,
+	)
 	a.faqService = faqS.NewService(
 		a.questionsRepository,
 		a.questionCategoriesRepository,

@@ -31,7 +31,7 @@ func (r *repository) GetByParams(ctx context.Context, params *entity.GetCoursesP
 	if err != nil {
 		return nil, err
 	}
-	var cc courses
+	var cc models
 	if err := pgxscan.Select(ctx, r.db, &cc, query, args...); err != nil {
 		return nil, err
 	}
@@ -39,25 +39,9 @@ func (r *repository) GetByParams(ctx context.Context, params *entity.GetCoursesP
 }
 
 func (r *repository) GetByID(ctx context.Context, id string) (*entity.Course, error) {
-	var c course
+	var c model
 	if err := pgxscan.Get(ctx, r.db, &c, getCourseByIDStmt, id); err != nil {
 		return nil, err
 	}
 	return c.convert()
-}
-
-func (r *repository) GetCategoriesByIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Category, error) {
-	var tt topics
-	if err := pgxscan.Select(ctx, r.db, &tt, getCoursesTopicsByIdsStmt, pq.Array(ids)); err != nil {
-		return nil, err
-	}
-	return tt.convert()
-}
-
-func (r *repository) GetAllCategories(ctx context.Context) ([]*entity.Category, error) {
-	var tt topics
-	if err := pgxscan.Select(ctx, r.db, &tt, getAllTopicsStmt); err != nil {
-		return nil, err
-	}
-	return tt.convert()
 }

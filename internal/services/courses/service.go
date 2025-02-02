@@ -3,7 +3,11 @@ package courses
 import (
 	"context"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"github.com/Rasikrr/learning_platform/internal/repositories/categories"
 	"github.com/Rasikrr/learning_platform/internal/repositories/courses"
+	"github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
+	"github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	"github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 )
@@ -11,16 +15,30 @@ import (
 type Service interface {
 	GetByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetByID(ctx context.Context, id string) (*entity.Course, error)
-	GetAllTopics(ctx context.Context) ([]*entity.Category, error)
+	GetAllCategories(ctx context.Context) ([]*entity.Category, error)
 }
 
 type service struct {
-	coursesRepository courses.Repository
+	coursesRepository    courses.Repository
+	categoriesRepository categories.Repository
+	topicsRepository     topics.Repository
+	quizzesRepository    quizzes.Repository
+	tasksRepository      tasks.Repository
 }
 
-func NewService(coursesRepository courses.Repository) Service {
+func NewService(
+	coursesRepository courses.Repository,
+	categoriesRepository categories.Repository,
+	topicsRepository topics.Repository,
+	quizzesRepository quizzes.Repository,
+	tasksRepository tasks.Repository,
+) Service {
 	return &service{
-		coursesRepository: coursesRepository,
+		coursesRepository:    coursesRepository,
+		categoriesRepository: categoriesRepository,
+		topicsRepository:     topicsRepository,
+		quizzesRepository:    quizzesRepository,
+		tasksRepository:      tasksRepository,
 	}
 }
 
@@ -46,7 +64,7 @@ func (s *service) GetByID(ctx context.Context, id string) (*entity.Course, error
 	return course, nil
 }
 
-func (s *service) GetAllTopics(ctx context.Context) ([]*entity.Category, error) {
+func (s *service) GetAllCategories(ctx context.Context) ([]*entity.Category, error) {
 	return s.coursesRepository.GetAllCategories(ctx)
 }
 

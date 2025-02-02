@@ -10,11 +10,4 @@ const (
 	getCourseByIDStmt = `SELECT id, title, image_url, category_id, description, created_by, created_at, updated_at 
 					FROM courses 
 					WHERE id = $1`
-
-	getCoursesTopicsByIdsStmt = `SELECT id, name, created_by, created_at, updated_at 
-							FROM course_category 
-							WHERE id = ANY ($1)`
-
-	getAllTopicsStmt = `SELECT id, name, created_by, created_at, updated_at 
-					FROM course_category`
 )

@@ -42,3 +42,31 @@ jobs:
 
       - name: Run tests
         run: make tests
+
+  migrate:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs:
+      - lint
+      - test
+
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      POSTGRES_DSN: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}?sslmode=disable
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Migrate
+        run: make migrations_up

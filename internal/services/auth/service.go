@@ -28,6 +28,8 @@ type Service interface {
 	Register(ctx context.Context, email, password, passwordConfirm string) error
 	ConfirmRegister(ctx context.Context, email, code string) (*entity.Auth, error)
 	Login(ctx context.Context, email, password string) (*entity.Auth, error)
+	ResetPassword(ctx context.Context, email, password, passwordConfirm string) error
+	ConfirmResetPassword(ctx context.Context, email, code string) error
 	GenerateCode(ctx context.Context) string
 	CheckToken(ctx context.Context, token string) (*entity.Session, error)
 	RefreshToken(ctx context.Context, token string) (*entity.Auth, error)
@@ -109,6 +111,55 @@ func (s *service) Register(ctx context.Context, email, password, passwordConfirm
 		return err
 	}
 	return nil
+}
+
+func (s *service) ResetPassword(ctx context.Context, email, password, passwordConfirm string) error {
+	if password != passwordConfirm {
+		return errors.New("passwords do not match")
+	}
+	user, err := s.usersRepository.GetByEmail(ctx, email)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+	err = s.validatePassword(ctx, password)
+	if err != nil {
+		return err
+	}
+	code := s.GenerateCode(ctx)
+	err = s.mailClient.Send(ctx, []string{email}, "reset_password", code)
+	if err != nil {
+		return err
+	}
+	if err := s.cache.SetCode(ctx, email, code); err != nil {
+		return err
+	}
+	passHash, err := s.hasher.Hash(password)
+	if err != nil {
+		return err
+	}
+	return s.cache.SetPasswordHash(ctx, email, passHash)
+}
+
+func (s *service) ConfirmResetPassword(ctx context.Context, email, code string) error {
+	codeFromCache, err := s.cache.GetCode(ctx, email)
+	if err != nil {
+		return err
+	}
+	if codeFromCache != code {
+		return errors.New("code is invalid")
+	}
+	passHash, err := s.cache.GetPasswordHash(ctx, email)
+	if err != nil {
+		return err
+	}
+	if err = s.usersRepository.ResetPassword(ctx, email, passHash); err != nil {
+		return err
+	}
+	return nil
+
 }
 
 func (s *service) ConfirmRegister(ctx context.Context, email, code string) (*entity.Auth, error) {

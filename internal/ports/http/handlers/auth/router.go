@@ -22,4 +22,6 @@ func (c *Controller) Init(r *http.ServeMux) {
 	r.HandleFunc("POST /auth/logout", c.logout)
 	r.HandleFunc("POST /auth/confirm", c.confirmRegister)
 	r.HandleFunc("POST /auth/refresh", c.refreshHandler)
+	r.HandleFunc("POST /auth/reset_password", c.resetPassword)
+	r.HandleFunc("POST /auth/confirm_reset_password", c.confirmResetPassword)
 }

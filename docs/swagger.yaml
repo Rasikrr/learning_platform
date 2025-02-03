@@ -1,0 +1,207 @@
+basePath: /api/v1
+definitions:
+  api.EmptySuccessResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  auth.Auth:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  auth.ConfirmRegisterRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    type: object
+  auth.ConfirmResetPasswordRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.RefreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  auth.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      password_confirm:
+        type: string
+    type: object
+  auth.ResetPasswordRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      password_confirm:
+        type: string
+    type: object
+host: api-golang-production-a90c.up.railway.app
+info:
+  contact:
+    email: leaning_platform@gmail.com
+    name: Pick me team
+    url: https://github.com/Rasikrr/learning_platform
+  description: This is docs for Learning Platform API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Learning Platform API
+  version: "1.0"
+paths:
+  /api/v1/auth/confirm:
+    post:
+      consumes:
+      - application/json
+      description: Confirm user registration using confirmation code
+      parameters:
+      - description: user email and confirmation code
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Confirm register
+      tags:
+      - auth
+  /api/v1/auth/confirm_reset_password:
+    post:
+      consumes:
+      - application/json
+      description: Confirm user password reset using confirmation code
+      parameters:
+      - description: user email and confirmation code
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Confirm password reset
+      tags:
+      - auth
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with email and password
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Login user
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh user tokens
+      parameters:
+      - description: user's refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Refresh token
+      tags:
+      - auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user with email and password and confirm password. Then
+        send confirmation code to user email
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Register user
+      tags:
+      - auth
+  /api/v1/auth/reset_password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password with email and password and confirm password.
+        Then send confirmation code to user email
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Reset password
+      tags:
+      - auth
+swagger: "2.0"

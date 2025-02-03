@@ -5,10 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
+	_ "github.com/Rasikrr/learning_platform/docs"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 	"time"
@@ -21,6 +23,20 @@ const (
 	writeTimeout = time.Second * 60
 )
 
+// @title Learning Platform API
+// @version 1.0
+// @description This is docs for Learning Platform API
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Pick me team
+// @contact.url https://github.com/Rasikrr/learning_platform
+// @contact.email leaning_platform@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host api-golang-production-a90c.up.railway.app
+// @BasePath /api/v1
 type Server struct {
 	name string
 	port string
@@ -47,16 +63,27 @@ func NewServer(
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
 	}
-	return &Server{
+
+	s := &Server{
 		name: name,
 		port: cfg.Server.Port,
 		host: cfg.Server.Host,
 		srv:  srv,
 	}
+	s.initSwagger(router)
+	return s
 }
 
 func address(host, port string) string {
 	return fmt.Sprintf("%s:%s", host, port)
+}
+
+func (s *Server) initSwagger(router *http.ServeMux) {
+	hostPort := fmt.Sprintf("%s:%s", s.host, s.port)
+	url := fmt.Sprintf("http://%s/swagger/doc.json", hostPort)
+	router.Handle("/swagger/",
+		httpSwagger.Handler(httpSwagger.URL(url)),
+	)
 }
 
 func (s *Server) Start() error {

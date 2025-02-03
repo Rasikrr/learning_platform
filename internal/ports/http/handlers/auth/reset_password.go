@@ -5,6 +5,14 @@ import (
 	"net/http"
 )
 
+// @Summary Reset password
+// @Description Reset user password with email and password and confirm password. Then send confirmation code to user email
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body ResetPasswordRequest true "user credentials"
+// @Success 200 {object} api.EmptySuccessResponse "Success"
+// @Router /api/v1/auth/reset_password [post]
 func (c *Controller) resetPassword(w http.ResponseWriter, r *http.Request) {
 	var req ResetPasswordRequest
 	if err := api.GetData(r, &req); err != nil {

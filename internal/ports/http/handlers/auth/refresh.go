@@ -5,6 +5,14 @@ import (
 	"net/http"
 )
 
+// @Summary Refresh token
+// @Description Refresh user tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body RefreshRequest true "user's refresh token"
+// @Success 200 {object} Auth "Success"
+// @Router /api/v1/auth/refresh [post]
 func (c *Controller) refreshHandler(w http.ResponseWriter, r *http.Request) {
 	var req RefreshRequest
 

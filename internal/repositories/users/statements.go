@@ -1,5 +1,6 @@
 package users
 
+// nolint: gosec
 const (
 	getByEmailStmt = `SELECT id, name, last_name, email, password, account_role, created_at, updated_at, deleted_at
 						FROM users WHERE email = $1`

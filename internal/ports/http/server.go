@@ -1,5 +1,6 @@
 package http
 
+// nolint: revive
 import (
 	"context"
 	"errors"

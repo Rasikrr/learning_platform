@@ -159,7 +159,6 @@ func (s *service) ConfirmResetPassword(ctx context.Context, email, code string) 
 		return err
 	}
 	return nil
-
 }
 
 func (s *service) ConfirmRegister(ctx context.Context, email, code string) (*entity.Auth, error) {

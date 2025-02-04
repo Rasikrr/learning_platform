@@ -10,6 +10,7 @@ import (
 
 type Service interface {
 	PostQuestion(ctx context.Context, question *entity.Question) error
+	PostAnswer(ctx context.Context, answer *entity.Answer) error
 }
 
 type service struct {
@@ -35,7 +36,18 @@ func (s *service) PostQuestion(ctx context.Context, question *entity.Question) e
 	if err != nil {
 		return err
 	}
-	if err := s.questionsRepository.Create(ctx, question); err != nil {
+	if err = s.questionsRepository.Create(ctx, question); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *service) PostAnswer(ctx context.Context, answer *entity.Answer) error {
+	_, err := s.questionsRepository.GetByID(ctx, answer.Question.ID)
+	if err != nil {
+		return err
+	}
+	if err = s.answersRepository.Create(ctx, answer); err != nil {
 		return err
 	}
 	return nil

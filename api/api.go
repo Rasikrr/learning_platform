@@ -77,3 +77,11 @@ func GetSession(ctx context.Context) (*entity.Session, error) {
 	}
 	return s, nil
 }
+
+func GetUserFromSession(session *entity.Session) *entity.User {
+	return &entity.User{
+		ID:          session.UserID,
+		Email:       session.Email,
+		AccountRole: session.Role,
+	}
+}

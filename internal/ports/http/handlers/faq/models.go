@@ -2,6 +2,7 @@ package faq
 
 import (
 	"errors"
+	"github.com/Rasikrr/learning_platform/api"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/google/uuid"
 	"time"
@@ -9,13 +10,49 @@ import (
 
 //go:generate easyjson -all models.go
 
+type postAnswerRequest struct {
+	QuestionID string `json:"question_id"`
+	Body       string `json:"body"`
+}
+
 type postQuestionRequest struct {
 	Title      string `json:"title"`
 	Body       string `json:"body"`
 	CategoryID string `json:"category_id"`
 }
 
-func (r *postQuestionRequest) Validate() error {
+func (r postAnswerRequest) Validate() error {
+	if len(r.Body) == 0 {
+		return errors.New("body is required")
+	}
+	_, err := uuid.Parse(r.QuestionID)
+	if err != nil {
+		return errors.New("invalid question_id")
+	}
+	return nil
+}
+
+func (r postAnswerRequest) ToEntity(session *entity.Session) (*entity.Answer, error) {
+	if err := r.Validate(); err != nil {
+		return nil, err
+	}
+	questionID, err := uuid.Parse(r.QuestionID)
+	if err != nil {
+		return nil, errors.New("invalid question_id")
+	}
+	question := &entity.Question{
+		ID: questionID,
+	}
+	answer := &entity.Answer{
+		ID:       uuid.New(),
+		Question: question,
+		Body:     r.Body,
+		Author:   api.GetUserFromSession(session),
+	}
+	return answer, nil
+}
+
+func (r postQuestionRequest) Validate() error {
 	if len(r.Title) == 0 {
 		return errors.New("title is required")
 	}
@@ -29,7 +66,7 @@ func (r *postQuestionRequest) Validate() error {
 	return nil
 }
 
-func (r *postQuestionRequest) ToEntity(session *entity.Session) (*entity.Question, error) {
+func (r postQuestionRequest) ToEntity(session *entity.Session) (*entity.Question, error) {
 	if err := r.Validate(); err != nil {
 		return nil, err
 	}
@@ -40,15 +77,10 @@ func (r *postQuestionRequest) ToEntity(session *entity.Session) (*entity.Questio
 	category := &entity.QuestionCategory{
 		ID: categoryID,
 	}
-	user := &entity.User{
-		ID:          session.UserID,
-		Email:       session.Email,
-		AccountRole: session.Role,
-	}
 	return &entity.Question{
 		ID:        uuid.New(),
 		Category:  category,
-		Author:    user,
+		Author:    api.GetUserFromSession(session),
 		Title:     r.Title,
 		Body:      r.Body,
 		CreatedAt: time.Now(),

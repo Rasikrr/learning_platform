@@ -2,7 +2,6 @@ package faq
 
 import (
 	"context"
-	"errors"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
 	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
@@ -32,12 +31,9 @@ func NewService(
 }
 
 func (s *service) PostQuestion(ctx context.Context, question *entity.Question) error {
-	category, err := s.categoriesRepository.GetByID(ctx, question.ID)
+	_, err := s.categoriesRepository.GetByID(ctx, question.Category.ID)
 	if err != nil {
 		return err
-	}
-	if category == nil {
-		return errors.New("category not found")
 	}
 	if err := s.questionsRepository.Create(ctx, question); err != nil {
 		return err

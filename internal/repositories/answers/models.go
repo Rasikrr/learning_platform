@@ -1,3 +1,4 @@
+// nolint: unused
 package answers
 
 import (
@@ -18,16 +19,16 @@ type model struct {
 type models []model
 
 func (m model) convert() (*entity.Answer, error) {
-	question := entity.Question{
+	question := &entity.Question{
 		ID: m.QuestionID,
 	}
-	user := entity.User{
+	user := &entity.User{
 		ID: m.UserID,
 	}
 	return &entity.Answer{
 		ID:        m.ID,
-		Author:    &user,
-		Question:  &question,
+		Author:    user,
+		Question:  question,
 		Body:      m.Body,
 		CreatedAt: m.CreatedAt,
 		UpdatedAt: m.UpdatedAt,

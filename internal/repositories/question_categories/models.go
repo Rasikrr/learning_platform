@@ -1,3 +1,4 @@
+// nolint: revive, stylecheck, unused
 package question_categories
 
 import (

@@ -3,14 +3,14 @@ package http
 // nolint: revive
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
-	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
@@ -48,13 +48,22 @@ type Server struct {
 func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
+	faqService faqS.Service,
 ) *Server {
-	// authMiddleware := middlewares.NewAuthMiddleware(authService)
-
-	authController := auth.NewController(authService)
 	router := http.NewServeMux()
-	authController.Init(router)
 
+	// Middlewares
+	authMiddleware := middlewares.NewAuthMiddleware(authService)
+
+	// Controllers
+	faqController := faq.NewController(authMiddleware, faqService)
+	authController := auth.NewController(authService)
+
+	// Init controllers
+	authController.Init(router)
+	faqController.Init(router)
+
+	// CORS
 	routerWithCORS := middlewares.CORSMiddleware(router)
 
 	srv := &http.Server{
@@ -97,16 +106,4 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return err
 	}
 	return nil
-}
-
-func GetSession(ctx context.Context) (*entity.Session, error) {
-	token := ctx.Value(middlewares.SessionKey)
-	if token == nil {
-		return nil, errors.New("session is empty")
-	}
-	s, ok := token.(*entity.Session)
-	if !ok {
-		return nil, errors.New("session is not Session")
-	}
-	return s, nil
 }

@@ -47,5 +47,6 @@ func (c *client) ExecuteCode(ctx context.Context, code string) (*ExecuteResponse
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		return nil, err
 	}
+
 	return &out, nil
 }

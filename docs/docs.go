@@ -227,6 +227,183 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/courses": {
+            "get": {
+                "description": "Get courses for catalog",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get courses",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/queries.getCoursesListRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queries.getCoursesListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/categories": {
+            "get": {
+                "description": "Register user with email and password and confirm password. Then send confirmation code to user email",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get courses categories",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queries.getCategoriesListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/topic/{id}/content": {
+            "get": {
+                "description": "Get course topic content by topic id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get course topic content",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/entity.TopicContent"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/topic/{id}/quizzes": {
+            "get": {
+                "description": "get quizzes list by topic id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "get quizzes by topic id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Quiz"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/topic/{id}/tasks/{order}": {
+            "get": {
+                "description": "Get course topic tasks by topic id and. Also you must pass task order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get course topic tasks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "order",
+                        "name": "order",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PracticalTask"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{id}": {
+            "get": {
+                "description": "Get detailed course info with topics by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get course by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queries.getCourseDetailedResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -314,6 +491,252 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.PracticalTask": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "difficulty_level": {
+                    "$ref": "#/definitions/enum.Difficulty"
+                },
+                "expected_output": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order_number": {
+                    "type": "integer"
+                },
+                "starter_code": {
+                    "type": "string"
+                },
+                "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Quiz": {
+            "type": "object",
+            "properties": {
+                "correct_answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "boolean"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "multiple_choice": {
+                    "type": "boolean"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "question": {
+                    "type": "string"
+                },
+                "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.TopicContent": {
+            "type": "object",
+            "properties": {
+                "additional_resources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "video_urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "enum.Difficulty": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "DifficultyEasy",
+                "DifficultyMedium",
+                "DifficultyHard"
+            ]
+        },
+        "queries.category": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "queries.getCategoriesListResponse": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/queries.category"
+                    }
+                }
+            }
+        },
+        "queries.getCourseDetailedResponse": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "$ref": "#/definitions/queries.getCourseResponse"
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/queries.topic"
+                    }
+                }
+            }
+        },
+        "queries.getCourseResponse": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "$ref": "#/definitions/queries.category"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "queries.getCoursesListRequest": {
+            "type": "object",
+            "properties": {
+                "categories_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                }
+            }
+        },
+        "queries.getCoursesListResponse": {
+            "type": "object",
+            "properties": {
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/queries.getCourseResponse"
+                    }
+                }
+            }
+        },
+        "queries.topic": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order_number": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

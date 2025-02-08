@@ -7,12 +7,17 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	"io"
+	"log"
 	"net/http"
 )
 
 type ErrorResponse struct {
 	Error  string `json:"error"`
 	Status int    `json:"status"`
+}
+
+type ParametersGetter interface {
+	GetParameters(r *http.Request) error
 }
 
 // nolint: errcheck
@@ -39,19 +44,26 @@ func SendData(w http.ResponseWriter, data interface{}, statusCode int) {
 }
 
 func GetData(r *http.Request, data interface{}) error {
+	params, ok := data.(ParametersGetter)
+	if ok {
+		if err := params.GetParameters(r); err != nil {
+			return err
+		}
+	}
+	log.Println(params)
 	defer r.Body.Close()
 	bb, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
 	if len(bb) > 0 {
+		log.Println(bb)
 		unmarshaller, ok := data.(json.Unmarshaler)
 		if ok {
 			return unmarshaller.UnmarshalJSON(bb)
 		}
-		// TODO: get data from query params
 	}
-	return json.Unmarshal(bb, data)
+	return nil
 }
 
 // nolint: errcheck

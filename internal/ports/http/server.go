@@ -7,11 +7,16 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/queries"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/enrollments"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
+	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	httpSwagger "github.com/swaggo/http-swagger"
+
 	"log"
 	"net/http"
 	"time"
@@ -48,6 +53,8 @@ type Server struct {
 func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
+	courseService coursesS.Service,
+	enrollmentsService enrollmentsS.Service,
 	faqService faqS.Service,
 ) *Server {
 	router := http.NewServeMux()
@@ -58,10 +65,14 @@ func NewServer(
 	// Controllers
 	faqController := faq.NewController(authMiddleware, faqService)
 	authController := auth.NewController(authService)
+	coursesController := queries.NewController(courseService)
+	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
 
 	// Init controllers
+	coursesController.Init(router)
 	authController.Init(router)
 	faqController.Init(router)
+	enrollmentsController.Init(router)
 
 	// CORS
 	routerWithCORS := middlewares.CORSMiddleware(router)

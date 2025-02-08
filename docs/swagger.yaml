@@ -56,6 +56,168 @@ definitions:
       password_confirm:
         type: string
     type: object
+  entity.PracticalTask:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      difficulty_level:
+        $ref: '#/definitions/enum.Difficulty'
+      expected_output:
+        type: string
+      id:
+        type: string
+      order_number:
+        type: integer
+      starter_code:
+        type: string
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Quiz:
+    properties:
+      correct_answers:
+        items:
+          type: boolean
+        type: array
+      created_at:
+        type: string
+      id:
+        type: string
+      multiple_choice:
+        type: boolean
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.TopicContent:
+    properties:
+      additional_resources:
+        items:
+          type: string
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      image_urls:
+        items:
+          type: string
+        type: array
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+      video_urls:
+        items:
+          type: string
+        type: array
+    type: object
+  enum.Difficulty:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - DifficultyEasy
+    - DifficultyMedium
+    - DifficultyHard
+  queries.category:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  queries.getCategoriesListResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/queries.category'
+        type: array
+    type: object
+  queries.getCourseDetailedResponse:
+    properties:
+      course:
+        $ref: '#/definitions/queries.getCourseResponse'
+      topics:
+        items:
+          $ref: '#/definitions/queries.topic'
+        type: array
+    type: object
+  queries.getCourseResponse:
+    properties:
+      category:
+        $ref: '#/definitions/queries.category'
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  queries.getCoursesListRequest:
+    properties:
+      categories_ids:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  queries.getCoursesListResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/queries.getCourseResponse'
+        type: array
+    type: object
+  queries.topic:
+    properties:
+      course_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      order_number:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: api-golang-production-a90c.up.railway.app
 info:
   contact:
@@ -204,4 +366,122 @@ paths:
       summary: Reset password
       tags:
       - auth
+  /api/v1/courses:
+    get:
+      description: Get courses for catalog
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/queries.getCoursesListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCoursesListResponse'
+      summary: Get courses
+      tags:
+      - courses
+  /api/v1/courses/{id}:
+    get:
+      description: Get detailed course info with topics by id
+      parameters:
+      - description: course id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCourseDetailedResponse'
+      summary: Get course by id
+      tags:
+      - courses
+  /api/v1/courses/categories:
+    get:
+      description: Register user with email and password and confirm password. Then
+        send confirmation code to user email
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCategoriesListResponse'
+      summary: Get courses categories
+      tags:
+      - courses
+  /api/v1/courses/topic/{id}/content:
+    get:
+      description: Get course topic content by topic id
+      parameters:
+      - description: topic id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.TopicContent'
+      summary: Get course topic content
+      tags:
+      - courses
+  /api/v1/courses/topic/{id}/quizzes:
+    get:
+      description: get quizzes list by topic id
+      parameters:
+      - description: topic id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/entity.Quiz'
+            type: array
+      summary: get quizzes by topic id
+      tags:
+      - courses
+  /api/v1/courses/topic/{id}/tasks/{order}:
+    get:
+      description: Get course topic tasks by topic id and. Also you must pass task
+        order
+      parameters:
+      - description: topic id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: order
+        in: path
+        name: order
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.PracticalTask'
+      summary: Get course topic tasks
+      tags:
+      - courses
 swagger: "2.0"

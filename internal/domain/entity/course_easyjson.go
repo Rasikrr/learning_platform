@@ -277,7 +277,7 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				}
 				(*out.Content).UnmarshalEasyJSON(in)
 			}
-		case "quizzes":
+		case "submissions":
 			if in.IsNull() {
 				in.Skip()
 				out.Quizzes = nil
@@ -389,7 +389,7 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		(*in.Content).MarshalEasyJSON(out)
 	}
 	if len(in.Quizzes) != 0 {
-		const prefix string = ",\"quizzes\":"
+		const prefix string = ",\"submissions\":"
 		out.RawString(prefix)
 		{
 			out.RawByte('[')

@@ -327,21 +327,21 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/quizzes": {
+        "/api/v1/courses/topic/submissions": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "get quizzes list by topic id",
+                "description": "get submissions list by topic id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "courses"
                 ],
-                "summary": "get quizzes by topic id",
+                "summary": "get submissions by topic id",
                 "parameters": [
                     {
                         "type": "string",

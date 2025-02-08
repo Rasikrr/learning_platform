@@ -34,7 +34,7 @@ type Topic struct {
 	Title          string           `json:"title"`
 	Description    string           `json:"description"`
 	Content        *TopicContent    `json:"content,omitempty"`
-	Quizzes        []*Quiz          `json:"quizzes,omitempty"`
+	Quizzes        []*Quiz          `json:"submissions,omitempty"`
 	PracticalTasks []*PracticalTask `json:"practical_tasks,omitempty"`
 	OrderNumber    int              `json:"order_number"`
 	CreatedAt      time.Time        `json:"created_at"`

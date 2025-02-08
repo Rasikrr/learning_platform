@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// @Summary get quizzes by topic id
-// @Description get quizzes list by topic id
+// @Summary get submissions by topic id
+// @Description get submissions list by topic id
 // @Tags courses
 // @Produce json
 // @Security     BearerAuth
@@ -14,7 +14,7 @@ import (
 // @Param course_id query string true "course id"
 // @Param topic_id query string true "topic id"
 // @Success 200 {object} []entity.Quiz "Success"
-// @Router /api/v1/courses/topic/quizzes [get]
+// @Router /api/v1/courses/topic/submissions [get]
 func (c *Controller) getCourseTopicQuizzes(w http.ResponseWriter, r *http.Request) {
 	var req getTopicQuizzesRequest
 	if err := api.GetData(r, &req); err != nil {

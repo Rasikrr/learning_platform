@@ -452,7 +452,7 @@ paths:
       - courses
   /api/v1/courses/topic/quizzes:
     get:
-      description: get quizzes list by topic id
+      description: get submissions list by topic id
       parameters:
       - description: Authorization token
         in: header
@@ -480,7 +480,7 @@ paths:
             type: array
       security:
       - BearerAuth: []
-      summary: get quizzes by topic id
+      summary: get submissions by topic id
       tags:
       - courses
   /api/v1/courses/topic/tasks:

@@ -16,6 +16,7 @@ import (
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"log"
@@ -60,20 +61,21 @@ func NewServer(
 	authService authS.Service,
 	courseService coursesS.Service,
 	enrollmentsService enrollmentsS.Service,
+	submissionsService submissionS.Service,
 	faqService faqS.Service,
 ) *Server {
 	router := http.NewServeMux()
 
 	// Middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
-	enrollementMiddleware := middlewares.NewEnrollMiddleware(enrollmentsService)
+	enrollmentMiddleware := middlewares.NewEnrollMiddleware(enrollmentsService)
 
 	// Controllers
 	faqController := faq.NewController(authMiddleware, faqService)
 	authController := auth.NewController(authService)
-	coursesQueriesController := queries.NewController(courseService, authMiddleware, enrollementMiddleware)
+	coursesQueriesController := queries.NewController(courseService, authMiddleware, enrollmentMiddleware)
 	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
-	courseCommandsController := commands.NewController(courseService, authMiddleware, enrollmentsService)
+	courseCommandsController := commands.NewController(courseService, authMiddleware, submissionsService, enrollmentsService)
 
 	// Init controllers
 	coursesQueriesController.Init(router)
@@ -83,11 +85,12 @@ func NewServer(
 	courseCommandsController.Init(router)
 
 	// CORS
-	routerWithCORS := middlewares.CORSMiddleware(router)
+	r := middlewares.CORSMiddleware(router)
+	r = middlewares.PanicHandler(r)
 
 	srv := &http.Server{
 		Addr:         address(cfg.Server.Host, cfg.Server.Port),
-		Handler:      routerWithCORS,
+		Handler:      r,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,

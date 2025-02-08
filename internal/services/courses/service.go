@@ -22,8 +22,6 @@ type Service interface {
 	GetQuizzesByTopicID(ctx context.Context, topicID string) ([]*entity.Quiz, error)
 
 	GetTasksByTopicIDAndOrderNum(ctx context.Context, topicID string, order int) (*entity.PracticalTask, error)
-
-	SubmitQuiz(ctx context.Context, courseID string, topicID string, answers []*entity.AnswerQuiz) error
 }
 
 type service struct {

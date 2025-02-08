@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/commands"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/queries"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/enrollments"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
@@ -65,18 +66,21 @@ func NewServer(
 
 	// Middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
+	enrollementMiddleware := middlewares.NewEnrollMiddleware(enrollmentsService)
 
 	// Controllers
 	faqController := faq.NewController(authMiddleware, faqService)
 	authController := auth.NewController(authService)
-	coursesController := queries.NewController(courseService, enrollmentsService, authMiddleware)
+	coursesQueriesController := queries.NewController(courseService, authMiddleware, enrollementMiddleware)
 	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
+	courseCommandsController := commands.NewController(courseService, authMiddleware, enrollmentsService)
 
 	// Init controllers
-	coursesController.Init(router)
+	coursesQueriesController.Init(router)
 	authController.Init(router)
 	faqController.Init(router)
 	enrollmentsController.Init(router)
+	courseCommandsController.Init(router)
 
 	// CORS
 	routerWithCORS := middlewares.CORSMiddleware(router)

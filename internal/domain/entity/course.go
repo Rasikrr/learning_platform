@@ -74,3 +74,8 @@ type PracticalTask struct {
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }
+
+type AnswerQuiz struct {
+	QuestionID string `json:"question_id"`
+	Answer     []bool `json:"answer"`
+}

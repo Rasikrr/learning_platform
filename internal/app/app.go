@@ -18,6 +18,7 @@ import (
 	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
 	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
 	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
+	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
 	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
 	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
@@ -25,6 +26,7 @@ import (
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	"github.com/hashicorp/go-multierror"
@@ -48,14 +50,15 @@ type App struct {
 
 	workers []workers.Worker
 
-	usersRepository       usersR.Repository
-	courseRepository      coursesR.Repository
-	categoriesRepository  categoriesR.Repository
-	quizzesRepository     quizzesR.Repository
-	topicsRepository      topicsR.Repository
-	tasksRepository       tasksR.Repository
-	contentRepository     contentR.Repository
-	enrollmentsRepository enrollmentsR.Repository
+	usersRepository             usersR.Repository
+	courseRepository            coursesR.Repository
+	categoriesRepository        categoriesR.Repository
+	quizzesRepository           quizzesR.Repository
+	topicsRepository            topicsR.Repository
+	tasksRepository             tasksR.Repository
+	contentRepository           contentR.Repository
+	enrollmentsRepository       enrollmentsR.Repository
+	quizzesSubmissionRepository quizzesSubmissionsR.Repository
 
 	answersRepository            answers.Repository
 	questionsRepository          question.Repository
@@ -72,6 +75,7 @@ type App struct {
 	courseService      coursesS.Service
 	enrollmentsService enrollmentsS.Service
 	faqService         faqS.Service
+	submissionsService submissionS.Service
 
 	httpServer *http.Server
 }
@@ -116,6 +120,7 @@ func (a *App) InitRepositories(_ context.Context) error {
 	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
 	a.contentRepository = contentR.NewRepository(a.postgres)
 	a.enrollmentsRepository = enrollmentsR.NewRepository(a.postgres)
+	a.quizzesSubmissionRepository = quizzesSubmissionsR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -179,6 +184,11 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.contentRepository,
 	)
+
+	a.submissionsService = submissionS.NewService(
+		a.quizzesRepository,
+		a.quizzesSubmissionRepository,
+	)
 	return nil
 }
 
@@ -188,6 +198,7 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.authService,
 		a.courseService,
 		a.enrollmentsService,
+		a.submissionsService,
 		a.faqService,
 	)
 	return nil

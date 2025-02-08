@@ -34,7 +34,7 @@ type Topic struct {
 	Title          string           `json:"title"`
 	Description    string           `json:"description"`
 	Content        *TopicContent    `json:"content,omitempty"`
-	Quizzes        []*Quiz          `json:"quizzes,omitempty"`
+	Quizzes        []*Quiz          `json:"submissions,omitempty"`
 	PracticalTasks []*PracticalTask `json:"practical_tasks,omitempty"`
 	OrderNumber    int              `json:"order_number"`
 	CreatedAt      time.Time        `json:"created_at"`
@@ -73,4 +73,9 @@ type PracticalTask struct {
 	OrderNumber     int             `json:"order_number"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
+}
+
+type AnswerQuiz struct {
+	QuestionID string `json:"question_id"`
+	Answer     []bool `json:"answer"`
 }

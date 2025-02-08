@@ -1,12 +1,34 @@
 package queries
 
 import (
+	"errors"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/samber/lo"
+	"net/http"
+	"strconv"
 	"time"
 )
 
 //go:generate easyjson -all models.go
+
+var (
+	errCourseOrTopicIDEmpty = errors.New("course_id or topic_id is empty")
+)
+
+type getTopicContentRequest struct {
+	getTopicQuizzesRequest
+}
+
+type getTopicQuizzesRequest struct {
+	CourseID string
+	TopicID  string
+}
+
+type getTopicTasksRequest struct {
+	CourseID string
+	TopicID  string
+	Order    int
+}
 
 type getCoursesListRequest struct {
 	Limit         int      `json:"limit"`
@@ -129,4 +151,27 @@ func (r *getCoursesListRequest) toParams() *entity.GetCoursesParams {
 		Offset:        r.Offset,
 		CategoriesIDs: r.CategoriesIDs,
 	}
+}
+
+func (req *getTopicQuizzesRequest) GetParameters(r *http.Request) error {
+	req.CourseID = r.URL.Query().Get("course_id")
+	req.TopicID = r.URL.Query().Get("topic_id")
+	if req.CourseID == "" || req.TopicID == "" {
+		return errCourseOrTopicIDEmpty
+	}
+	return nil
+}
+
+func (req *getTopicTasksRequest) GetParameters(r *http.Request) error {
+	var err error
+	req.CourseID = r.URL.Query().Get("course_id")
+	req.TopicID = r.URL.Query().Get("topic_id")
+	req.Order, err = strconv.Atoi(r.URL.Query().Get("order"))
+	if err != nil {
+		return err
+	}
+	if req.CourseID == "" || req.TopicID == "" {
+		return errCourseOrTopicIDEmpty
+	}
+	return nil
 }

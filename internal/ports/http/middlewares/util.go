@@ -1,7 +1,10 @@
 package middlewares
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"net/http"
 )
 
@@ -20,4 +23,16 @@ func SendError(w http.ResponseWriter, statusCode int, err error) {
 	}
 	bb, _ := json.Marshal(r)
 	w.Write(bb)
+}
+
+func GetSession(ctx context.Context) (*entity.Session, error) {
+	token := ctx.Value(SessionKey)
+	if token == nil {
+		return nil, errors.New("session is empty")
+	}
+	s, ok := token.(*entity.Session)
+	if !ok {
+		return nil, errors.New("session is not Session")
+	}
+	return s, nil
 }

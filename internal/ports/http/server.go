@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/commands"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/queries"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/enrollments"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
@@ -15,6 +16,7 @@ import (
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"log"
@@ -41,8 +43,12 @@ const (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host api-golang-production-a90c.up.railway.app
-// @BasePath /api/v1
+// @host localhost:8081
+// @BasePath /
+
+// Server @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 type Server struct {
 	name string
 	port string
@@ -55,31 +61,36 @@ func NewServer(
 	authService authS.Service,
 	courseService coursesS.Service,
 	enrollmentsService enrollmentsS.Service,
+	submissionsService submissionS.Service,
 	faqService faqS.Service,
 ) *Server {
 	router := http.NewServeMux()
 
 	// Middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
+	enrollmentMiddleware := middlewares.NewEnrollMiddleware(enrollmentsService)
 
 	// Controllers
 	faqController := faq.NewController(authMiddleware, faqService)
 	authController := auth.NewController(authService)
-	coursesController := queries.NewController(courseService)
+	coursesQueriesController := queries.NewController(courseService, authMiddleware, enrollmentMiddleware)
 	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
+	courseCommandsController := commands.NewController(courseService, authMiddleware, submissionsService, enrollmentsService)
 
 	// Init controllers
-	coursesController.Init(router)
+	coursesQueriesController.Init(router)
 	authController.Init(router)
 	faqController.Init(router)
 	enrollmentsController.Init(router)
+	courseCommandsController.Init(router)
 
 	// CORS
-	routerWithCORS := middlewares.CORSMiddleware(router)
+	r := middlewares.CORSMiddleware(router)
+	r = middlewares.PanicHandler(r)
 
 	srv := &http.Server{
 		Addr:         address(cfg.Server.Host, cfg.Server.Port),
-		Handler:      routerWithCORS,
+		Handler:      r,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,

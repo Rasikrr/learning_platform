@@ -1,7 +1,6 @@
 package queries
 
 import (
-	"errors"
 	"github.com/Rasikrr/learning_platform/api"
 	"net/http"
 )
@@ -10,17 +9,21 @@ import (
 // @Description Get course topic content by topic id
 // @Tags courses
 // @Produce json
-// @Param id path string true "topic id"
+// @Security     BearerAuth
+// @param Authorization header string true "Authorization token"
+// @Param course_id query string true "course id"
+// @Param topic_id query string true "topic id"
 // @Success 200 {object} entity.TopicContent "Success"
-// @Router /api/v1/courses/topic/{id}/content [get]
+// @Router /api/v1/courses/topic/content [get]
 func (c *Controller) getCourseTopicContent(w http.ResponseWriter, r *http.Request) {
-	topicID := r.PathValue("id")
-	if topicID == "" {
-		api.SendError(w, http.StatusBadRequest, errors.New("topic id is empty"))
+	var req getTopicContentRequest
+	if err := api.GetData(r, &req); err != nil {
+		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
 	ctx := r.Context()
-	content, err := c.coursesService.GetContentByTopicID(ctx, topicID)
+
+	content, err := c.coursesService.GetContentByTopicID(ctx, req.TopicID)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return

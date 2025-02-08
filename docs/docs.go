@@ -229,7 +229,7 @@ const docTemplate = `{
             }
         },
         "/api/v1/courses": {
-            "get": {
+            "post": {
                 "description": "Get courses for catalog",
                 "produces": [
                     "application/json"
@@ -279,8 +279,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/{id}/content": {
+        "/api/v1/courses/topic/content": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get course topic content by topic id",
                 "produces": [
                     "application/json"
@@ -292,9 +297,23 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "topic id",
-                        "name": "id",
-                        "in": "path",
+                        "name": "topic_id",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -308,22 +327,41 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/{id}/quizzes": {
+        "/api/v1/courses/topic/submissions": {
             "get": {
-                "description": "get quizzes list by topic id",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get submissions list by topic id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "courses"
                 ],
-                "summary": "get quizzes by topic id",
+                "summary": "get submissions by topic id",
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "topic id",
-                        "name": "id",
-                        "in": "path",
+                        "name": "topic_id",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -340,8 +378,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/{id}/tasks/{order}": {
+        "/api/v1/courses/topic/tasks": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get course topic tasks by topic id and. Also you must pass task order",
                 "produces": [
                     "application/json"
@@ -353,16 +396,30 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "topic id",
-                        "name": "id",
-                        "in": "path",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "order",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "number of task",
                         "name": "order",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -747,8 +804,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "api-golang-production-a90c.up.railway.app",
-	BasePath:         "/api/v1",
+	Host:             "localhost:8081",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Learning Platform API",
 	Description:      "This is docs for Learning Platform API",

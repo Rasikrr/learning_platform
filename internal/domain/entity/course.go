@@ -58,6 +58,7 @@ type Quiz struct {
 	Question       string    `json:"question"`
 	Options        []string  `json:"options"`
 	CorrectAnswers []bool    `json:"correct_answers"`
+	MultipleChoice bool      `json:"multiple_choice"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }

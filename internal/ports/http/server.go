@@ -3,7 +3,6 @@ package http
 // nolint: revive
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/Rasikrr/learning_platform/configs"
 	_ "github.com/Rasikrr/learning_platform/docs"
@@ -11,11 +10,13 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/queries"
+	commands "github.com/Rasikrr/learning_platform/internal/ports/http/handlers/enrollments"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	httpSwagger "github.com/swaggo/http-swagger"
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
+	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 
 	"log"
 	"net/http"
@@ -54,8 +55,11 @@ func NewServer(
 	cfg *configs.Config,
 	authService authS.Service,
 	courseService coursesS.Service,
+	enrollmentsService enrollmentsS.Service,
 	faqService faqS.Service,
 ) *Server {
+	authMiddleware := middlewares.NewAuthMiddleware(authService)
+
 	router := http.NewServeMux()
 
 	// Middlewares
@@ -75,6 +79,9 @@ func NewServer(
 	coursesController := courses.NewController(courseService)
 	coursesController := queries.NewController(courseService)
 	coursesController.Init(router)
+
+	enrollmentsController := commands.NewController(enrollmentsService, authMiddleware)
+	enrollmentsController.Init(router)
 
 	routerWithCORS := middlewares.CORSMiddleware(router)
 

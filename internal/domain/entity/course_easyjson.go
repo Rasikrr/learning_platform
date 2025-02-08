@@ -540,6 +540,8 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2
 				}
 				in.Delim(']')
 			}
+		case "multiple_choice":
+			out.MultipleChoice = bool(in.Bool())
 		case "created_at":
 			if data := in.Raw(); in.Ok() {
 				in.AddError((out.CreatedAt).UnmarshalJSON(data))
@@ -608,6 +610,11 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2
 			}
 			out.RawByte(']')
 		}
+	}
+	{
+		const prefix string = ",\"multiple_choice\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.MultipleChoice))
 	}
 	{
 		const prefix string = ",\"created_at\":"

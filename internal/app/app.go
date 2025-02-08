@@ -13,6 +13,7 @@ import (
 	categoriesR "github.com/Rasikrr/learning_platform/internal/repositories/categories"
 	contentR "github.com/Rasikrr/learning_platform/internal/repositories/content"
 	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
+	enrollmentsR "github.com/Rasikrr/learning_platform/internal/repositories/enrollments"
 	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
 	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
@@ -22,6 +23,7 @@ import (
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
+	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
@@ -46,13 +48,14 @@ type App struct {
 
 	workers []workers.Worker
 
-	usersRepository      usersR.Repository
-	courseRepository     coursesR.Repository
-	categoriesRepository categoriesR.Repository
-	quizzesRepository    quizzesR.Repository
-	topicsRepository     topicsR.Repository
-	tasksRepository      tasksR.Repository
-	contentRepository    contentR.Repository
+	usersRepository       usersR.Repository
+	courseRepository      coursesR.Repository
+	categoriesRepository  categoriesR.Repository
+	quizzesRepository     quizzesR.Repository
+	topicsRepository      topicsR.Repository
+	tasksRepository       tasksR.Repository
+	contentRepository     contentR.Repository
+	enrollmentsRepository enrollmentsR.Repository
 
 
 	answersRepository            answers.Repository
@@ -65,6 +68,13 @@ type App struct {
 	authCache   authC.Cache
 	hasher      util.Hasher
 
+	mailClient mail.Client
+
+	authService        authS.Service
+	courseService      coursesS.Service
+	enrollmentsService enrollmentsS.Service
+
+	httpServer *http.Server
 	mailClient  mail.Client
 	authService authS.Service
 	faqService  faqS.Service
@@ -111,6 +121,7 @@ func (a *App) InitRepositories(_ context.Context) error {
 	a.questionsRepository = question.NewRepository(a.postgres)
 	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
 	a.contentRepository = contentR.NewRepository(a.postgres)
+	a.enrollmentsRepository = enrollmentsR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -155,6 +166,11 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.contentRepository,
 	)
+
+	a.enrollmentsService = enrollmentsS.NewService(
+		a.courseRepository,
+		a.enrollmentsRepository,
+	)
 	a.faqService = faqS.NewService(
 		a.questionsRepository,
 		a.questionCategoriesRepository,
@@ -166,7 +182,12 @@ func (a *App) InitServices(_ context.Context) error {
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(&a.config, a.authService, a.courseService)
+	a.httpServer = http.NewServer(
+		&a.config,
+		a.authService,
+		a.courseService,
+		a.enrollmentsService,
+	)
 	return nil
 }
 

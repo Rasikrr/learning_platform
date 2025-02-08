@@ -14,6 +14,7 @@ type model struct {
 	CorrectAnswers []bool
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	MultipleChoice bool
 }
 
 type models []model
@@ -28,6 +29,7 @@ func (m model) convert() (*entity.Quiz, error) {
 		CorrectAnswers: m.CorrectAnswers,
 		CreatedAt:      m.CreatedAt,
 		UpdatedAt:      m.UpdatedAt,
+		MultipleChoice: m.MultipleChoice,
 	}, nil
 }
 

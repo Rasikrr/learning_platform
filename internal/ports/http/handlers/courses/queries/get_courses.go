@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+// @Summary Get courses
+// @Description Get courses for catalog
+// @Tags courses
+// @Produce json
+// @Param request body getCoursesListRequest true "request"
+// @Success 200 {object} getCoursesListResponse "Success"
+// @Router /api/v1/courses [get]
 func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
 	var req getCoursesListRequest
 	if err := api.GetData(r, &req); err != nil {

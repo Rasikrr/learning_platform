@@ -6,6 +6,13 @@ import (
 	"net/http"
 )
 
+// @Summary Get course topic content
+// @Description Get course topic content by topic id
+// @Tags courses
+// @Produce json
+// @Param id path string true "topic id"
+// @Success 200 {object} entity.TopicContent "Success"
+// @Router /api/v1/courses/topic/{id}/content [get]
 func (c *Controller) getCourseTopicContent(w http.ResponseWriter, r *http.Request) {
 	topicID := r.PathValue("id")
 	if topicID == "" {

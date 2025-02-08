@@ -6,6 +6,13 @@ import (
 	"net/http"
 )
 
+// @Summary Get course by id
+// @Description Get detailed course info with topics by id
+// @Tags courses
+// @Produce json
+// @Param id path string true "course id"
+// @Success 200 {object} getCourseDetailedResponse "Success"
+// @Router /api/v1/courses/{id} [get]
 func (c *Controller) getCourse(w http.ResponseWriter, r *http.Request) {
 	courseID := r.PathValue("id")
 	if courseID == "" {

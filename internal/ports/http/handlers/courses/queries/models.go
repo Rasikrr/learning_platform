@@ -98,8 +98,8 @@ func convertToTopic(t *entity.Topic) topic {
 	}
 }
 
-func convertToGetCourseDetailedResponse(c *entity.Course) *getCourseDetailedResponse {
-	return &getCourseDetailedResponse{
+func convertToGetCourseDetailedResponse(c *entity.Course) getCourseDetailedResponse {
+	return getCourseDetailedResponse{
 		Course: convertCourse(c),
 		Topics: lo.Map(c.Topics, func(t *entity.Topic, _ int) topic {
 			return convertToTopic(t)

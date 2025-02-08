@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+// @Summary Get courses categories
+// @Description Register user with email and password and confirm password. Then send confirmation code to user email
+// @Tags courses
+// @Produce json
+// @Success 200 {object} getCategoriesListResponse "Success"
+// @Router /api/v1/courses/categories [get]
 func (c *Controller) getCategories(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	categories, err := c.coursesService.GetAllCategories(ctx)

@@ -41,8 +41,12 @@ const (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host api-golang-production-a90c.up.railway.app
-// @BasePath /api/v1
+// @host localhost:8081
+// @BasePath /
+
+// Server @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 type Server struct {
 	name string
 	port string
@@ -65,7 +69,7 @@ func NewServer(
 	// Controllers
 	faqController := faq.NewController(authMiddleware, faqService)
 	authController := auth.NewController(authService)
-	coursesController := queries.NewController(courseService)
+	coursesController := queries.NewController(courseService, enrollmentsService, authMiddleware)
 	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
 
 	// Init controllers

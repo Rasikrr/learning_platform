@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /
 definitions:
   api.EmptySuccessResponse:
     properties:
@@ -218,7 +218,7 @@ definitions:
       updated_at:
         type: string
     type: object
-host: api-golang-production-a90c.up.railway.app
+host: localhost:8081
 info:
   contact:
     email: leaning_platform@gmail.com
@@ -367,7 +367,7 @@ paths:
       tags:
       - auth
   /api/v1/courses:
-    get:
+    post:
       description: Get courses for catalog
       parameters:
       - description: request
@@ -419,13 +419,23 @@ paths:
       summary: Get courses categories
       tags:
       - courses
-  /api/v1/courses/topic/{id}/content:
+  /api/v1/courses/topic/content:
     get:
       description: Get course topic content by topic id
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: query
+        name: course_id
+        required: true
+        type: string
       - description: topic id
-        in: path
-        name: id
+        in: query
+        name: topic_id
         required: true
         type: string
       produces:
@@ -435,16 +445,28 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/entity.TopicContent'
+      security:
+      - BearerAuth: []
       summary: Get course topic content
       tags:
       - courses
-  /api/v1/courses/topic/{id}/quizzes:
+  /api/v1/courses/topic/quizzes:
     get:
       description: get quizzes list by topic id
       parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: query
+        name: course_id
+        required: true
+        type: string
       - description: topic id
-        in: path
-        name: id
+        in: query
+        name: topic_id
         required: true
         type: string
       produces:
@@ -456,21 +478,33 @@ paths:
             items:
               $ref: '#/definitions/entity.Quiz'
             type: array
+      security:
+      - BearerAuth: []
       summary: get quizzes by topic id
       tags:
       - courses
-  /api/v1/courses/topic/{id}/tasks/{order}:
+  /api/v1/courses/topic/tasks:
     get:
       description: Get course topic tasks by topic id and. Also you must pass task
         order
       parameters:
-      - description: topic id
-        in: path
-        name: id
+      - description: Authorization token
+        in: header
+        name: Authorization
         required: true
         type: string
-      - description: order
-        in: path
+      - description: course id
+        in: query
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: query
+        name: topic_id
+        required: true
+        type: string
+      - description: number of task
+        in: query
         name: order
         required: true
         type: string
@@ -481,6 +515,8 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/entity.PracticalTask'
+      security:
+      - BearerAuth: []
       summary: Get course topic tasks
       tags:
       - courses

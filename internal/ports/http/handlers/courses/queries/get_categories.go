@@ -1,4 +1,4 @@
-package courses
+package queries
 
 import (
 	"github.com/Rasikrr/learning_platform/api"
@@ -7,10 +7,10 @@ import (
 
 func (c *Controller) getCategories(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	topics, err := c.coursesService.GetAllCategories(ctx)
+	categories, err := c.coursesService.GetAllCategories(ctx)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, topics, http.StatusOK)
+	api.SendData(w, convertToGetCategoriesListResponse(categories), http.StatusOK)
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/auth"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/faq"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/handlers/courses/queries"
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
@@ -72,6 +73,7 @@ func NewServer(
 
 	// CORS
 	coursesController := courses.NewController(courseService)
+	coursesController := queries.NewController(courseService)
 	coursesController.Init(router)
 
 	routerWithCORS := middlewares.CORSMiddleware(router)

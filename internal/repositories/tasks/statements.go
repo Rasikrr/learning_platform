@@ -1,10 +1,12 @@
 package tasks
 
 const (
-	getByTopicIDsStmt = `SELECT id, topic_id, description, difficulty_level, starter_code, expected_output, created_at, updated_at 
+	getByTopicIDsStmt = `SELECT id, topic_id, description, difficulty_level, starter_code, expected_output, 
+       					created_at, updated_at, order_number
 						FROM practical_tasks 
 						WHERE topic_id = ANY ($1)`
-	getByTopicIDStmt = `SELECT id, topic_id, description, difficulty_level, starter_code, expected_output, created_at, updated_at 
+	getByTopicIDAndOrderNumStmt = `SELECT id, topic_id, description, difficulty_level, starter_code, expected_output,
+       					created_at, updated_at, order_number
 						FROM practical_tasks 
-						WHERE topic_id = $1`
+						WHERE topic_id = $1 AND order_number = $2`
 )

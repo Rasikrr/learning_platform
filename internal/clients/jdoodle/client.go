@@ -25,12 +25,13 @@ func NewClient(url, clientID, clientSecret string) Client {
 	}
 }
 
-func (c *client) ExecuteCode(ctx context.Context, code string) (*ExecuteResponse, error) {
+func (c *client) ExecuteCode(_ context.Context, code string) (*ExecuteResponse, error) {
 	req := ExecuteRequest{
 		ClientID:     c.clientID,
 		ClientSecret: c.clientSecret,
 		Script:       code,
-		Language:     "go",
+		Stdin:        "2",
+		Language:     "python3",
 		VersionIndex: "3",
 		CompileOnly:  false,
 	}
@@ -47,6 +48,5 @@ func (c *client) ExecuteCode(ctx context.Context, code string) (*ExecuteResponse
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		return nil, err
 	}
-
 	return &out, nil
 }

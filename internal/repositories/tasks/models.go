@@ -16,6 +16,7 @@ type model struct {
 	ExpectedOutput  string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	OrderNumber     int
 }
 
 type models []model
@@ -34,6 +35,7 @@ func (m model) convert() (*entity.PracticalTask, error) {
 		ExpectedOutput:  m.ExpectedOutput,
 		CreatedAt:       m.CreatedAt,
 		UpdatedAt:       m.UpdatedAt,
+		OrderNumber:     m.OrderNumber,
 	}, nil
 }
 

@@ -10,6 +10,7 @@ type model struct {
 	ID          uuid.UUID
 	CourseID    uuid.UUID
 	Title       string
+	Description string
 	OrderNumber int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -23,6 +24,7 @@ func (m model) convert() (*entity.Topic, error) {
 		ID:          m.ID,
 		CourseID:    m.CourseID,
 		Title:       m.Title,
+		Description: m.Description,
 		OrderNumber: m.OrderNumber,
 		CreatedAt:   m.CreatedAt,
 		UpdatedAt:   m.UpdatedAt,

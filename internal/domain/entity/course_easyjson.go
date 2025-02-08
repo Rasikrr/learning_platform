@@ -265,6 +265,8 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 			}
 		case "title":
 			out.Title = string(in.String())
+		case "description":
+			out.Description = string(in.String())
 		case "content":
 			if in.IsNull() {
 				in.Skip()
@@ -375,6 +377,11 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		const prefix string = ",\"title\":"
 		out.RawString(prefix)
 		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
 	}
 	if in.Content != nil {
 		const prefix string = ",\"content\":"
@@ -675,6 +682,8 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 			out.StarterCode = string(in.String())
 		case "expected_output":
 			out.ExpectedOutput = string(in.String())
+		case "order_number":
+			out.OrderNumber = int(in.Int())
 		case "created_at":
 			if data := in.Raw(); in.Ok() {
 				in.AddError((out.CreatedAt).UnmarshalJSON(data))
@@ -726,6 +735,11 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 		const prefix string = ",\"expected_output\":"
 		out.RawString(prefix)
 		out.String(string(in.ExpectedOutput))
+	}
+	{
+		const prefix string = ",\"order_number\":"
+		out.RawString(prefix)
+		out.Int(int(in.OrderNumber))
 	}
 	{
 		const prefix string = ",\"created_at\":"
@@ -797,10 +811,6 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 					out.ImageURL = new(string)
 				}
 				*out.ImageURL = string(in.String())
-			}
-		case "category_id":
-			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.CategoryID).UnmarshalText(data))
 			}
 		case "category":
 			(out.Category).UnmarshalEasyJSON(in)
@@ -881,11 +891,6 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 		} else {
 			out.String(string(*in.ImageURL))
 		}
-	}
-	{
-		const prefix string = ",\"category_id\":"
-		out.RawString(prefix)
-		out.RawText((in.CategoryID).MarshalText())
 	}
 	{
 		const prefix string = ",\"category\":"

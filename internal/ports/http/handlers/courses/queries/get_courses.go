@@ -1,4 +1,4 @@
-package courses
+package queries
 
 import (
 	"github.com/Rasikrr/learning_platform/api"
@@ -6,7 +6,7 @@ import (
 )
 
 func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
-	var req getCoursesRequest
+	var req getCoursesListRequest
 	if err := api.GetData(r, &req); err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
@@ -18,5 +18,5 @@ func (c *Controller) getCourses(w http.ResponseWriter, r *http.Request) {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, courses, http.StatusOK)
+	api.SendData(w, convertToGetCoursesListResponse(courses), http.StatusOK)
 }

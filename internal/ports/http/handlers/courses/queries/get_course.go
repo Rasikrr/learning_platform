@@ -1,4 +1,4 @@
-package courses
+package queries
 
 import (
 	"errors"
@@ -18,5 +18,5 @@ func (c *Controller) getCourse(w http.ResponseWriter, r *http.Request) {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, courses, http.StatusOK)
+	api.SendData(w, convertToGetCourseDetailedResponse(courses), http.StatusOK)
 }

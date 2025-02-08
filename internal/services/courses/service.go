@@ -17,7 +17,14 @@ import (
 type Service interface {
 	GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetCourseByID(ctx context.Context, id string) (*entity.Course, error)
+
 	GetAllCategories(ctx context.Context) ([]*entity.Category, error)
+
+	GetContentByTopicID(ctx context.Context, topicID string) (*entity.TopicContent, error)
+
+	GetQuizzesByTopicID(ctx context.Context, topicID string) ([]*entity.Quiz, error)
+
+	GetTasksByTopicIDAndOrderNum(ctx context.Context, topicID string, order int) (*entity.PracticalTask, error)
 }
 
 type service struct {
@@ -53,7 +60,7 @@ func (s *service) GetCoursesByParams(ctx context.Context, params *entity.GetCour
 		return nil, err
 	}
 	catsIDs := lo.Map(courses, func(c *entity.Course, _ int) uuid.UUID {
-		return c.CategoryID
+		return c.Category.ID
 	})
 	categories, err := s.categoriesRepository.GetByIDs(ctx, catsIDs)
 	if err != nil {
@@ -64,7 +71,7 @@ func (s *service) GetCoursesByParams(ctx context.Context, params *entity.GetCour
 	})
 
 	for _, c := range courses {
-		category, ok := categoriesMap[c.CategoryID]
+		category, ok := categoriesMap[c.Category.ID]
 		if ok {
 			c.Category = *category
 		}
@@ -77,9 +84,27 @@ func (s *service) GetCourseByID(ctx context.Context, id string) (*entity.Course,
 	if err != nil {
 		return nil, err
 	}
-	if err = s.mergeCourse(ctx, course); err != nil {
+
+	var (
+		g        errgroup.Group
+		category *entity.Category
+		topics   []*entity.Topic
+	)
+	g.Go(func() error {
+		category, err = s.categoriesRepository.GetByID(ctx, course.Category.ID)
+		return err
+	})
+	g.Go(func() error {
+		topics, err = s.topicsRepository.GetByCourseID(ctx, course.ID)
+		return err
+	})
+
+	if err = g.Wait(); err != nil {
 		return nil, err
 	}
+	course.Category = *category
+	course.Topics = topics
+
 	return course, nil
 }
 
@@ -87,8 +112,21 @@ func (s *service) GetAllCategories(ctx context.Context) ([]*entity.Category, err
 	return s.categoriesRepository.GetAll(ctx)
 }
 
+func (s *service) GetContentByTopicID(ctx context.Context, id string) (*entity.TopicContent, error) {
+	return s.contentRepository.GetByTopicID(ctx, id)
+}
+
+func (s *service) GetQuizzesByTopicID(ctx context.Context, id string) ([]*entity.Quiz, error) {
+	return s.quizzesRepository.GetByTopicID(ctx, id)
+}
+
+func (s *service) GetTasksByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {
+	return s.tasksRepository.GetByTopicIDAndOrderNum(ctx, id, order)
+}
+
+// nolint: unused
 func (s *service) mergeCourse(ctx context.Context, course *entity.Course) error {
-	category, err := s.categoriesRepository.GetByID(ctx, course.CategoryID)
+	category, err := s.categoriesRepository.GetByID(ctx, course.Category.ID)
 	if err != nil {
 		return err
 	}
@@ -98,8 +136,8 @@ func (s *service) mergeCourse(ctx context.Context, course *entity.Course) error 
 		return err
 	}
 
-	topicIDs := lo.Map(topics, func(t *entity.Topic, _ int) uuid.UUID {
-		return t.ID
+	topicIDs := lo.Map(topics, func(t *entity.Topic, _ int) string {
+		return t.ID.String()
 	})
 	var (
 		g       errgroup.Group

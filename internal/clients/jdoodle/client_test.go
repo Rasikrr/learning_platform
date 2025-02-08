@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// nolint
 const (
 	url          = "https://api.jdoodle.com/v1/execute"
 	clientID     = "444e54affc8c6da6723dbfdbce63cf5d"
@@ -14,11 +15,17 @@ const (
 
 func TestClient(t *testing.T) {
 	c := NewClient(url, clientID, clientSecret)
-	res, err := c.ExecuteCode(context.Background(), "package main\n import \"fmt\"\nfunc main() {\n fmt.Println(3)\n}")
+	code := `num = int(input())
+if num % 2 == 0:
+    print("Четное")
+else:
+    print("Нечетное")`
+
+	res, err := c.ExecuteCode(context.Background(), code)
 	if err != nil {
 		t.Fatal(err)
 	}
 	require.NoError(t, err)
 	require.Equal(t, 200, res.StatusCode)
-	require.Equal(t, "3", res.Output)
+	require.Equal(t, "Четное", res.Output)
 }

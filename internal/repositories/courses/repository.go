@@ -28,7 +28,7 @@ func (r *repository) GetByParams(ctx context.Context, params *entity.GetCoursesP
 		return nil, err
 	}
 	var cc models
-	if err := pgxscan.Select(ctx, r.db, &cc, query, args...); err != nil {
+	if err = pgxscan.Select(ctx, r.db, &cc, query, args...); err != nil {
 		return nil, err
 	}
 	return cc.convert()

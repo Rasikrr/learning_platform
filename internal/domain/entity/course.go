@@ -12,7 +12,6 @@ type Course struct {
 	ID          uuid.UUID `json:"id"`
 	Title       string    `json:"title"`
 	ImageURL    *string   `json:"image_url"`
-	CategoryID  uuid.UUID `json:"category_id"`
 	Category    Category  `json:"category"`
 	Description string    `json:"description"`
 	Topics      []*Topic  `json:"topics,omitempty"`
@@ -33,6 +32,7 @@ type Topic struct {
 	ID             uuid.UUID        `json:"id"`
 	CourseID       uuid.UUID        `json:"course_id"`
 	Title          string           `json:"title"`
+	Description    string           `json:"description"`
 	Content        *TopicContent    `json:"content,omitempty"`
 	Quizzes        []*Quiz          `json:"quizzes,omitempty"`
 	PracticalTasks []*PracticalTask `json:"practical_tasks,omitempty"`
@@ -69,6 +69,7 @@ type PracticalTask struct {
 	DifficultyLevel enum.Difficulty `json:"difficulty_level"`
 	StarterCode     string          `json:"starter_code"`
 	ExpectedOutput  string          `json:"expected_output"`
+	OrderNumber     int             `json:"order_number"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }

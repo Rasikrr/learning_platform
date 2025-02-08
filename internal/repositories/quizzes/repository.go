@@ -5,13 +5,12 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
 type Repository interface {
-	GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.Quiz, error)
-	GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Quiz, error)
+	GetByTopicID(ctx context.Context, id string) ([]*entity.Quiz, error)
+	GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.Quiz, error)
 }
 
 type repository struct {
@@ -24,15 +23,15 @@ func NewRepository(db *databases.Postgres) Repository {
 	}
 }
 
-func (r *repository) GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.Quiz, error) {
-	var m model
-	if err := pgxscan.Select(ctx, r.db, &m, getByTopicIDStmt, id); err != nil {
+func (r *repository) GetByTopicID(ctx context.Context, id string) ([]*entity.Quiz, error) {
+	var mm models
+	if err := pgxscan.Select(ctx, r.db, &mm, getByTopicIDStmt, id); err != nil {
 		return nil, err
 	}
-	return m.convert()
+	return mm.convert()
 }
 
-func (r *repository) GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.Quiz, error) {
+func (r *repository) GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.Quiz, error) {
 	var mm models
 	if err := pgxscan.Select(ctx, r.db, &mm, getByTopicIDsStmt, pq.Array(ids)); err != nil {
 		return nil, err

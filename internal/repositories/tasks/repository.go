@@ -5,13 +5,12 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
 type Repository interface {
-	GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.PracticalTask, error)
-	GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.PracticalTask, error)
+	GetByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error)
+	GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.PracticalTask, error)
 }
 
 type repository struct {
@@ -24,15 +23,15 @@ func NewRepository(db *databases.Postgres) Repository {
 	}
 }
 
-func (r *repository) GetByTopicID(ctx context.Context, id uuid.UUID) (*entity.PracticalTask, error) {
+func (r *repository) GetByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {
 	var m model
-	if err := pgxscan.Get(ctx, r.db, &m, getByTopicIDStmt, id); err != nil {
+	if err := pgxscan.Get(ctx, r.db, &m, getByTopicIDAndOrderNumStmt, id, order); err != nil {
 		return nil, err
 	}
 	return m.convert()
 }
 
-func (r *repository) GetByTopicIDs(ctx context.Context, ids []uuid.UUID) ([]*entity.PracticalTask, error) {
+func (r *repository) GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.PracticalTask, error) {
 	var mm models
 	if err := pgxscan.Select(ctx, r.db, &mm, getByTopicIDsStmt, pq.Array(ids)); err != nil {
 		return nil, err

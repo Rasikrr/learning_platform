@@ -1,4 +1,4 @@
-package commands
+package enrollments
 
 import (
 	"github.com/Rasikrr/learning_platform/api"

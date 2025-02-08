@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+//go:generate easyjson -all course.go
+
 type Enrollment struct {
 	ID        uuid.UUID           `json:"id"`
 	UserID    uuid.UUID           `json:"user_id"`

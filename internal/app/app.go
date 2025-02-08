@@ -10,16 +10,16 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
+	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
 	categoriesR "github.com/Rasikrr/learning_platform/internal/repositories/categories"
 	contentR "github.com/Rasikrr/learning_platform/internal/repositories/content"
 	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
 	enrollmentsR "github.com/Rasikrr/learning_platform/internal/repositories/enrollments"
+	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
+	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
 	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
 	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
-	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
-	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
-	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
@@ -57,11 +57,9 @@ type App struct {
 	contentRepository     contentR.Repository
 	enrollmentsRepository enrollmentsR.Repository
 
-
 	answersRepository            answers.Repository
 	questionsRepository          question.Repository
 	questionCategoriesRepository questionCategories.Repository
-
 
 	redisClient *redis.Client
 	cacheClient cache.Cache
@@ -73,13 +71,9 @@ type App struct {
 	authService        authS.Service
 	courseService      coursesS.Service
 	enrollmentsService enrollmentsS.Service
+	faqService         faqS.Service
 
 	httpServer *http.Server
-	mailClient  mail.Client
-	authService authS.Service
-	faqService  faqS.Service
-	courseService coursesS.Service
-	httpServer    *http.Server
 }
 
 // nolint: gocritic
@@ -177,7 +171,14 @@ func (a *App) InitServices(_ context.Context) error {
 		a.answersRepository,
 	)
 
-	a.courseService = coursesS.NewService(a.courseRepository)
+	a.courseService = coursesS.NewService(
+		a.courseRepository,
+		a.categoriesRepository,
+		a.topicsRepository,
+		a.quizzesRepository,
+		a.tasksRepository,
+		a.contentRepository,
+	)
 	return nil
 }
 
@@ -187,6 +188,7 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.authService,
 		a.courseService,
 		a.enrollmentsService,
+		a.faqService,
 	)
 	return nil
 }

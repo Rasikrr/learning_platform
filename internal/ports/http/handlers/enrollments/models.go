@@ -1,4 +1,4 @@
-package commands
+package enrollments
 
 //go:generate easyjson -all models.go
 type enrollToCourseRequest struct {

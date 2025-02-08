@@ -10,8 +10,12 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
+	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
+	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
+	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	"github.com/hashicorp/go-multierror"
@@ -33,15 +37,20 @@ type App struct {
 	config   configs.Config
 	postgres *databases.Postgres
 
-	workers         []workers.Worker
-	usersRepository usersR.Repository
-	redisClient     *redis.Client
-	cacheClient     cache.Cache
-	authCache       authC.Cache
-	hasher          util.Hasher
+	workers                      []workers.Worker
+	usersRepository              usersR.Repository
+	answersRepository            answers.Repository
+	questionsRepository          question.Repository
+	questionCategoriesRepository questionCategories.Repository
+
+	redisClient *redis.Client
+	cacheClient cache.Cache
+	authCache   authC.Cache
+	hasher      util.Hasher
 
 	mailClient  mail.Client
 	authService authS.Service
+	faqService  faqS.Service
 	httpServer  *http.Server
 }
 
@@ -75,6 +84,9 @@ func InitApp(ctx context.Context, name string) *App {
 
 func (a *App) InitRepositories(_ context.Context) error {
 	a.usersRepository = usersR.NewRepository(a.postgres)
+	a.answersRepository = answers.NewRepository(a.postgres)
+	a.questionsRepository = question.NewRepository(a.postgres)
+	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
 	return nil
 }
 
@@ -110,11 +122,17 @@ func (a *App) InitServices(_ context.Context) error {
 		a.config.Auth.AccessTokenLifeTime,
 		a.config.Auth.RefreshTokenLifeTime,
 		a.mailClient, a.usersRepository, a.hasher, a.authCache)
+
+	a.faqService = faqS.NewService(
+		a.questionsRepository,
+		a.questionCategoriesRepository,
+		a.answersRepository,
+	)
 	return nil
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(&a.config, a.authService)
+	a.httpServer = http.NewServer(&a.config, a.authService, a.faqService)
 	return nil
 }
 

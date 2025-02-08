@@ -1,7 +1,11 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	"io"
 	"net/http"
 )
@@ -60,4 +64,24 @@ func SendError(w http.ResponseWriter, statusCode int, err error) {
 	}
 	bb, _ := json.Marshal(r)
 	w.Write(bb)
+}
+
+func GetSession(ctx context.Context) (*entity.Session, error) {
+	token := ctx.Value(middlewares.SessionKey)
+	if token == nil {
+		return nil, errors.New("session is empty")
+	}
+	s, ok := token.(*entity.Session)
+	if !ok {
+		return nil, errors.New("session is not Session")
+	}
+	return s, nil
+}
+
+func GetUserFromSession(session *entity.Session) *entity.User {
+	return &entity.User{
+		ID:          session.UserID,
+		Email:       session.Email,
+		AccountRole: session.Role,
+	}
 }

@@ -3,7 +3,6 @@ package middlewares
 import (
 	"context"
 	"errors"
-	"github.com/Rasikrr/learning_platform/api"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
 	"net/http"
@@ -30,7 +29,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, err := m.parseAuth(r)
 		if err != nil {
-			api.SendError(w, http.StatusUnauthorized, err)
+			SendError(w, http.StatusUnauthorized, err)
 			return
 		}
 		r = r.WithContext(context.WithValue(r.Context(), SessionKey, session))

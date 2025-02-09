@@ -3,33 +3,33 @@ package commands
 import (
 	"github.com/Rasikrr/learning_platform/internal/ports/http/middlewares"
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
-	"github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
 	"net/http"
 )
 
 type Controller struct {
 	courseService     coursesS.Service
-	enrollService     enrollments.Service
 	submissionService submissionS.Service
-
-	m *middlewares.AuthMiddleware
+	e                 *middlewares.EnrollMiddleware
+	m                 *middlewares.AuthMiddleware
 }
 
 func NewController(
 	courseService coursesS.Service,
 	m *middlewares.AuthMiddleware,
+	e *middlewares.EnrollMiddleware,
 	submissionService submissionS.Service,
-	enrollService enrollments.Service,
 ) *Controller {
 	return &Controller{
 		courseService:     courseService,
-		enrollService:     enrollService,
 		submissionService: submissionService,
 		m:                 m,
+		e:                 e,
 	}
 }
 
 func (c *Controller) Init(r *http.ServeMux) {
-	r.Handle("POST /api/v1/courses/submit_quiz", c.m.Handle(c.SubmitQuiz))
+	auth := c.m.Handle
+	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit", auth(c.e.Handle(c.submitQuiz)))
+	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset", auth(c.e.Handle(c.resetQuiz)))
 }

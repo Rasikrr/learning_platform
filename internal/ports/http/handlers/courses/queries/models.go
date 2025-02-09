@@ -74,6 +74,40 @@ type topic struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type getTopicQuizzesResponse struct {
+	Quizzes []quizz `json:"quizzes"`
+}
+
+type quizz struct {
+	ID             string    `json:"id"`
+	TopicID        string    `json:"topic_id"`
+	Question       string    `json:"question"`
+	Options        []string  `json:"options"`
+	MultipleChoice bool      `json:"multiple_choice"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+}
+
+func convertToGetTopicQuizzesResponse(quizzes []*entity.Quiz) getTopicQuizzesResponse {
+	return getTopicQuizzesResponse{
+		Quizzes: lo.Map(quizzes, func(e *entity.Quiz, _ int) quizz {
+			return convertQuiz(e)
+		}),
+	}
+}
+
+func convertQuiz(e *entity.Quiz) quizz {
+	return quizz{
+		ID:             e.ID.String(),
+		TopicID:        e.TopicID.String(),
+		Question:       e.Question,
+		Options:        e.Options,
+		MultipleChoice: e.MultipleChoice,
+		CreatedAt:      e.CreatedAt,
+		UpdatedAt:      e.UpdatedAt,
+	}
+}
+
 func convertToGetCoursesListResponse(courses []*entity.Course) getCoursesListResponse {
 	courseResponses := make([]getCourseResponse, len(courses))
 	for i, course := range courses {
@@ -154,8 +188,8 @@ func (r *getCoursesListRequest) toParams() *entity.GetCoursesParams {
 }
 
 func (req *getTopicQuizzesRequest) GetParameters(r *http.Request) error {
-	req.CourseID = r.URL.Query().Get("course_id")
-	req.TopicID = r.URL.Query().Get("topic_id")
+	req.CourseID = r.PathValue("course_id")
+	req.TopicID = r.PathValue("topic_id")
 	if req.CourseID == "" || req.TopicID == "" {
 		return errCourseOrTopicIDEmpty
 	}
@@ -164,9 +198,9 @@ func (req *getTopicQuizzesRequest) GetParameters(r *http.Request) error {
 
 func (req *getTopicTasksRequest) GetParameters(r *http.Request) error {
 	var err error
-	req.CourseID = r.URL.Query().Get("course_id")
-	req.TopicID = r.URL.Query().Get("topic_id")
-	req.Order, err = strconv.Atoi(r.URL.Query().Get("order"))
+	req.CourseID = r.PathValue("course_id")
+	req.TopicID = r.PathValue("topic_id")
+	req.Order, err = strconv.Atoi(r.PathValue("order"))
 	if err != nil {
 		return err
 	}

@@ -15,10 +15,12 @@ var (
 	ErrNotFullyAnswered = errors.New("not fully answered")
 	ErrNotCorrectAnswer = errors.New("not correct answer")
 	ErrAlreadyPassed    = errors.New("already passed")
+	ErrNotPassed        = errors.New("not passed")
 )
 
 type Service interface {
 	SubmitQuiz(ctx context.Context, userID, courseID, topicID string, answers []*entity.AnswerQuiz) error
+	ResetQuiz(ctx context.Context, userID, courseID, topicID string) error
 }
 
 type service struct {
@@ -55,6 +57,18 @@ func (s *service) SubmitQuiz(ctx context.Context, userID, courseID, topicID stri
 		return err
 	}
 	return checkErr
+}
+
+func (s *service) ResetQuiz(ctx context.Context, userID, courseID, topicID string) error {
+	passed, err := s.quizzesSubmissionRepository.CheckIsPassed(ctx, userID, topicID)
+	if err != nil {
+		return err
+	}
+	if !passed {
+		return ErrNotPassed
+	}
+	err = s.quizzesSubmissionRepository.UpdatePassed(ctx, userID, courseID, topicID, false)
+	return err
 }
 
 func (s *service) checkAnswers(quizzes []*entity.Quiz, answers []*entity.AnswerQuiz) (bool, error) {

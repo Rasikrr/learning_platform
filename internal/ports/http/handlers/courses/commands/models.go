@@ -1,13 +1,18 @@
 package commands
 
-import "github.com/Rasikrr/learning_platform/internal/domain/entity"
+import (
+	"github.com/Rasikrr/learning_platform/internal/domain/entity"
+	"net/http"
+)
 
 //go:generate easyjson -all models.go
 
+type courseAndTopic struct {
+	CourseID string
+	TopicID  string
+}
 type submitQuizRequest struct {
-	CourseID string  `json:"course_id"`
-	TopicID  string  `json:"topic_id"`
-	Answers  answers `json:"answers"`
+	Answers answers `json:"answers"`
 }
 
 type answerQuiz struct {
@@ -30,4 +35,10 @@ func (r answerQuiz) ToEntity() *entity.AnswerQuiz {
 		QuestionID: r.QuestionID,
 		Answer:     r.Answer,
 	}
+}
+
+func (req *courseAndTopic) GetParameters(r *http.Request) error {
+	req.CourseID = r.PathValue("course_id")
+	req.TopicID = r.PathValue("topic_id")
+	return nil
 }

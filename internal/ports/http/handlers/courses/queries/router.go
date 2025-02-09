@@ -29,7 +29,7 @@ func (c *Controller) Init(r *http.ServeMux) {
 	r.HandleFunc("POST /api/v1/courses", c.getCourses)
 	r.HandleFunc("GET /api/v1/courses/categories", c.getCategories)
 	r.HandleFunc("GET /api/v1/courses/{id}", c.getCourse)
-	r.HandleFunc("GET /api/v1/courses/topic/content", auth(c.e.Handle(c.getCourseTopicContent)))
-	r.HandleFunc("GET /api/v1/courses/topic/quizzes", auth(c.e.Handle(c.getCourseTopicQuizzes)))
-	r.HandleFunc("GET /api/v1/courses/topic/tasks", auth(c.e.Handle(c.getCourseTopicTasks)))
+	r.HandleFunc("GET /api/v1/courses/{course_id}/topic/{topic_id}/content", auth(c.e.Handle(c.getCourseTopicContent)))
+	r.HandleFunc("GET /api/v1/courses/{course_id}/topic/{topic_id}/quizzes", auth(c.e.Handle(c.getCourseTopicQuizzes)))
+	r.HandleFunc("GET /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}", auth(c.e.Handle(c.getCourseTopicTasks)))
 }

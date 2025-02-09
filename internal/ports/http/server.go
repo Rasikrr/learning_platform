@@ -75,7 +75,7 @@ func NewServer(
 	authController := auth.NewController(authService)
 	coursesQueriesController := queries.NewController(courseService, authMiddleware, enrollmentMiddleware)
 	enrollmentsController := enrollments.NewController(enrollmentsService, authMiddleware)
-	courseCommandsController := commands.NewController(courseService, authMiddleware, submissionsService, enrollmentsService)
+	courseCommandsController := commands.NewController(courseService, authMiddleware, enrollmentMiddleware, submissionsService)
 
 	// Init controllers
 	coursesQueriesController.Init(router)

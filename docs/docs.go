@@ -261,7 +261,7 @@ const docTemplate = `{
         },
         "/api/v1/courses/categories": {
             "get": {
-                "description": "Register user with email and password and confirm password. Then send confirmation code to user email",
+                "description": "Get courses categories",
                 "produces": [
                     "application/json"
                 ],
@@ -279,7 +279,53 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/content": {
+        "/api/v1/courses/enroll": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "enroll to course by course id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "enroll to course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/enrollments.enrollToCourseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/content": {
             "get": {
                 "security": [
                     {
@@ -306,14 +352,14 @@ const docTemplate = `{
                         "type": "string",
                         "description": "course id",
                         "name": "course_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "topic id",
                         "name": "topic_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -327,21 +373,24 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/courses/topic/submissions": {
-            "get": {
+        "/api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "get submissions list by topic id",
+                "description": "submit quiz",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "courses"
                 ],
-                "summary": "get submissions by topic id",
+                "summary": "submit quiz",
                 "parameters": [
                     {
                         "type": "string",
@@ -354,14 +403,14 @@ const docTemplate = `{
                         "type": "string",
                         "description": "course id",
                         "name": "course_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "topic id",
                         "name": "topic_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -369,16 +418,121 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.Quiz"
-                            }
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/courses/topic/tasks": {
+        "/api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "submit quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "submit quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/commands.submitQuizRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/quizzes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get quizzes list by topic id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "get quizzes by topic id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queries.getTopicQuizzesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}": {
             "get": {
                 "security": [
                     {
@@ -405,21 +559,21 @@ const docTemplate = `{
                         "type": "string",
                         "description": "course id",
                         "name": "course_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "topic id",
                         "name": "topic_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "number of task",
                         "name": "order",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -552,6 +706,39 @@ const docTemplate = `{
                 }
             }
         },
+        "commands.answerQuiz": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "array",
+                    "items": {
+                        "type": "boolean"
+                    }
+                },
+                "question_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "commands.submitQuizRequest": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/commands.answerQuiz"
+                    }
+                }
+            }
+        },
+        "enrollments.enrollToCourseRequest": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.PracticalTask": {
             "type": "object",
             "properties": {
@@ -574,41 +761,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "starter_code": {
-                    "type": "string"
-                },
-                "topic_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Quiz": {
-            "type": "object",
-            "properties": {
-                "correct_answers": {
-                    "type": "array",
-                    "items": {
-                        "type": "boolean"
-                    }
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "multiple_choice": {
-                    "type": "boolean"
-                },
-                "options": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "question": {
                     "type": "string"
                 },
                 "topic_id": {
@@ -769,6 +921,46 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/queries.getCourseResponse"
                     }
+                }
+            }
+        },
+        "queries.getTopicQuizzesResponse": {
+            "type": "object",
+            "properties": {
+                "quizzes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/queries.quizz"
+                    }
+                }
+            }
+        },
+        "queries.quizz": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "multiple_choice": {
+                    "type": "boolean"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "question": {
+                    "type": "string"
+                },
+                "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },

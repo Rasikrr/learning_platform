@@ -27,8 +27,11 @@ func (m *EnrollMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		}
 		courseID := r.URL.Query().Get("course_id")
 		if courseID == "" {
-			SendError(w, http.StatusBadRequest, errors.New("course id is empty"))
-			return
+			courseID = r.PathValue("course_id")
+			if courseID == "" {
+				SendError(w, http.StatusBadRequest, errors.New("course id is empty"))
+				return
+			}
 		}
 		enrolled, err := m.enrollService.CheckEnrollment(r.Context(), session.UserID.String(), courseID)
 		if err != nil {

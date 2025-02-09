@@ -5,7 +5,6 @@ import (
 	"context"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	"log"
 )
 
 type Repository interface {
@@ -33,6 +32,5 @@ func (r *repository) CheckIsPassed(ctx context.Context, userID, topicID string) 
 
 func (r *repository) UpdatePassed(ctx context.Context, userID, courseID, topicID string, passed bool) error {
 	_, err := r.db.Exec(ctx, upsertStmt, userID, courseID, topicID, passed)
-	log.Println("HERE ", err)
 	return err
 }

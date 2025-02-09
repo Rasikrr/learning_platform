@@ -56,6 +56,27 @@ definitions:
       password_confirm:
         type: string
     type: object
+  commands.answerQuiz:
+    properties:
+      answer:
+        items:
+          type: boolean
+        type: array
+      question_id:
+        type: string
+    type: object
+  commands.submitQuizRequest:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/commands.answerQuiz'
+        type: array
+    type: object
+  enrollments.enrollToCourseRequest:
+    properties:
+      course_id:
+        type: string
+    type: object
   entity.PracticalTask:
     properties:
       created_at:
@@ -71,29 +92,6 @@ definitions:
       order_number:
         type: integer
       starter_code:
-        type: string
-      topic_id:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  entity.Quiz:
-    properties:
-      correct_answers:
-        items:
-          type: boolean
-        type: array
-      created_at:
-        type: string
-      id:
-        type: string
-      multiple_choice:
-        type: boolean
-      options:
-        items:
-          type: string
-        type: array
-      question:
         type: string
       topic_id:
         type: string
@@ -200,6 +198,32 @@ definitions:
         items:
           $ref: '#/definitions/queries.getCourseResponse'
         type: array
+    type: object
+  queries.getTopicQuizzesResponse:
+    properties:
+      quizzes:
+        items:
+          $ref: '#/definitions/queries.quizz'
+        type: array
+    type: object
+  queries.quizz:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      multiple_choice:
+        type: boolean
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+      topic_id:
+        type: string
+      updated_at:
+        type: string
     type: object
   queries.topic:
     properties:
@@ -386,6 +410,177 @@ paths:
       summary: Get courses
       tags:
       - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/content:
+    get:
+      description: Get course topic content by topic id
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.TopicContent'
+      security:
+      - BearerAuth: []
+      summary: Get course topic content
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset:
+    post:
+      consumes:
+      - application/json
+      description: submit quiz
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: submit quiz
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit:
+    post:
+      consumes:
+      - application/json
+      description: submit quiz
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/commands.submitQuizRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: submit quiz
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quizzes:
+    get:
+      description: get quizzes list by topic id
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getTopicQuizzesResponse'
+      security:
+      - BearerAuth: []
+      summary: get quizzes by topic id
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}:
+    get:
+      description: Get course topic tasks by topic id and. Also you must pass task
+        order
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: number of task
+        in: path
+        name: order
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.PracticalTask'
+      security:
+      - BearerAuth: []
+      summary: Get course topic tasks
+      tags:
+      - courses
   /api/v1/courses/{id}:
     get:
       description: Get detailed course info with topics by id
@@ -407,8 +602,7 @@ paths:
       - courses
   /api/v1/courses/categories:
     get:
-      description: Register user with email and password and confirm password. Then
-        send confirmation code to user email
+      description: Get courses categories
       produces:
       - application/json
       responses:
@@ -419,105 +613,33 @@ paths:
       summary: Get courses categories
       tags:
       - courses
-  /api/v1/courses/topic/content:
-    get:
-      description: Get course topic content by topic id
+  /api/v1/courses/enroll:
+    post:
+      consumes:
+      - application/json
+      description: enroll to course by course id
       parameters:
       - description: Authorization token
         in: header
         name: Authorization
         required: true
         type: string
-      - description: course id
-        in: query
-        name: course_id
+      - description: request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: topic id
-        in: query
-        name: topic_id
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/enrollments.enrollToCourseRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/entity.TopicContent'
+            $ref: '#/definitions/api.EmptySuccessResponse'
       security:
       - BearerAuth: []
-      summary: Get course topic content
-      tags:
-      - courses
-  /api/v1/courses/topic/quizzes:
-    get:
-      description: get submissions list by topic id
-      parameters:
-      - description: Authorization token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: course id
-        in: query
-        name: course_id
-        required: true
-        type: string
-      - description: topic id
-        in: query
-        name: topic_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            items:
-              $ref: '#/definitions/entity.Quiz'
-            type: array
-      security:
-      - BearerAuth: []
-      summary: get submissions by topic id
-      tags:
-      - courses
-  /api/v1/courses/topic/tasks:
-    get:
-      description: Get course topic tasks by topic id and. Also you must pass task
-        order
-      parameters:
-      - description: Authorization token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: course id
-        in: query
-        name: course_id
-        required: true
-        type: string
-      - description: topic id
-        in: query
-        name: topic_id
-        required: true
-        type: string
-      - description: number of task
-        in: query
-        name: order
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: '#/definitions/entity.PracticalTask'
-      security:
-      - BearerAuth: []
-      summary: Get course topic tasks
+      summary: enroll to course
       tags:
       - courses
 swagger: "2.0"

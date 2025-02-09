@@ -11,11 +11,11 @@ import (
 // @Produce json
 // @Security     BearerAuth
 // @param Authorization header string true "Authorization token"
-// @Param course_id query string true "course id"
-// @Param topic_id query string true "topic id"
-// @Param order query string true "number of task"
+// @Param course_id path string true "course id"
+// @Param topic_id path string true "topic id"
+// @Param order path string true "number of task"
 // @Success 200 {object} entity.PracticalTask "Success"
-// @Router /api/v1/courses/topic/tasks [get]
+// @Router /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order} [get]
 func (c *Controller) getCourseTopicTasks(w http.ResponseWriter, r *http.Request) {
 	var req getTopicTasksRequest
 	if err := api.GetData(r, &req); err != nil {

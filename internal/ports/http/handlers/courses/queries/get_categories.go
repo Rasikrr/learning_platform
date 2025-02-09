@@ -6,7 +6,7 @@ import (
 )
 
 // @Summary Get courses categories
-// @Description Register user with email and password and confirm password. Then send confirmation code to user email
+// @Description Get courses categories
 // @Tags courses
 // @Produce json
 // @Success 200 {object} getCategoriesListResponse "Success"

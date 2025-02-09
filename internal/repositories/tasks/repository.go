@@ -9,6 +9,7 @@ import (
 )
 
 type Repository interface {
+	GetByID(ctx context.Context, id string) (*entity.PracticalTask, error)
 	GetByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error)
 	GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.PracticalTask, error)
 }
@@ -21,6 +22,14 @@ func NewRepository(db *databases.Postgres) Repository {
 	return &repository{
 		db: db,
 	}
+}
+
+func (r *repository) GetByID(ctx context.Context, id string) (*entity.PracticalTask, error) {
+	var m model
+	if err := pgxscan.Get(ctx, r.db, &m, getByIDStmt, id); err != nil {
+		return nil, err
+	}
+	return m.convert()
 }
 
 func (r *repository) GetByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {

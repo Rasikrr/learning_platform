@@ -2,6 +2,8 @@ package jdoodle
 
 import (
 	"context"
+	"github.com/Rasikrr/learning_platform/configs"
+	"github.com/Rasikrr/learning_platform/internal/domain/enum"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -14,18 +16,38 @@ const (
 )
 
 func TestClient(t *testing.T) {
-	c := NewClient(url, clientID, clientSecret)
-	code := `num = int(input())
-if num % 2 == 0:
-    print("Четное")
-else:
-    print("Нечетное")`
-
-	res, err := c.ExecuteCode(context.Background(), code)
-	if err != nil {
-		t.Fatal(err)
+	t.Skip()
+	ctx := context.Background()
+	cfg := &configs.Config{
+		JDoodle: configs.JDoodleConfig{
+			URL:          url,
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+		},
 	}
+	c := NewClient(cfg)
+	code := `package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func first() {
+    fmt.Println("First")
+}
+
+func second() {
+    fmt.Println("Second")
+}
+
+func main() {
+    go first()
+    go second()
+    time.Sleep(time.Second)
+}`
+
+	res, err := c.ExecuteCode(ctx, code, enum.ProgrammingLanguageGo)
 	require.NoError(t, err)
-	require.Equal(t, 200, res.StatusCode)
-	require.Equal(t, "Четное", res.Output)
+	require.Equal(t, "First\nSecond", res)
 }

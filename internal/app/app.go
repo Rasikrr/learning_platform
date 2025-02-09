@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/Rasikrr/learning_platform/internal/cache"
 	authC "github.com/Rasikrr/learning_platform/internal/cache/auth"
+	"github.com/Rasikrr/learning_platform/internal/clients/jdoodle"
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
@@ -20,6 +21,8 @@ import (
 	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
 	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	tasksSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/tasks_submissions"
+	testCasesR "github.com/Rasikrr/learning_platform/internal/repositories/test_cases"
 	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
@@ -50,26 +53,28 @@ type App struct {
 
 	workers []workers.Worker
 
-	usersRepository             usersR.Repository
-	courseRepository            coursesR.Repository
-	categoriesRepository        categoriesR.Repository
-	quizzesRepository           quizzesR.Repository
-	topicsRepository            topicsR.Repository
-	tasksRepository             tasksR.Repository
-	contentRepository           contentR.Repository
-	enrollmentsRepository       enrollmentsR.Repository
-	quizzesSubmissionRepository quizzesSubmissionsR.Repository
-
+	usersRepository              usersR.Repository
+	courseRepository             coursesR.Repository
+	categoriesRepository         categoriesR.Repository
+	quizzesRepository            quizzesR.Repository
+	topicsRepository             topicsR.Repository
+	tasksRepository              tasksR.Repository
+	contentRepository            contentR.Repository
+	enrollmentsRepository        enrollmentsR.Repository
+	quizzesSubmissionRepository  quizzesSubmissionsR.Repository
 	answersRepository            answers.Repository
 	questionsRepository          question.Repository
 	questionCategoriesRepository questionCategories.Repository
+	tasksSubmissionsRepository   tasksSubmissionsR.Repository
+	testCasesRepository          testCasesR.Repository
 
 	redisClient *redis.Client
 	cacheClient cache.Cache
 	authCache   authC.Cache
 	hasher      util.Hasher
 
-	mailClient mail.Client
+	mailClient         mail.Client
+	taskExecutorClient jdoodle.Client
 
 	authService        authS.Service
 	courseService      coursesS.Service
@@ -121,6 +126,8 @@ func (a *App) InitRepositories(_ context.Context) error {
 	a.contentRepository = contentR.NewRepository(a.postgres)
 	a.enrollmentsRepository = enrollmentsR.NewRepository(a.postgres)
 	a.quizzesSubmissionRepository = quizzesSubmissionsR.NewRepository(a.postgres)
+	a.tasksSubmissionsRepository = tasksSubmissionsR.NewRepository(a.postgres)
+	a.testCasesRepository = testCasesR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -131,6 +138,7 @@ func (a *App) InitUtil(_ context.Context) error {
 
 func (a *App) InitClients(_ context.Context) error {
 	a.mailClient = mail.NewClient(&a.config)
+	a.taskExecutorClient = jdoodle.NewClient(&a.config)
 	return nil
 }
 
@@ -188,6 +196,10 @@ func (a *App) InitServices(_ context.Context) error {
 	a.submissionsService = submissionS.NewService(
 		a.quizzesRepository,
 		a.quizzesSubmissionRepository,
+		a.tasksSubmissionsRepository,
+		a.testCasesRepository,
+		a.tasksRepository,
+		a.taskExecutorClient,
 	)
 	return nil
 }

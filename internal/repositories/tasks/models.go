@@ -13,16 +13,22 @@ type model struct {
 	Description     string
 	DifficultyLevel string
 	StarterCode     string
-	ExpectedOutput  string
+	ExpectedOutput  *string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	OrderNumber     int
+	TestCases       bool
+	Language        string
 }
 
 type models []model
 
 func (m model) convert() (*entity.PracticalTask, error) {
 	level, err := enum.DifficultyString(m.DifficultyLevel)
+	if err != nil {
+		return nil, err
+	}
+	lang, err := enum.ProgrammingLanguageString(m.Language)
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +42,8 @@ func (m model) convert() (*entity.PracticalTask, error) {
 		CreatedAt:       m.CreatedAt,
 		UpdatedAt:       m.UpdatedAt,
 		OrderNumber:     m.OrderNumber,
+		TestCases:       m.TestCases,
+		Language:        lang,
 	}, nil
 }
 

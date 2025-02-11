@@ -64,15 +64,17 @@ type Quiz struct {
 }
 
 type PracticalTask struct {
-	ID              uuid.UUID       `json:"id"`
-	TopicID         uuid.UUID       `json:"topic_id"`
-	Description     string          `json:"description"`
-	DifficultyLevel enum.Difficulty `json:"difficulty_level"`
-	StarterCode     string          `json:"starter_code"`
-	ExpectedOutput  string          `json:"expected_output"`
-	OrderNumber     int             `json:"order_number"`
-	CreatedAt       time.Time       `json:"created_at"`
-	UpdatedAt       time.Time       `json:"updated_at"`
+	ID              uuid.UUID                `json:"id"`
+	TopicID         uuid.UUID                `json:"topic_id"`
+	Description     string                   `json:"description"`
+	DifficultyLevel enum.Difficulty          `json:"difficulty_level"`
+	StarterCode     string                   `json:"starter_code"`
+	ExpectedOutput  *string                  `json:"expected_output"`
+	OrderNumber     int                      `json:"order_number"`
+	CreatedAt       time.Time                `json:"created_at"`
+	UpdatedAt       time.Time                `json:"updated_at"`
+	TestCases       bool                     `json:"test_cases"`
+	Language        enum.ProgrammingLanguage `json:"language"`
 }
 
 type AnswerQuiz struct {

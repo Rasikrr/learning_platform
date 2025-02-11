@@ -3,12 +3,13 @@ package submissions
 import (
 	"context"
 	"errors"
+	"github.com/Rasikrr/learning_platform/internal/clients/jdoodle"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
-	"github.com/Rasikrr/learning_platform/internal/util"
-	"github.com/samber/lo"
-	"log"
+	"github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	tasksSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/tasks_submissions"
+	testCasesR "github.com/Rasikrr/learning_platform/internal/repositories/test_cases"
 )
 
 var (
@@ -21,68 +22,33 @@ var (
 type Service interface {
 	SubmitQuiz(ctx context.Context, userID, courseID, topicID string, answers []*entity.AnswerQuiz) error
 	ResetQuiz(ctx context.Context, userID, courseID, topicID string) error
+
+	SubmitTask(ctx context.Context, submission *entity.TaskSubmission) (string, error)
 }
 
 type service struct {
 	quizzesRepository           quizzes.Repository
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository
+	tasksSubmissionsRepository  tasksSubmissionsR.Repository
+	tasksRepository             tasks.Repository
+	testCasesRepository         testCasesR.Repository
+	taskExecutorClient          jdoodle.Client
 }
 
 func NewService(
 	quizzesRepository quizzes.Repository,
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository,
+	tasksSubmissionsRepository tasksSubmissionsR.Repository,
+	testCasesRepository testCasesR.Repository,
+	tasksRepository tasks.Repository,
+	taskExecutorClient jdoodle.Client,
 ) Service {
 	return &service{
 		quizzesRepository:           quizzesRepository,
 		quizzesSubmissionRepository: quizzesSubmissionRepository,
+		tasksSubmissionsRepository:  tasksSubmissionsRepository,
+		testCasesRepository:         testCasesRepository,
+		tasksRepository:             tasksRepository,
+		taskExecutorClient:          taskExecutorClient,
 	}
-}
-
-func (s *service) SubmitQuiz(ctx context.Context, userID, courseID, topicID string, answers []*entity.AnswerQuiz) error {
-	passed, err := s.quizzesSubmissionRepository.CheckIsPassed(ctx, userID, topicID)
-	if err != nil {
-		return err
-	}
-	log.Println("passed ", passed)
-	if passed {
-		return ErrAlreadyPassed
-	}
-	quizzes, err := s.quizzesRepository.GetByTopicID(ctx, topicID)
-	if err != nil {
-		return err
-	}
-	correct, checkErr := s.checkAnswers(quizzes, answers)
-	err = s.quizzesSubmissionRepository.UpdatePassed(ctx, userID, courseID, topicID, correct)
-	if err != nil {
-		return err
-	}
-	return checkErr
-}
-
-func (s *service) ResetQuiz(ctx context.Context, userID, courseID, topicID string) error {
-	passed, err := s.quizzesSubmissionRepository.CheckIsPassed(ctx, userID, topicID)
-	if err != nil {
-		return err
-	}
-	if !passed {
-		return ErrNotPassed
-	}
-	err = s.quizzesSubmissionRepository.UpdatePassed(ctx, userID, courseID, topicID, false)
-	return err
-}
-
-func (s *service) checkAnswers(quizzes []*entity.Quiz, answers []*entity.AnswerQuiz) (bool, error) {
-	answersMap := lo.SliceToMap(answers, func(a *entity.AnswerQuiz) (string, []bool) {
-		return a.QuestionID, a.Answer
-	})
-	for _, quiz := range quizzes {
-		ans, ok := answersMap[quiz.ID.String()]
-		if !ok {
-			return false, ErrNotFullyAnswered
-		}
-		if !util.SlicesEqual(ans, quiz.CorrectAnswers) {
-			return false, ErrNotCorrectAnswer
-		}
-	}
-	return true, nil
 }

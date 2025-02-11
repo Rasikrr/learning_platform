@@ -11,13 +11,9 @@ type ExecuteRequest struct {
 }
 
 type ExecuteResponse struct {
-	Output             string `json:"output"`
-	Error              string `json:"error"`
-	StatusCode         int    `json:"statusCode"`
-	Memory             string `json:"memory"`
-	CPUTime            string `json:"cpuTime"`
-	CompilationStatus  string `json:"compilationStatus"`
-	ProjectKey         string `json:"projectKey"`
-	IsExecutionSuccess bool   `json:"isExecutionSuccess"`
-	IsCompiled         bool   `json:"isCompiled"`
+	Output            string `json:"output"`
+	StatusCode        int    `json:"statusCode"`
+	Memory            string `json:"memory"`
+	CPUTime           string `json:"cpuTime"`
+	CompilationStatus int    `json:"compilationStatus"`
 }

@@ -26,6 +26,7 @@ type Config struct {
 	Redis    RedisConfig    `toml:"redis"`
 	Auth     AuthConfig     `toml:"auth"`
 	Mail     MailConfig
+	JDoodle  JDoodleConfig
 }
 
 type AuthConfig struct {
@@ -66,6 +67,12 @@ type MailConfig struct {
 	From     string `toml:"from"`
 }
 
+type JDoodleConfig struct {
+	URL          string
+	ClientID     string
+	ClientSecret string
+}
+
 func Parse() (Config, error) {
 	err := godotenv.Load()
 	if err != nil {
@@ -101,6 +108,11 @@ func Parse() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+
+	config.JDoodle.URL = os.Getenv("JDOODLE_URL")
+	config.JDoodle.ClientID = os.Getenv("JDOODLE_CLIENT_ID")
+	config.JDoodle.ClientSecret = os.Getenv("JDOODLE_CLIENT_SECRET")
+
 	config.Mail.Port = mailPort
 	config.Mail.User = os.Getenv("MAIL_USER")
 	config.Mail.Password = os.Getenv("MAIL_PASSWORD")

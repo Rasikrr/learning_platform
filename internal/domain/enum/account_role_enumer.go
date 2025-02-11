@@ -5,11 +5,14 @@ package enum
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 const _AccountRoleName = "adminuser"
 
 var _AccountRoleIndex = [...]uint8{0, 5, 9}
+
+const _AccountRoleLowerName = "adminuser"
 
 func (i AccountRole) String() string {
 	if i >= AccountRole(len(_AccountRoleIndex)-1) {
@@ -18,11 +21,26 @@ func (i AccountRole) String() string {
 	return _AccountRoleName[_AccountRoleIndex[i]:_AccountRoleIndex[i+1]]
 }
 
-var _AccountRoleValues = []AccountRole{0, 1}
+// An "invalid array index" compiler error signifies that the constant values have changed.
+// Re-run the stringer command to generate them again.
+func _AccountRoleNoOp() {
+	var x [1]struct{}
+	_ = x[AccountRoleAdmin-(0)]
+	_ = x[AccountRoleUser-(1)]
+}
+
+var _AccountRoleValues = []AccountRole{AccountRoleAdmin, AccountRoleUser}
 
 var _AccountRoleNameToValueMap = map[string]AccountRole{
-	_AccountRoleName[0:5]: 0,
-	_AccountRoleName[5:9]: 1,
+	_AccountRoleName[0:5]:      AccountRoleAdmin,
+	_AccountRoleLowerName[0:5]: AccountRoleAdmin,
+	_AccountRoleName[5:9]:      AccountRoleUser,
+	_AccountRoleLowerName[5:9]: AccountRoleUser,
+}
+
+var _AccountRoleNames = []string{
+	_AccountRoleName[0:5],
+	_AccountRoleName[5:9],
 }
 
 // AccountRoleString retrieves an enum value from the enum constants string name.
@@ -31,12 +49,23 @@ func AccountRoleString(s string) (AccountRole, error) {
 	if val, ok := _AccountRoleNameToValueMap[s]; ok {
 		return val, nil
 	}
+
+	if val, ok := _AccountRoleNameToValueMap[strings.ToLower(s)]; ok {
+		return val, nil
+	}
 	return 0, fmt.Errorf("%s does not belong to AccountRole values", s)
 }
 
 // AccountRoleValues returns all values of the enum
 func AccountRoleValues() []AccountRole {
 	return _AccountRoleValues
+}
+
+// AccountRoleStrings returns a slice of all String values of the enum
+func AccountRoleStrings() []string {
+	strs := make([]string, len(_AccountRoleNames))
+	copy(strs, _AccountRoleNames)
+	return strs
 }
 
 // IsAAccountRole returns "true" if the value is listed in the enum definition. "false" otherwise

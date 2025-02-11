@@ -8,6 +8,8 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
+//go:generate mockgen -destination ../mocks/test_cases/mock.go -package mocks -source=repository.go
+
 type Repository interface {
 	GetByTaskID(ctx context.Context, taskID string) ([]*entity.TestCase, error)
 }

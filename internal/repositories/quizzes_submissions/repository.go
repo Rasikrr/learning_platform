@@ -7,6 +7,8 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
+//go:generate mockgen -destination ../mocks/quizzes_submissions/mock.go -package mocks -source=repository.go
+
 type Repository interface {
 	CheckIsPassed(ctx context.Context, userID, topicID string) (bool, error)
 	UpdatePassed(ctx context.Context, userID, courseID, topicID string, passed bool) error

@@ -8,6 +8,8 @@ import (
 	"github.com/lib/pq"
 )
 
+//go:generate mockgen -destination ../mocks/quizzes/mock.go -package mocks -source=repository.go
+
 type Repository interface {
 	GetByTopicID(ctx context.Context, id string) ([]*entity.Quiz, error)
 	GetByTopicIDs(ctx context.Context, ids []string) ([]*entity.Quiz, error)

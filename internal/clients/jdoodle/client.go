@@ -16,6 +16,8 @@ var (
 	ErrCompilationError  = errors.New("compilation error")
 )
 
+//go:generate mockgen -destination ../mocks/jdoodle/mock.go -package mocks -source=client.go
+
 type Client interface {
 	ExecuteCode(_ context.Context, code string, lang enum.ProgrammingLanguage) (string, error)
 	ExecuteTestCase(_ context.Context, code, stdin string, lang enum.ProgrammingLanguage) (string, error)

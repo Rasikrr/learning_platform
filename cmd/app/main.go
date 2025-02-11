@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	appName = "assigment_2"
+	appName = "learning_platform"
 )
 
 func main() {

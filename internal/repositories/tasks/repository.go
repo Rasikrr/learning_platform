@@ -8,6 +8,8 @@ import (
 	"github.com/lib/pq"
 )
 
+//go:generate mockgen -destination ../mocks/tasks/mock.go -package mocks -source=repository.go
+
 type Repository interface {
 	GetByID(ctx context.Context, id string) (*entity.PracticalTask, error)
 	GetByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error)

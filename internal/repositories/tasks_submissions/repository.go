@@ -8,6 +8,8 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
+//go:generate mockgen -destination ../mocks/tasks_submissions/mock.go -package mocks -source=repository.go
+
 type Repository interface {
 	Create(ctx context.Context, submission *entity.TaskSubmission) error
 	CheckIsPassed(ctx context.Context, userID, taskID string) (bool, error)

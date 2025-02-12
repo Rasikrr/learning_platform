@@ -10,14 +10,6 @@ VALUES
     (gen_random_uuid(), 'DevOps', gen_random_uuid(), now(), now()),
     (gen_random_uuid(), 'Cybersecurity', gen_random_uuid(), now(), now());
 
-INSERT INTO course_category (id, name, created_by, created_at, updated_at)
-VALUES
-    ('a1d4a83e-3d65-4df5-b890-1b1d87b24a70', 'Backend', gen_random_uuid(), now(), now()),
-    (gen_random_uuid(), 'Frontend', gen_random_uuid(), now(), now()),
-    (gen_random_uuid(), 'Data Science', gen_random_uuid(), now(), now()),
-    (gen_random_uuid(), 'DevOps', gen_random_uuid(), now(), now()),
-    (gen_random_uuid(), 'Cybersecurity', gen_random_uuid(), now(), now());
-
 INSERT INTO courses (id, title, image_url, category_id, description, created_by)
 VALUES
     ('e9c3d8b5-4a71-4f3e-b99e-8d5f6a4b7c32', 'Голанг для бэкенда', 'golang.jpg', 'a1d4a83e-3d65-4df5-b890-1b1d87b24a70', 'Разработка серверных приложений на Go', gen_random_uuid());

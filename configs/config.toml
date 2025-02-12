@@ -16,5 +16,5 @@
     db = 0
 
 [auth]
-    access_token_lifetime = "15m"
+    access_token_lifetime = "100m"
     refresh_token_lifetime = "168h"

@@ -13,6 +13,7 @@ import (
 
 type Repository interface {
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	ResetPassword(ctx context.Context, email, password string) error
 	Create(ctx context.Context, user *entity.User) error
 	Delete(ctx context.Context, email string) error
 }
@@ -49,6 +50,14 @@ func (r *repository) Create(ctx context.Context, user *entity.User) error {
 
 func (r *repository) Delete(ctx context.Context, email string) error {
 	_, err := r.db.Exec(ctx, deleteStmt, email)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *repository) ResetPassword(ctx context.Context, email, password string) error {
+	_, err := r.db.Exec(ctx, resetPasswordStmt, email, password)
 	if err != nil {
 		return err
 	}

@@ -7,11 +7,29 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/Rasikrr/learning_platform/internal/cache"
 	authC "github.com/Rasikrr/learning_platform/internal/cache/auth"
+	"github.com/Rasikrr/learning_platform/internal/clients/jdoodle"
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
 	http "github.com/Rasikrr/learning_platform/internal/ports/http"
+	"github.com/Rasikrr/learning_platform/internal/repositories/answers"
+	categoriesR "github.com/Rasikrr/learning_platform/internal/repositories/categories"
+	contentR "github.com/Rasikrr/learning_platform/internal/repositories/content"
+	coursesR "github.com/Rasikrr/learning_platform/internal/repositories/courses"
+	enrollmentsR "github.com/Rasikrr/learning_platform/internal/repositories/enrollments"
+	questionCategories "github.com/Rasikrr/learning_platform/internal/repositories/question_categories"
+	question "github.com/Rasikrr/learning_platform/internal/repositories/questions"
+	quizzesR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
+	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
+	tasksR "github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	tasksSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/tasks_submissions"
+	testCasesR "github.com/Rasikrr/learning_platform/internal/repositories/test_cases"
+	topicsR "github.com/Rasikrr/learning_platform/internal/repositories/topics"
 	usersR "github.com/Rasikrr/learning_platform/internal/repositories/users"
 	authS "github.com/Rasikrr/learning_platform/internal/services/auth"
+	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
+	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
+	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	"github.com/hashicorp/go-multierror"
@@ -33,16 +51,38 @@ type App struct {
 	config   configs.Config
 	postgres *databases.Postgres
 
-	workers         []workers.Worker
-	usersRepository usersR.Repository
-	redisClient     *redis.Client
-	cacheClient     cache.Cache
-	authCache       authC.Cache
-	hasher          util.Hasher
+	workers []workers.Worker
 
-	mailClient  mail.Client
-	authService authS.Service
-	httpServer  *http.Server
+	usersRepository              usersR.Repository
+	courseRepository             coursesR.Repository
+	categoriesRepository         categoriesR.Repository
+	quizzesRepository            quizzesR.Repository
+	topicsRepository             topicsR.Repository
+	tasksRepository              tasksR.Repository
+	contentRepository            contentR.Repository
+	enrollmentsRepository        enrollmentsR.Repository
+	quizzesSubmissionRepository  quizzesSubmissionsR.Repository
+	answersRepository            answers.Repository
+	questionsRepository          question.Repository
+	questionCategoriesRepository questionCategories.Repository
+	tasksSubmissionsRepository   tasksSubmissionsR.Repository
+	testCasesRepository          testCasesR.Repository
+
+	redisClient *redis.Client
+	cacheClient cache.Cache
+	authCache   authC.Cache
+	hasher      util.Hasher
+
+	mailClient         mail.Client
+	taskExecutorClient jdoodle.Client
+
+	authService        authS.Service
+	courseService      coursesS.Service
+	enrollmentsService enrollmentsS.Service
+	faqService         faqS.Service
+	submissionsService submissionS.Service
+
+	httpServer *http.Server
 }
 
 // nolint: gocritic
@@ -75,6 +115,19 @@ func InitApp(ctx context.Context, name string) *App {
 
 func (a *App) InitRepositories(_ context.Context) error {
 	a.usersRepository = usersR.NewRepository(a.postgres)
+	a.courseRepository = coursesR.NewRepository(a.postgres)
+	a.categoriesRepository = categoriesR.NewRepository(a.postgres)
+	a.quizzesRepository = quizzesR.NewRepository(a.postgres)
+	a.topicsRepository = topicsR.NewRepository(a.postgres)
+	a.tasksRepository = tasksR.NewRepository(a.postgres)
+	a.answersRepository = answers.NewRepository(a.postgres)
+	a.questionsRepository = question.NewRepository(a.postgres)
+	a.questionCategoriesRepository = questionCategories.NewRepository(a.postgres)
+	a.contentRepository = contentR.NewRepository(a.postgres)
+	a.enrollmentsRepository = enrollmentsR.NewRepository(a.postgres)
+	a.quizzesSubmissionRepository = quizzesSubmissionsR.NewRepository(a.postgres)
+	a.tasksSubmissionsRepository = tasksSubmissionsR.NewRepository(a.postgres)
+	a.testCasesRepository = testCasesR.NewRepository(a.postgres)
 	return nil
 }
 
@@ -85,6 +138,7 @@ func (a *App) InitUtil(_ context.Context) error {
 
 func (a *App) InitClients(_ context.Context) error {
 	a.mailClient = mail.NewClient(&a.config)
+	a.taskExecutorClient = jdoodle.NewClient(&a.config)
 	return nil
 }
 
@@ -110,11 +164,55 @@ func (a *App) InitServices(_ context.Context) error {
 		a.config.Auth.AccessTokenLifeTime,
 		a.config.Auth.RefreshTokenLifeTime,
 		a.mailClient, a.usersRepository, a.hasher, a.authCache)
+
+	a.courseService = coursesS.NewService(
+		a.courseRepository,
+		a.categoriesRepository,
+		a.topicsRepository,
+		a.quizzesRepository,
+		a.tasksRepository,
+		a.contentRepository,
+	)
+
+	a.enrollmentsService = enrollmentsS.NewService(
+		a.courseRepository,
+		a.enrollmentsRepository,
+	)
+	a.faqService = faqS.NewService(
+		a.questionsRepository,
+		a.questionCategoriesRepository,
+		a.answersRepository,
+	)
+
+	a.courseService = coursesS.NewService(
+		a.courseRepository,
+		a.categoriesRepository,
+		a.topicsRepository,
+		a.quizzesRepository,
+		a.tasksRepository,
+		a.contentRepository,
+	)
+
+	a.submissionsService = submissionS.NewService(
+		a.quizzesRepository,
+		a.quizzesSubmissionRepository,
+		a.tasksSubmissionsRepository,
+		a.testCasesRepository,
+		a.tasksRepository,
+		a.taskExecutorClient,
+	)
 	return nil
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(&a.config, a.authService)
+	a.httpServer = http.NewServer(
+		&a.config,
+		a.authService,
+		a.courseService,
+		a.enrollmentsService,
+		a.submissionsService,
+		a.faqService,
+	)
 	return nil
 }
 

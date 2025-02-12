@@ -5,6 +5,14 @@ import (
 	"net/http"
 )
 
+// @Summary Confirm register
+// @Description Confirm user registration using confirmation code
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body ConfirmRegisterRequest true "user email and confirmation code"
+// @Success 200 {object} Auth "Success"
+// @Router /api/v1/auth/confirm [post]
 func (c *Controller) confirmRegister(w http.ResponseWriter, r *http.Request) {
 	var req ConfirmRegisterRequest
 	if err := api.GetData(r, &req); err != nil {

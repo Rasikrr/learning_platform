@@ -14,3 +14,6 @@ tests:
 build:
 	mkdir -p ./bin
 	go build -o ./bin ./cmd/app/main.go
+
+gen_docs:
+	swag init -g internal/ports/http/server.go -d .

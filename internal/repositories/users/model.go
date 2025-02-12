@@ -4,7 +4,6 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/domain/enum"
 	"github.com/google/uuid"
-	"log"
 	"time"
 )
 
@@ -24,7 +23,6 @@ type model struct {
 }
 
 func convertModel(m model) (*entity.User, error) {
-	log.Printf("%+v\n", m)
 	role, err := enum.AccountRoleString(m.AccountRole)
 	if err != nil {
 		return nil, err

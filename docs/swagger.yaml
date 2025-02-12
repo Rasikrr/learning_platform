@@ -1,0 +1,645 @@
+basePath: /
+definitions:
+  api.EmptySuccessResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  auth.Auth:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  auth.ConfirmRegisterRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    type: object
+  auth.ConfirmResetPasswordRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.RefreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  auth.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      password_confirm:
+        type: string
+    type: object
+  auth.ResetPasswordRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      password_confirm:
+        type: string
+    type: object
+  commands.answerQuiz:
+    properties:
+      answer:
+        items:
+          type: boolean
+        type: array
+      question_id:
+        type: string
+    type: object
+  commands.submitQuizRequest:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/commands.answerQuiz'
+        type: array
+    type: object
+  enrollments.enrollToCourseRequest:
+    properties:
+      course_id:
+        type: string
+    type: object
+  entity.PracticalTask:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      difficulty_level:
+        $ref: '#/definitions/enum.Difficulty'
+      expected_output:
+        type: string
+      id:
+        type: string
+      order_number:
+        type: integer
+      starter_code:
+        type: string
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.TopicContent:
+    properties:
+      additional_resources:
+        items:
+          type: string
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      image_urls:
+        items:
+          type: string
+        type: array
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+      video_urls:
+        items:
+          type: string
+        type: array
+    type: object
+  enum.Difficulty:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - DifficultyEasy
+    - DifficultyMedium
+    - DifficultyHard
+  queries.category:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  queries.getCategoriesListResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/queries.category'
+        type: array
+    type: object
+  queries.getCourseDetailedResponse:
+    properties:
+      course:
+        $ref: '#/definitions/queries.getCourseResponse'
+      topics:
+        items:
+          $ref: '#/definitions/queries.topic'
+        type: array
+    type: object
+  queries.getCourseResponse:
+    properties:
+      category:
+        $ref: '#/definitions/queries.category'
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  queries.getCoursesListRequest:
+    properties:
+      categories_ids:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  queries.getCoursesListResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/queries.getCourseResponse'
+        type: array
+    type: object
+  queries.getTopicQuizzesResponse:
+    properties:
+      quizzes:
+        items:
+          $ref: '#/definitions/queries.quizz'
+        type: array
+    type: object
+  queries.quizz:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      multiple_choice:
+        type: boolean
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+      topic_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  queries.topic:
+    properties:
+      course_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      order_number:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: leaning_platform@gmail.com
+    name: Pick me team
+    url: https://github.com/Rasikrr/learning_platform
+  description: This is docs for Learning Platform API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Learning Platform API
+  version: "1.0"
+paths:
+  /api/v1/auth/confirm:
+    post:
+      consumes:
+      - application/json
+      description: Confirm user registration using confirmation code
+      parameters:
+      - description: user email and confirmation code
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Confirm register
+      tags:
+      - auth
+  /api/v1/auth/confirm_reset_password:
+    post:
+      consumes:
+      - application/json
+      description: Confirm user password reset using confirmation code
+      parameters:
+      - description: user email and confirmation code
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Confirm password reset
+      tags:
+      - auth
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with email and password
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Login user
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh user tokens
+      parameters:
+      - description: user's refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.Auth'
+      summary: Refresh token
+      tags:
+      - auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user with email and password and confirm password. Then
+        send confirmation code to user email
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Register user
+      tags:
+      - auth
+  /api/v1/auth/reset_password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password with email and password and confirm password.
+        Then send confirmation code to user email
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      summary: Reset password
+      tags:
+      - auth
+  /api/v1/courses:
+    post:
+      description: Get courses for catalog
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/queries.getCoursesListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCoursesListResponse'
+      summary: Get courses
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/content:
+    get:
+      description: Get course topic content by topic id
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.TopicContent'
+      security:
+      - BearerAuth: []
+      summary: Get course topic content
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset:
+    post:
+      consumes:
+      - application/json
+      description: submit quiz
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: submit quiz
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit:
+    post:
+      consumes:
+      - application/json
+      description: submit quiz
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/commands.submitQuizRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: submit quiz
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/quizzes:
+    get:
+      description: get quizzes list by topic id
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getTopicQuizzesResponse'
+      security:
+      - BearerAuth: []
+      summary: get quizzes by topic id
+      tags:
+      - courses
+  /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}:
+    get:
+      description: Get course topic tasks by topic id and. Also you must pass task
+        order
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: number of task
+        in: path
+        name: order
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/entity.PracticalTask'
+      security:
+      - BearerAuth: []
+      summary: Get course topic tasks
+      tags:
+      - courses
+  /api/v1/courses/{id}:
+    get:
+      description: Get detailed course info with topics by id
+      parameters:
+      - description: course id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCourseDetailedResponse'
+      summary: Get course by id
+      tags:
+      - courses
+  /api/v1/courses/categories:
+    get:
+      description: Get courses categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/queries.getCategoriesListResponse'
+      summary: Get courses categories
+      tags:
+      - courses
+  /api/v1/courses/enroll:
+    post:
+      consumes:
+      - application/json
+      description: enroll to course by course id
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/enrollments.enrollToCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: enroll to course
+      tags:
+      - courses
+swagger: "2.0"

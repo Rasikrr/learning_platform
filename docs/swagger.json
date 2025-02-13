@@ -288,7 +288,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "enrollments"
                 ],
                 "summary": "enroll to course",
                 "parameters": [
@@ -314,6 +314,40 @@
                         "description": "Success",
                         "schema": {
                             "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/enrollments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get user enrollments",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "get user enrollments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/enrollments.getUserEnrollmentsResponse"
                         }
                     }
                 }
@@ -725,11 +759,71 @@
                 }
             }
         },
+        "enrollments.course": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "enrollments.enrollToCourseRequest": {
             "type": "object",
             "properties": {
                 "course_id": {
                     "type": "string"
+                }
+            }
+        },
+        "enrollments.enrollment": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "$ref": "#/definitions/enrollments.course"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "enrollments.getUserEnrollmentsResponse": {
+            "type": "object",
+            "properties": {
+                "enrollments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/enrollments.enrollment"
+                    }
                 }
             }
         },
@@ -751,11 +845,17 @@
                 "id": {
                     "type": "string"
                 },
+                "language": {
+                    "$ref": "#/definitions/enum.ProgrammingLanguage"
+                },
                 "order_number": {
                     "type": "integer"
                 },
                 "starter_code": {
                     "type": "string"
+                },
+                "test_cases": {
+                    "type": "boolean"
                 },
                 "topic_id": {
                     "type": "string"
@@ -814,6 +914,27 @@
                 "DifficultyEasy",
                 "DifficultyMedium",
                 "DifficultyHard"
+            ]
+        },
+        "enum.ProgrammingLanguage": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "x-enum-varnames": [
+                "ProgrammingLanguageGo",
+                "ProgrammingLanguagePython3",
+                "ProgrammingLanguageJava",
+                "ProgrammingLanguageRuby",
+                "ProgrammingLanguageSQL",
+                "ProgrammingLanguageNodejs",
+                "ProgrammingLanguageRust"
             ]
         },
         "queries.category": {

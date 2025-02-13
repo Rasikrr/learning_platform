@@ -38,6 +38,7 @@ import (
 	HTTP "net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"sync"
 	"syscall"
 )
@@ -87,6 +88,8 @@ type App struct {
 
 // nolint: gocritic
 func InitApp(ctx context.Context, name string) *App {
+	log.Printf("starting app initialization: %s\n", name)
+	log.Printf("go version: %s\n", runtime.Version())
 	cfg, err := configs.Parse()
 	if err != nil {
 		panic(err)
@@ -230,7 +233,7 @@ func (a *App) Start(ctx context.Context) error {
 
 	stop := make(chan struct{})
 
-	go a.handleShutdown(cancel, stop)
+	go a.handleShutdown(ctx, cancel, stop)
 
 	fns := make([]any, 0, len(a.workers)+1)
 	fns = append(fns, a.httpServer.Start)
@@ -245,7 +248,7 @@ func (a *App) Start(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
+func (a *App) handleShutdown(_ context.Context, cancel context.CancelFunc, s chan struct{}) {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
@@ -256,6 +259,13 @@ func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
 	if err := a.httpServer.Shutdown(context.Background()); err != nil {
 		log.Println("Error while shutting down HTTP server:", err)
 	}
+
+	a.postgres.Close()
+
+	if err := a.redisClient.Close(); err != nil {
+		log.Println("Error while closing redis client:", err)
+	}
+	log.Println("Redis client closed gracefully")
 	cancel()
 	close(s)
 }

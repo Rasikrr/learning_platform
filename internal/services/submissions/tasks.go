@@ -86,3 +86,11 @@ func (s *service) runTestsCases(ctx context.Context, task *entity.PracticalTask,
 	}
 	return output, executeErr
 }
+
+func (s *service) ExecuteTask(ctx context.Context, input, taskID string) (string, error) {
+	task, err := s.tasksRepository.GetByID(ctx, taskID)
+	if err != nil {
+		return "", err
+	}
+	return s.taskExecutorClient.ExecuteCode(ctx, input, task.Language)
+}

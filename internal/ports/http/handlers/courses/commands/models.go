@@ -26,6 +26,14 @@ type submitTaskRequest struct {
 	Input string `json:"input"`
 }
 
+type executeTaskRequest struct {
+	submitTaskRequest
+}
+
+type executeTaskResponse struct {
+	Output string `json:"output"`
+}
+
 type answers []answerQuiz
 
 func (a answers) ToEntities() []*entity.AnswerQuiz {
@@ -56,5 +64,11 @@ func (req submitTaskRequest) convert(c courseAndTopic, session *entity.Session) 
 		UserID:    session.UserID.String(),
 		Input:     req.Input,
 		CreatedAt: time.Now(),
+	}
+}
+
+func convertToExecuteTaskResponse(out string) executeTaskResponse {
+	return executeTaskResponse{
+		Output: out,
 	}
 }

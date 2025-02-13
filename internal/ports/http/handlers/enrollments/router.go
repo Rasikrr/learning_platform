@@ -20,4 +20,5 @@ func NewController(enrollmentsService enrollments.Service, m *middlewares.AuthMi
 
 func (c *Controller) Init(r *http.ServeMux) {
 	r.HandleFunc("POST /api/v1/courses/enroll", c.m.Handle(c.enrollToCourse))
+	r.HandleFunc("GET /api/v1/courses/enrollments", c.m.Handle(c.getUserEnrollments))
 }

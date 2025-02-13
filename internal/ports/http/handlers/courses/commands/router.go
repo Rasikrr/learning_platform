@@ -34,4 +34,5 @@ func (c *Controller) Init(r *http.ServeMux) {
 	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset", auth(c.e.Handle(c.resetQuiz)))
 
 	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/submit", auth(c.e.Handle(c.submitTask)))
+	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/execute", auth(c.e.Handle(c.executeTask)))
 }

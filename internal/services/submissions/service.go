@@ -24,6 +24,7 @@ type Service interface {
 	ResetQuiz(ctx context.Context, userID, courseID, topicID string) error
 
 	SubmitTask(ctx context.Context, submission *entity.TaskSubmission) (string, error)
+	ExecuteTask(ctx context.Context, input, taskID string) (string, error)
 }
 
 type service struct {

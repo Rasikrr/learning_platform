@@ -72,10 +72,49 @@ definitions:
           $ref: '#/definitions/commands.answerQuiz'
         type: array
     type: object
+  enrollments.course:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
   enrollments.enrollToCourseRequest:
     properties:
       course_id:
         type: string
+    type: object
+  enrollments.enrollment:
+    properties:
+      course:
+        $ref: '#/definitions/enrollments.course'
+      created_at:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  enrollments.getUserEnrollmentsResponse:
+    properties:
+      enrollments:
+        items:
+          $ref: '#/definitions/enrollments.enrollment'
+        type: array
     type: object
   entity.PracticalTask:
     properties:
@@ -89,10 +128,14 @@ definitions:
         type: string
       id:
         type: string
+      language:
+        $ref: '#/definitions/enum.ProgrammingLanguage'
       order_number:
         type: integer
       starter_code:
         type: string
+      test_cases:
+        type: boolean
       topic_id:
         type: string
       updated_at:
@@ -133,6 +176,24 @@ definitions:
     - DifficultyEasy
     - DifficultyMedium
     - DifficultyHard
+  enum.ProgrammingLanguage:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    type: integer
+    x-enum-varnames:
+    - ProgrammingLanguageGo
+    - ProgrammingLanguagePython3
+    - ProgrammingLanguageJava
+    - ProgrammingLanguageRuby
+    - ProgrammingLanguageSQL
+    - ProgrammingLanguageNodejs
+    - ProgrammingLanguageRust
   queries.category:
     properties:
       created_at:
@@ -641,5 +702,26 @@ paths:
       - BearerAuth: []
       summary: enroll to course
       tags:
-      - courses
+      - enrollments
+  /api/v1/courses/enrollments:
+    get:
+      description: get user enrollments
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/enrollments.getUserEnrollmentsResponse'
+      security:
+      - BearerAuth: []
+      summary: get user enrollments
+      tags:
+      - enrollments
 swagger: "2.0"

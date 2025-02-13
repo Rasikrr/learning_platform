@@ -177,6 +177,29 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 				}
 				in.Delim(']')
 			}
+		case "answers":
+			if in.IsNull() {
+				in.Skip()
+				out.Answers = nil
+			} else {
+				in.Delim('[')
+				if out.Answers == nil {
+					if !in.IsDelim(']') {
+						out.Answers = make([]bool, 0, 64)
+					} else {
+						out.Answers = []bool{}
+					}
+				} else {
+					out.Answers = (out.Answers)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v2 bool
+					v2 = bool(in.Bool())
+					out.Answers = append(out.Answers, v2)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		case "multiple_choice":
 			out.MultipleChoice = bool(in.Bool())
 		case "created_at":
@@ -223,11 +246,25 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v2, v3 := range in.Options {
-				if v2 > 0 {
+			for v3, v4 := range in.Options {
+				if v3 > 0 {
 					out.RawByte(',')
 				}
-				out.String(string(v3))
+				out.String(string(v4))
+			}
+			out.RawByte(']')
+		}
+	}
+	if len(in.Answers) != 0 {
+		const prefix string = ",\"answers\":"
+		out.RawString(prefix)
+		{
+			out.RawByte('[')
+			for v5, v6 := range in.Answers {
+				if v5 > 0 {
+					out.RawByte(',')
+				}
+				out.Bool(bool(v6))
 			}
 			out.RawByte(']')
 		}
@@ -388,13 +425,15 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 					out.Quizzes = (out.Quizzes)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v4 quizz
-					(v4).UnmarshalEasyJSON(in)
-					out.Quizzes = append(out.Quizzes, v4)
+					var v7 quizz
+					(v7).UnmarshalEasyJSON(in)
+					out.Quizzes = append(out.Quizzes, v7)
 					in.WantComma()
 				}
 				in.Delim(']')
 			}
+		case "passed":
+			out.Passed = bool(in.Bool())
 		default:
 			in.SkipRecursive()
 		}
@@ -416,14 +455,19 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v5, v6 := range in.Quizzes {
-				if v5 > 0 {
+			for v8, v9 := range in.Quizzes {
+				if v8 > 0 {
 					out.RawByte(',')
 				}
-				(v6).MarshalEasyJSON(out)
+				(v9).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
+	}
+	{
+		const prefix string = ",\"passed\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.Passed))
 	}
 	out.RawByte('}')
 }
@@ -632,9 +676,9 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 					out.Courses = (out.Courses)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v7 getCourseResponse
-					(v7).UnmarshalEasyJSON(in)
-					out.Courses = append(out.Courses, v7)
+					var v10 getCourseResponse
+					(v10).UnmarshalEasyJSON(in)
+					out.Courses = append(out.Courses, v10)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -660,11 +704,11 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v8, v9 := range in.Courses {
-				if v8 > 0 {
+			for v11, v12 := range in.Courses {
+				if v11 > 0 {
 					out.RawByte(',')
 				}
-				(v9).MarshalEasyJSON(out)
+				(v12).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
@@ -734,9 +778,9 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 					out.CategoriesIDs = (out.CategoriesIDs)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v10 string
-					v10 = string(in.String())
-					out.CategoriesIDs = append(out.CategoriesIDs, v10)
+					var v13 string
+					v13 = string(in.String())
+					out.CategoriesIDs = append(out.CategoriesIDs, v13)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -772,11 +816,11 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v11, v12 := range in.CategoriesIDs {
-				if v11 > 0 {
+			for v14, v15 := range in.CategoriesIDs {
+				if v14 > 0 {
 					out.RawByte(',')
 				}
-				out.String(string(v12))
+				out.String(string(v15))
 			}
 			out.RawByte(']')
 		}
@@ -975,9 +1019,9 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 					out.Topics = (out.Topics)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v13 topic
-					(v13).UnmarshalEasyJSON(in)
-					out.Topics = append(out.Topics, v13)
+					var v16 topic
+					(v16).UnmarshalEasyJSON(in)
+					out.Topics = append(out.Topics, v16)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -1008,11 +1052,11 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v14, v15 := range in.Topics {
-				if v14 > 0 {
+			for v17, v18 := range in.Topics {
+				if v17 > 0 {
 					out.RawByte(',')
 				}
-				(v15).MarshalEasyJSON(out)
+				(v18).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
@@ -1078,9 +1122,9 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 					out.Categories = (out.Categories)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v16 category
-					(v16).UnmarshalEasyJSON(in)
-					out.Categories = append(out.Categories, v16)
+					var v19 category
+					(v19).UnmarshalEasyJSON(in)
+					out.Categories = append(out.Categories, v19)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -1106,11 +1150,11 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v17, v18 := range in.Categories {
-				if v17 > 0 {
+			for v20, v21 := range in.Categories {
+				if v20 > 0 {
 					out.RawByte(',')
 				}
-				(v18).MarshalEasyJSON(out)
+				(v21).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}

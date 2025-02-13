@@ -25,6 +25,7 @@ type Service interface {
 
 	SubmitTask(ctx context.Context, submission *entity.TaskSubmission) (string, error)
 	ExecuteTask(ctx context.Context, input, taskID string) (string, error)
+	ResetTask(ctx context.Context, userID, taskID string) error
 }
 
 type service struct {

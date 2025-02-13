@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/repositories/content"
 	"github.com/Rasikrr/learning_platform/internal/repositories/courses"
 	"github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
+	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
 	"github.com/Rasikrr/learning_platform/internal/repositories/tasks"
 	"github.com/Rasikrr/learning_platform/internal/repositories/topics"
 )
@@ -19,18 +20,19 @@ type Service interface {
 
 	GetContentByTopicID(ctx context.Context, topicID string) (*entity.TopicContent, error)
 
-	GetQuizzesByTopicID(ctx context.Context, topicID string) ([]*entity.Quiz, error)
+	GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error)
 
 	GetTasksByTopicIDAndOrderNum(ctx context.Context, topicID string, order int) (*entity.PracticalTask, error)
 }
 
 type service struct {
-	coursesRepository    courses.Repository
-	categoriesRepository categories.Repository
-	topicsRepository     topics.Repository
-	quizzesRepository    quizzes.Repository
-	tasksRepository      tasks.Repository
-	contentRepository    content.Repository
+	coursesRepository           courses.Repository
+	categoriesRepository        categories.Repository
+	topicsRepository            topics.Repository
+	quizzesRepository           quizzes.Repository
+	quizzesSubmissionRepository quizzesSubmissionsR.Repository
+	tasksRepository             tasks.Repository
+	contentRepository           content.Repository
 }
 
 func NewService(
@@ -40,13 +42,15 @@ func NewService(
 	quizzesRepository quizzes.Repository,
 	tasksRepository tasks.Repository,
 	contentRepository content.Repository,
+	quizzesSubmissionRepository quizzesSubmissionsR.Repository,
 ) Service {
 	return &service{
-		coursesRepository:    coursesRepository,
-		categoriesRepository: categoriesRepository,
-		topicsRepository:     topicsRepository,
-		quizzesRepository:    quizzesRepository,
-		tasksRepository:      tasksRepository,
-		contentRepository:    contentRepository,
+		coursesRepository:           coursesRepository,
+		categoriesRepository:        categoriesRepository,
+		topicsRepository:            topicsRepository,
+		quizzesRepository:           quizzesRepository,
+		tasksRepository:             tasksRepository,
+		contentRepository:           contentRepository,
+		quizzesSubmissionRepository: quizzesSubmissionRepository,
 	}
 }

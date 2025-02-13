@@ -111,8 +111,8 @@ func address(host, port string) string {
 }
 
 func (s *Server) initSwagger(router *http.ServeMux) {
-	hostPort := fmt.Sprintf("%s:%s", s.host, s.port)
-	url := fmt.Sprintf("http://%s/swagger/doc.json", hostPort)
+	addr := hostPort(s.host, s.port)
+	url := fmt.Sprintf("http://%s/swagger/doc.json", addr)
 	router.Handle("/swagger/",
 		httpSwagger.Handler(httpSwagger.URL(url)),
 	)
@@ -120,6 +120,7 @@ func (s *Server) initSwagger(router *http.ServeMux) {
 
 func (s *Server) Start() error {
 	log.Println("starting http server")
+	log.Printf("swagger url: http://%s/swagger/index.html\n", hostPort(s.host, s.port))
 	return s.srv.ListenAndServe()
 }
 
@@ -128,4 +129,8 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func hostPort(host, port string) string {
+	return fmt.Sprintf("%s:%s", host, port)
 }

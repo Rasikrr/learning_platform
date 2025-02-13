@@ -31,8 +31,9 @@ func NewController(
 func (c *Controller) Init(r *http.ServeMux) {
 	auth := c.m.Handle
 	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit", auth(c.e.Handle(c.submitQuiz)))
-	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset", auth(c.e.Handle(c.resetQuiz)))
+	r.Handle("PUT /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset", auth(c.e.Handle(c.resetQuiz)))
 
 	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/submit", auth(c.e.Handle(c.submitTask)))
 	r.Handle("POST /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/execute", auth(c.e.Handle(c.executeTask)))
+	r.Handle("DELETE /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/reset", auth(c.e.Handle(c.resetTask)))
 }

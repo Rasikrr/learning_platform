@@ -408,7 +408,7 @@ const docTemplate = `{
             }
         },
         "/api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -422,7 +422,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "submit quiz",
                 "parameters": [
@@ -473,7 +473,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "submit quiz",
                 "parameters": [
@@ -525,12 +525,12 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "get quizzes list by topic id",
+                "description": "get quizzes list by topic id. If quiz is passed, then answers will be returned",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "get quizzes by topic id",
                 "parameters": [
@@ -566,6 +566,198 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/execute": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "execute task. Example code: ` + "`" + `package main\\n\\nimport (\\n\\t\\\"fmt\\\"\\n)\\n\\nfunc main() {\\n\\tfmt.Println(\\\"Hello, World!\\\")\\n}` + "`" + `",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "execute task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/commands.executeTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/commands.executeTaskResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/reset": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "reset task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "reset task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/submit": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "submit task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "submit task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/commands.submitTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}": {
             "get": {
                 "security": [
@@ -578,7 +770,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "tasks"
                 ],
                 "summary": "Get course topic tasks",
                 "parameters": [
@@ -754,6 +946,22 @@ const docTemplate = `{
                 }
             }
         },
+        "commands.executeTaskRequest": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string"
+                }
+            }
+        },
+        "commands.executeTaskResponse": {
+            "type": "object",
+            "properties": {
+                "output": {
+                    "type": "string"
+                }
+            }
+        },
         "commands.submitQuizRequest": {
             "type": "object",
             "properties": {
@@ -762,6 +970,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/commands.answerQuiz"
                     }
+                }
+            }
+        },
+        "commands.submitTaskRequest": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string"
                 }
             }
         },
@@ -1048,6 +1264,9 @@ const docTemplate = `{
         "queries.getTopicQuizzesResponse": {
             "type": "object",
             "properties": {
+                "passed": {
+                    "type": "boolean"
+                },
                 "quizzes": {
                     "type": "array",
                     "items": {
@@ -1059,6 +1278,12 @@ const docTemplate = `{
         "queries.quizz": {
             "type": "object",
             "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "boolean"
+                    }
+                },
                 "created_at": {
                     "type": "string"
                 },

@@ -70,8 +70,26 @@ func (s *service) GetContentByTopicID(ctx context.Context, id string) (*entity.T
 	return s.contentRepository.GetByTopicID(ctx, id)
 }
 
-func (s *service) GetQuizzesByTopicID(ctx context.Context, id string) ([]*entity.Quiz, error) {
-	return s.quizzesRepository.GetByTopicID(ctx, id)
+func (s *service) GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error) {
+	var (
+		quizzes []*entity.Quiz
+		passed  bool
+		g       errgroup.Group
+	)
+	g.Go(func() error {
+		var err error
+		quizzes, err = s.quizzesRepository.GetByTopicID(ctx, topicID)
+		return err
+	})
+	g.Go(func() error {
+		var err error
+		passed, err = s.quizzesSubmissionRepository.CheckIsPassed(ctx, userID, topicID)
+		return err
+	})
+	if err := g.Wait(); err != nil {
+		return nil, false, err
+	}
+	return quizzes, passed, nil
 }
 
 func (s *service) GetTasksByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {

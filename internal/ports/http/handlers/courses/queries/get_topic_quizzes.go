@@ -6,8 +6,8 @@ import (
 )
 
 // @Summary get quizzes by topic id
-// @Description get quizzes list by topic id
-// @Tags courses
+// @Description get quizzes list by topic id. If quiz is passed, then answers will be returned
+// @Tags quizzes
 // @Produce json
 // @Security     BearerAuth
 // @param Authorization header string true "Authorization token"
@@ -16,18 +16,22 @@ import (
 // @Success 200 {object} getTopicQuizzesResponse "Success"
 // @Router /api/v1/courses/{course_id}/topic/{topic_id}/quizzes [get]
 func (c *Controller) getCourseTopicQuizzes(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	session, err := api.GetSession(ctx)
+	if err != nil {
+		api.SendError(w, http.StatusInternalServerError, err)
+		return
+	}
 	var req getTopicQuizzesRequest
 	if err := api.GetData(r, &req); err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	ctx := r.Context()
-
-	quizzes, err := c.coursesService.GetQuizzesByTopicID(ctx, req.TopicID)
+	quizzes, passed, err := c.coursesService.GetQuizzesByTopicID(ctx, session.UserID.String(), req.TopicID)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, convertToGetTopicQuizzesResponse(quizzes), http.StatusOK)
+	api.SendData(w, convertToGetTopicQuizzesResponse(quizzes, passed), http.StatusOK)
 }

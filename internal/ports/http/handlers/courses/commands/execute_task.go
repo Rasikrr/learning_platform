@@ -11,8 +11,8 @@ var (
 )
 
 // @Summary execute task
-// @Description execute task
-// @Tags courses
+// @Description execute task. Example code: `package main\n\nimport (\n\t\"fmt\"\n)\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}`
+// @Tags tasks
 // @Accept json
 // @Produce json
 // @Security     BearerAuth

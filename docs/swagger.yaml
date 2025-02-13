@@ -65,12 +65,27 @@ definitions:
       question_id:
         type: string
     type: object
+  commands.executeTaskRequest:
+    properties:
+      input:
+        type: string
+    type: object
+  commands.executeTaskResponse:
+    properties:
+      output:
+        type: string
+    type: object
   commands.submitQuizRequest:
     properties:
       answers:
         items:
           $ref: '#/definitions/commands.answerQuiz'
         type: array
+    type: object
+  commands.submitTaskRequest:
+    properties:
+      input:
+        type: string
     type: object
   enrollments.course:
     properties:
@@ -262,6 +277,8 @@ definitions:
     type: object
   queries.getTopicQuizzesResponse:
     properties:
+      passed:
+        type: boolean
       quizzes:
         items:
           $ref: '#/definitions/queries.quizz'
@@ -269,6 +286,10 @@ definitions:
     type: object
   queries.quizz:
     properties:
+      answers:
+        items:
+          type: boolean
+        type: array
       created_at:
         type: string
       id:
@@ -503,7 +524,7 @@ paths:
       tags:
       - courses
   /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset:
-    post:
+    put:
       consumes:
       - application/json
       description: submit quiz
@@ -534,7 +555,7 @@ paths:
       - BearerAuth: []
       summary: submit quiz
       tags:
-      - courses
+      - quizzes
   /api/v1/courses/{course_id}/topic/{topic_id}/quiz/submit:
     post:
       consumes:
@@ -573,10 +594,11 @@ paths:
       - BearerAuth: []
       summary: submit quiz
       tags:
-      - courses
+      - quizzes
   /api/v1/courses/{course_id}/topic/{topic_id}/quizzes:
     get:
-      description: get quizzes list by topic id
+      description: get quizzes list by topic id. If quiz is passed, then answers will
+        be returned
       parameters:
       - description: Authorization token
         in: header
@@ -604,7 +626,134 @@ paths:
       - BearerAuth: []
       summary: get quizzes by topic id
       tags:
-      - courses
+      - quizzes
+  /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/execute:
+    post:
+      consumes:
+      - application/json
+      description: 'execute task. Example code: `package main\n\nimport (\n\t\"fmt\"\n)\n\nfunc
+        main() {\n\tfmt.Println(\"Hello, World!\")\n}`'
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: task id
+        in: path
+        name: task_id
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/commands.executeTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/commands.executeTaskResponse'
+      security:
+      - BearerAuth: []
+      summary: execute task
+      tags:
+      - tasks
+  /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/reset:
+    delete:
+      consumes:
+      - application/json
+      description: reset task
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: task id
+        in: path
+        name: task_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: reset task
+      tags:
+      - tasks
+  /api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/submit:
+    post:
+      consumes:
+      - application/json
+      description: submit task
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: course id
+        in: path
+        name: course_id
+        required: true
+        type: string
+      - description: topic id
+        in: path
+        name: topic_id
+        required: true
+        type: string
+      - description: task id
+        in: path
+        name: task_id
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/commands.submitTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: submit task
+      tags:
+      - tasks
   /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}:
     get:
       description: Get course topic tasks by topic id and. Also you must pass task
@@ -641,7 +790,7 @@ paths:
       - BearerAuth: []
       summary: Get course topic tasks
       tags:
-      - courses
+      - tasks
   /api/v1/courses/{id}:
     get:
       description: Get detailed course info with topics by id

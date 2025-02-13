@@ -63,3 +63,17 @@ func (mr *MockRepositoryMockRecorder) Create(ctx, submission interface{}) *gomoc
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRepository)(nil).Create), ctx, submission)
 }
+
+// DeleteByUserAndTaskID mocks base method.
+func (m *MockRepository) DeleteByUserAndTaskID(ctx context.Context, userID, taskID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteByUserAndTaskID", ctx, userID, taskID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteByUserAndTaskID indicates an expected call of DeleteByUserAndTaskID.
+func (mr *MockRepositoryMockRecorder) DeleteByUserAndTaskID(ctx, userID, taskID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByUserAndTaskID", reflect.TypeOf((*MockRepository)(nil).DeleteByUserAndTaskID), ctx, userID, taskID)
+}

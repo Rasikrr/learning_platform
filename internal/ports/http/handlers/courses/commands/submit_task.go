@@ -8,7 +8,7 @@ import (
 
 // @Summary submit task
 // @Description submit task
-// @Tags courses
+// @Tags tasks
 // @Accept json
 // @Produce json
 // @Security     BearerAuth

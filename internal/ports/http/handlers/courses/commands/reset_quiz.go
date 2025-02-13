@@ -7,7 +7,7 @@ import (
 
 // @Summary submit quiz
 // @Description submit quiz
-// @Tags courses
+// @Tags quizzes
 // @Accept json
 // @Produce json
 // @Security     BearerAuth
@@ -15,7 +15,7 @@ import (
 // @Param course_id path string true "course id"
 // @Param topic_id path string true "topic id"
 // @Success 200 {object} api.EmptySuccessResponse "Success"
-// @Router /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset [post]
+// @Router /api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset [put]
 func (c *Controller) resetQuiz(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	session, err := api.GetSession(ctx)

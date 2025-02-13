@@ -175,6 +175,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.quizzesRepository,
 		a.tasksRepository,
 		a.contentRepository,
+		a.quizzesSubmissionRepository,
 	)
 
 	a.enrollmentsService = enrollmentsS.NewService(
@@ -185,15 +186,6 @@ func (a *App) InitServices(_ context.Context) error {
 		a.questionsRepository,
 		a.questionCategoriesRepository,
 		a.answersRepository,
-	)
-
-	a.courseService = coursesS.NewService(
-		a.courseRepository,
-		a.categoriesRepository,
-		a.topicsRepository,
-		a.quizzesRepository,
-		a.tasksRepository,
-		a.contentRepository,
 	)
 
 	a.submissionsService = submissionS.NewService(

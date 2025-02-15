@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	Create(ctx context.Context, question *entity.Question) error
 	GetByID(ctx context.Context, id uuid.UUID) (*entity.Question, error)
+	GetByParams(ctx context.Context, params *entity.GetQuestionsParams) ([]*entity.Question, error)
 }
 
 type repository struct {
@@ -24,7 +25,8 @@ func NewRepository(db *databases.Postgres) Repository {
 }
 
 func (r *repository) Create(ctx context.Context, question *entity.Question) error {
-	_, err := r.db.Exec(ctx, createQuestionStmt, question.ID, question.Category.ID, question.Author.ID, question.Title, question.Body)
+	_, err := r.db.Exec(ctx, createQuestionStmt, question.ID, question.Category.ID,
+		question.Author.ID, question.Title, question.Body, question.ImageURL)
 	if err != nil {
 		return err
 	}
@@ -40,4 +42,16 @@ func (r *repository) GetByID(ctx context.Context, id uuid.UUID) (*entity.Questio
 		return nil, err
 	}
 	return m.convert()
+}
+
+func (r *repository) GetByParams(ctx context.Context, params *entity.GetQuestionsParams) ([]*entity.Question, error) {
+	query, args, err := generateQuery(params)
+	if err != nil {
+		return nil, err
+	}
+	var mm models
+	if err = pgxscan.Select(ctx, r.db, &mm, query, args...); err != nil {
+		return nil, err
+	}
+	return mm.convert()
 }

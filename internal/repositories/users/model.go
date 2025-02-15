@@ -12,8 +12,8 @@ type models []model
 
 type model struct {
 	ID          string
-	Name        string
-	LastName    string
+	Name        *string
+	LastName    *string
 	Email       string
 	Password    string
 	AccountRole string

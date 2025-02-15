@@ -7,7 +7,6 @@ import (
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
-	time "time"
 )
 
 // suppress unused package warning
@@ -148,6 +147,16 @@ func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 			out.Title = string(in.String())
 		case "body":
 			out.Body = string(in.String())
+		case "image_url":
+			if in.IsNull() {
+				in.Skip()
+				out.ImageURL = nil
+			} else {
+				if out.ImageURL == nil {
+					out.ImageURL = new(string)
+				}
+				*out.ImageURL = string(in.String())
+			}
 		case "created_at":
 			if data := in.Raw(); in.Ok() {
 				in.AddError((out.CreatedAt).UnmarshalJSON(data))
@@ -164,7 +173,7 @@ func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 				if out.Author == nil {
 					out.Author = new(User)
 				}
-				easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(in, out.Author)
+				(*out.Author).UnmarshalEasyJSON(in)
 			}
 		default:
 			in.SkipRecursive()
@@ -205,6 +214,15 @@ func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		out.String(string(in.Body))
 	}
 	{
+		const prefix string = ",\"image_url\":"
+		out.RawString(prefix)
+		if in.ImageURL == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.ImageURL))
+		}
+	}
+	{
 		const prefix string = ",\"created_at\":"
 		out.RawString(prefix)
 		out.Raw((in.CreatedAt).MarshalJSON())
@@ -220,7 +238,7 @@ func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity1
 		if in.Author == nil {
 			out.RawString("null")
 		} else {
-			easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(out, *in.Author)
+			(*in.Author).MarshalEasyJSON(out)
 		}
 	}
 	out.RawByte('}')
@@ -249,127 +267,7 @@ func (v *Question) UnmarshalJSON(data []byte) error {
 func (v *Question) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity1(l, v)
 }
-func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(in *jlexer.Lexer, out *User) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "ID":
-			if data := in.UnsafeBytes(); in.Ok() {
-				in.AddError((out.ID).UnmarshalText(data))
-			}
-		case "Name":
-			out.Name = string(in.String())
-		case "LastName":
-			out.LastName = string(in.String())
-		case "Email":
-			out.Email = string(in.String())
-		case "Password":
-			out.Password = string(in.String())
-		case "AccountRole":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.AccountRole).UnmarshalJSON(data))
-			}
-		case "CreatedAt":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.CreatedAt).UnmarshalJSON(data))
-			}
-		case "UpdatedAt":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.UpdatedAt).UnmarshalJSON(data))
-			}
-		case "DeletedAt":
-			if in.IsNull() {
-				in.Skip()
-				out.DeletedAt = nil
-			} else {
-				if out.DeletedAt == nil {
-					out.DeletedAt = new(time.Time)
-				}
-				if data := in.Raw(); in.Ok() {
-					in.AddError((*out.DeletedAt).UnmarshalJSON(data))
-				}
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(out *jwriter.Writer, in User) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"ID\":"
-		out.RawString(prefix[1:])
-		out.RawText((in.ID).MarshalText())
-	}
-	{
-		const prefix string = ",\"Name\":"
-		out.RawString(prefix)
-		out.String(string(in.Name))
-	}
-	{
-		const prefix string = ",\"LastName\":"
-		out.RawString(prefix)
-		out.String(string(in.LastName))
-	}
-	{
-		const prefix string = ",\"Email\":"
-		out.RawString(prefix)
-		out.String(string(in.Email))
-	}
-	{
-		const prefix string = ",\"Password\":"
-		out.RawString(prefix)
-		out.String(string(in.Password))
-	}
-	{
-		const prefix string = ",\"AccountRole\":"
-		out.RawString(prefix)
-		out.Raw((in.AccountRole).MarshalJSON())
-	}
-	{
-		const prefix string = ",\"CreatedAt\":"
-		out.RawString(prefix)
-		out.Raw((in.CreatedAt).MarshalJSON())
-	}
-	{
-		const prefix string = ",\"UpdatedAt\":"
-		out.RawString(prefix)
-		out.Raw((in.UpdatedAt).MarshalJSON())
-	}
-	{
-		const prefix string = ",\"DeletedAt\":"
-		out.RawString(prefix)
-		if in.DeletedAt == nil {
-			out.RawString("null")
-		} else {
-			out.Raw((*in.DeletedAt).MarshalJSON())
-		}
-	}
-	out.RawByte('}')
-}
-func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3(in *jlexer.Lexer, out *Answer) {
+func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(in *jlexer.Lexer, out *Answer) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -420,7 +318,7 @@ func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 				if out.Author == nil {
 					out.Author = new(User)
 				}
-				easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(in, out.Author)
+				(*out.Author).UnmarshalEasyJSON(in)
 			}
 		default:
 			in.SkipRecursive()
@@ -432,7 +330,7 @@ func easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 		in.Consumed()
 	}
 }
-func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3(out *jwriter.Writer, in Answer) {
+func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(out *jwriter.Writer, in Answer) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -471,7 +369,7 @@ func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 		if in.Author == nil {
 			out.RawString("null")
 		} else {
-			easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(out, *in.Author)
+			(*in.Author).MarshalEasyJSON(out)
 		}
 	}
 	out.RawByte('}')
@@ -480,23 +378,23 @@ func easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3
 // MarshalJSON supports json.Marshaler interface
 func (v Answer) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3(&w, v)
+	easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Answer) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity3(w, v)
+	easyjson5a49d66eEncodeGithubComRasikrrLearningPlatformInternalDomainEntity2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Answer) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3(&r, v)
+	easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Answer) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3(l, v)
+	easyjson5a49d66eDecodeGithubComRasikrrLearningPlatformInternalDomainEntity2(l, v)
 }

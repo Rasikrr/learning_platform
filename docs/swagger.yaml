@@ -156,6 +156,17 @@ definitions:
       updated_at:
         type: string
     type: object
+  entity.QuestionCategory:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   entity.TopicContent:
     properties:
       additional_resources:
@@ -209,6 +220,116 @@ definitions:
     - ProgrammingLanguageSQL
     - ProgrammingLanguageNodejs
     - ProgrammingLanguageRust
+  faq.answer:
+    properties:
+      author:
+        $ref: '#/definitions/faq.user'
+      body:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      question_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  faq.category:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  faq.getAnswersResponse:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/faq.answer'
+        type: array
+    type: object
+  faq.getQuestionResponse:
+    properties:
+      question:
+        $ref: '#/definitions/faq.question'
+    type: object
+  faq.getQuestionsRequest:
+    properties:
+      category_ids:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  faq.getQuestionsResponse:
+    properties:
+      questions:
+        items:
+          $ref: '#/definitions/faq.question'
+        type: array
+    type: object
+  faq.postAnswerRequest:
+    properties:
+      body:
+        type: string
+      question_id:
+        type: string
+    type: object
+  faq.postQuestionRequest:
+    properties:
+      body:
+        type: string
+      category_id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+    type: object
+  faq.question:
+    properties:
+      author:
+        $ref: '#/definitions/faq.user'
+      body:
+        type: string
+      category:
+        $ref: '#/definitions/faq.category'
+      created_at:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  faq.user:
+    properties:
+      account_role:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   queries.category:
     properties:
       created_at:
@@ -873,4 +994,149 @@ paths:
       summary: get user enrollments
       tags:
       - enrollments
+  /api/v1/faq/answers:
+    get:
+      description: get answers for question
+      parameters:
+      - description: question id
+        in: query
+        name: question_id
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/faq.getAnswersResponse'
+      summary: get answers
+      tags:
+      - FAQ
+  /api/v1/faq/answers/post:
+    post:
+      consumes:
+      - application/json
+      description: post answer
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/faq.postAnswerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: post answer
+      tags:
+      - FAQ
+  /api/v1/faq/categories:
+    get:
+      description: get question categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/entity.QuestionCategory'
+            type: array
+      summary: get categories
+      tags:
+      - FAQ
+  /api/v1/faq/questions:
+    post:
+      consumes:
+      - application/json
+      description: post questions by params (category_ids, limit, offset)
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/faq.getQuestionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/faq.getQuestionsResponse'
+      summary: get questions
+      tags:
+      - FAQ
+  /api/v1/faq/questions/{id}:
+    get:
+      consumes:
+      - application/json
+      description: post question by id
+      parameters:
+      - description: question id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/faq.getQuestionResponse'
+      summary: get question
+      tags:
+      - FAQ
+  /api/v1/faq/questions/post:
+    post:
+      consumes:
+      - application/json
+      description: post question
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/faq.postQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: post question
+      tags:
+      - FAQ
 swagger: "2.0"

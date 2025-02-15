@@ -186,6 +186,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.questionsRepository,
 		a.questionCategoriesRepository,
 		a.answersRepository,
+		a.usersRepository,
 	)
 
 	a.submissionsService = submissionS.NewService(

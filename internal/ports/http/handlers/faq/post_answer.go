@@ -5,6 +5,16 @@ import (
 	"net/http"
 )
 
+// @Summary post answer
+// @Description post answer
+// @Tags FAQ
+// @Accept json
+// @Produce json
+// @Security     BearerAuth
+// @param Authorization header string true "Authorization token"
+// @Param  request body postAnswerRequest true "request"
+// @Success 200 {object} api.EmptySuccessResponse "Success"
+// @Router /api/v1/faq/answers/post [post]
 func (c *Controller) postAnswer(w http.ResponseWriter, r *http.Request) {
 	session, err := api.GetSession(r.Context())
 	if err != nil {

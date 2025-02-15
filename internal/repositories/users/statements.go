@@ -11,4 +11,5 @@ const (
 						FROM users WHERE id = $1`
 	getByIDsStmt = `SELECT id, name, last_name, email, password, account_role, created_at, updated_at, deleted_at
 						FROM users WHERE id = ANY($1)`
+	updateStmt = `UPDATE users SET name = $1, last_name = $2 WHERE id = $3`
 )

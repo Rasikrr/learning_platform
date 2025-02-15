@@ -18,6 +18,7 @@ type Repository interface {
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
 	ResetPassword(ctx context.Context, email, password string) error
 	Create(ctx context.Context, user *entity.User) error
+	Update(ctx context.Context, params *entity.UpdateUserParams) error
 	Delete(ctx context.Context, email string) error
 }
 
@@ -84,4 +85,12 @@ func (r *repository) GetByIDs(ctx context.Context, ids []string) ([]*entity.User
 		return nil, err
 	}
 	return convertModels(mm)
+}
+
+func (r *repository) Update(ctx context.Context, params *entity.UpdateUserParams) error {
+	_, err := r.db.Exec(ctx, updateStmt, params.Name, params.LastName, params.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

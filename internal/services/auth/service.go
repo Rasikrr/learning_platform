@@ -27,6 +27,7 @@ const (
 type Service interface {
 	Register(ctx context.Context, email, password, passwordConfirm string) error
 	ConfirmRegister(ctx context.Context, email, code string) (*entity.Auth, error)
+	ConfirmAdminRegister(ctx context.Context, email, code string) (*entity.Auth, error)
 	Login(ctx context.Context, email, password string) (*entity.Auth, error)
 	ResetPassword(ctx context.Context, email, password, passwordConfirm string) error
 	ConfirmResetPassword(ctx context.Context, email, code string) error
@@ -239,6 +240,26 @@ func (s *service) generateTokens(_ context.Context, user *entity.User) (*entity.
 		AccessToken:  accessTokenString,
 		RefreshToken: refreshTokenString,
 	}, nil
+}
+
+func (s *service) ConfirmAdminRegister(ctx context.Context, email, code string) (*entity.Auth, error) {
+	codeFromCache, err := s.cache.GetCode(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if codeFromCache != code {
+		return nil, errors.New("code is invalid")
+	}
+	passHash, err := s.cache.GetPasswordHash(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	user := entity.NewAdminUser(email, passHash)
+	if err := s.usersRepository.Create(ctx, user); err != nil {
+		return nil, err
+	}
+
+	return s.generateTokens(ctx, user)
 }
 
 func (s *service) parseJWT(tokenString string) (jwt.MapClaims, bool, error) {

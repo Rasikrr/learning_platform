@@ -29,7 +29,9 @@ import (
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	filesS "github.com/Rasikrr/learning_platform/internal/services/files"
 	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
+	usersS "github.com/Rasikrr/learning_platform/internal/services/users"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	"github.com/hashicorp/go-multierror"
@@ -82,6 +84,8 @@ type App struct {
 	enrollmentsService enrollmentsS.Service
 	faqService         faqS.Service
 	submissionsService submissionS.Service
+	usersService       usersS.Service
+	filesService       filesS.Service
 
 	httpServer *http.Server
 }
@@ -197,6 +201,11 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.taskExecutorClient,
 	)
+
+	a.usersService = usersS.NewService(
+		a.usersRepository,
+	)
+	a.filesService = filesS.NewService()
 	return nil
 }
 
@@ -208,6 +217,8 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.enrollmentsService,
 		a.submissionsService,
 		a.faqService,
+		a.usersService,
+		a.filesService,
 	)
 	return nil
 }

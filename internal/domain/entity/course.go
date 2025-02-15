@@ -81,3 +81,11 @@ type AnswerQuiz struct {
 	QuestionID string `json:"question_id"`
 	Answer     []bool `json:"answer"`
 }
+
+type CreateCourseParams struct {
+	Title       string  `json:"title"`
+	ImageURL    *string `json:"image"`
+	CategoryID  string  `json:"category_id"`
+	Description string  `json:"description"`
+	CreatedBy   string  `json:"created_by"`
+}

@@ -41,3 +41,9 @@ func NewAdminUser(email, password string) *User {
 		UpdatedAt:   time.Now(),
 	}
 }
+
+type UpdateUserParams struct {
+	ID       string  `json:"id"`
+	Name     *string `json:"name"`
+	LastName *string `json:"last_name"`
+}

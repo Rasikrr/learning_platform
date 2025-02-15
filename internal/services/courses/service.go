@@ -13,6 +13,8 @@ import (
 )
 
 type Service interface {
+	CreateCourse(ctx context.Context, params *entity.CreateCourseParams) error
+
 	GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error)
 	GetCourseByID(ctx context.Context, id string) (*entity.Course, error)
 

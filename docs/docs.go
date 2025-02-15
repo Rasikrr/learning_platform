@@ -24,6 +24,74 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/admin/auth/confirm": {
+            "post": {
+                "description": "Confirm admin user registration using confirmation code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Confirm admin register",
+                "parameters": [
+                    {
+                        "description": "user email and confirmation code",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.confirmRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/internal_ports_http_handlers_admin_auth.Auth"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/auth/register": {
+            "post": {
+                "description": "Register admin user with email and password and confirm password. Then send confirmation code to user email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register admin user",
+                "parameters": [
+                    {
+                        "description": "user credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.registerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/confirm": {
             "post": {
                 "description": "Confirm user registration using confirmation code",
@@ -52,7 +120,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -120,7 +188,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -154,7 +222,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -1076,17 +1144,6 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.Auth": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "auth.ConfirmRegisterRequest": {
             "type": "object",
             "properties": {
@@ -1143,6 +1200,31 @@ const docTemplate = `{
             }
         },
         "auth.ResetPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.confirmRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.registerRequest": {
             "type": "object",
             "properties": {
                 "email": {
@@ -1566,6 +1648,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ports_http_handlers_admin_auth.Auth": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ports_http_handlers_auth.Auth": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 }
             }

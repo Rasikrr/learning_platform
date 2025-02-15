@@ -105,5 +105,5 @@ func (p *Postgres) SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults
 
 func (p *Postgres) Close() {
 	p.pool.Close()
-	log.Println("Postgres closed")
+	log.Println("Postgres closed gracefully")
 }

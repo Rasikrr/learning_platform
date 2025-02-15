@@ -12,6 +12,7 @@ type Question struct {
 	Category  *QuestionCategory `json:"category"`
 	Title     string            `json:"title"`
 	Body      string            `json:"body"`
+	ImageURL  *string           `json:"image_url"`
 	CreatedAt time.Time         `json:"created_at"`
 	UpdatedAt time.Time         `json:"updated_at"`
 	Author    *User             `json:"author"`
@@ -31,4 +32,10 @@ type Answer struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Author    *User     `json:"author"`
+}
+
+type GetQuestionsParams struct {
+	CategoryIDs []string `json:"category_ids"`
+	Limit       int      `json:"limit"`
+	Offset      int      `json:"offset"`
 }

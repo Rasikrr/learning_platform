@@ -5,4 +5,6 @@ const (
 	getByUserIDAndCourseIDStmt = `SELECT EXISTS(SELECT id 
 								FROM course_enrollments 
 								WHERE user_id = $1 AND course_id = $2)`
+
+	getUserEnrollmentsStmt = `SELECT * FROM course_enrollments WHERE user_id = $1`
 )

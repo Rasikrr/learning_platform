@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	Create(ctx context.Context, submission *entity.TaskSubmission) error
 	CheckIsPassed(ctx context.Context, userID, taskID string) (bool, error)
+	DeleteByUserAndTaskID(ctx context.Context, userID, taskID string) error
 }
 
 type repository struct {
@@ -37,4 +38,9 @@ func (r *repository) CheckIsPassed(ctx context.Context, userID, taskID string) (
 		return false, err
 	}
 	return exists, nil
+}
+
+func (r *repository) DeleteByUserAndTaskID(ctx context.Context, userID, taskID string) error {
+	_, err := r.db.Exec(ctx, deleteByUserAndTaskIDStmt, userID, taskID)
+	return err
 }

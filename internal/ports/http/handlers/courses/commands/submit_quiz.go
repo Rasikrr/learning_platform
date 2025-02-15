@@ -7,7 +7,7 @@ import (
 
 // @Summary submit quiz
 // @Description submit quiz
-// @Tags courses
+// @Tags quizzes
 // @Accept json
 // @Produce json
 // @Security     BearerAuth

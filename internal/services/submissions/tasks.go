@@ -86,3 +86,23 @@ func (s *service) runTestsCases(ctx context.Context, task *entity.PracticalTask,
 	}
 	return output, executeErr
 }
+
+func (s *service) ExecuteTask(ctx context.Context, input, taskID string) (string, error) {
+	task, err := s.tasksRepository.GetByID(ctx, taskID)
+	if err != nil {
+		return "", err
+	}
+	return s.taskExecutorClient.ExecuteCode(ctx, input, task.Language)
+}
+
+func (s *service) ResetTask(ctx context.Context, userID, taskID string) error {
+	passed, err := s.tasksSubmissionsRepository.CheckIsPassed(ctx, userID, taskID)
+	if err != nil {
+		return err
+	}
+	if !passed {
+		return ErrNotPassed
+	}
+	err = s.tasksSubmissionsRepository.DeleteByUserAndTaskID(ctx, userID, taskID)
+	return err
+}

@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"errors"
 	"github.com/Rasikrr/learning_platform/api"
+	"github.com/Rasikrr/learning_platform/internal/cache/auth"
 	"net/http"
 )
 
@@ -20,8 +22,10 @@ func (c *Controller) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := c.authService.Register(r.Context(), req.Email, req.Password, req.PasswordConfirm); err != nil {
-		api.SendError(w, http.StatusBadRequest, err)
-		return
+		if !errors.Is(err, auth.ErrSpamDetected) {
+			api.SendError(w, http.StatusBadRequest, err)
+			return
+		}
 	}
 	api.SendData(w, api.NewEmptySuccessResponse(), http.StatusOK)
 }

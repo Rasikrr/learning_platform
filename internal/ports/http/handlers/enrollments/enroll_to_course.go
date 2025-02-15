@@ -7,7 +7,7 @@ import (
 
 // @Summary enroll to course
 // @Description enroll to course by course id
-// @Tags courses
+// @Tags enrollments
 // @Accept json
 // @Produce json
 // @Security     BearerAuth

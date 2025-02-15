@@ -7,7 +7,7 @@ import (
 
 // @Summary Get course topic tasks
 // @Description Get course topic tasks by topic id and. Also you must pass task order
-// @Tags courses
+// @Tags tasks
 // @Produce json
 // @Security     BearerAuth
 // @param Authorization header string true "Authorization token"

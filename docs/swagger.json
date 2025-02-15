@@ -18,6 +18,74 @@
     "host": "localhost:8081",
     "basePath": "/",
     "paths": {
+        "/api/v1/admin/auth/confirm": {
+            "post": {
+                "description": "Confirm admin user registration using confirmation code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Confirm admin register",
+                "parameters": [
+                    {
+                        "description": "user email and confirmation code",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.confirmRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/internal_ports_http_handlers_admin_auth.Auth"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/auth/register": {
+            "post": {
+                "description": "Register admin user with email and password and confirm password. Then send confirmation code to user email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register admin user",
+                "parameters": [
+                    {
+                        "description": "user credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.registerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/confirm": {
             "post": {
                 "description": "Confirm user registration using confirmation code",
@@ -46,7 +114,7 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -114,7 +182,7 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -148,7 +216,7 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/auth.Auth"
+                            "$ref": "#/definitions/internal_ports_http_handlers_auth.Auth"
                         }
                     }
                 }
@@ -288,7 +356,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "enrollments"
                 ],
                 "summary": "enroll to course",
                 "parameters": [
@@ -314,6 +382,40 @@
                         "description": "Success",
                         "schema": {
                             "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/enrollments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get user enrollments",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "get user enrollments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/enrollments.getUserEnrollmentsResponse"
                         }
                     }
                 }
@@ -368,7 +470,7 @@
             }
         },
         "/api/v1/courses/{course_id}/topic/{topic_id}/quiz/reset": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -382,7 +484,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "submit quiz",
                 "parameters": [
@@ -433,7 +535,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "submit quiz",
                 "parameters": [
@@ -485,12 +587,12 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "get quizzes list by topic id",
+                "description": "get quizzes list by topic id. If quiz is passed, then answers will be returned",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "quizzes"
                 ],
                 "summary": "get quizzes by topic id",
                 "parameters": [
@@ -526,6 +628,198 @@
                 }
             }
         },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/execute": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "execute task. Example code: `package main\\n\\nimport (\\n\\t\\\"fmt\\\"\\n)\\n\\nfunc main() {\\n\\tfmt.Println(\\\"Hello, World!\\\")\\n}`",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "execute task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/commands.executeTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/commands.executeTaskResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/reset": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "reset task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "reset task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courses/{course_id}/topic/{topic_id}/task/{task_id}/submit": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "submit task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "submit task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "course id",
+                        "name": "course_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "topic id",
+                        "name": "topic_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task id",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/commands.submitTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order}": {
             "get": {
                 "security": [
@@ -538,7 +832,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courses"
+                    "tasks"
                 ],
                 "summary": "Get course topic tasks",
                 "parameters": [
@@ -609,6 +903,230 @@
                     }
                 }
             }
+        },
+        "/api/v1/faq/answers": {
+            "get": {
+                "description": "get answers for question",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "get answers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "question id",
+                        "name": "question_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/faq.getAnswersResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/answers/post": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "post answer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "post answer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.postAnswerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/categories": {
+            "get": {
+                "description": "get question categories",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "get categories",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.QuestionCategory"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/questions": {
+            "post": {
+                "description": "post questions by params (category_ids, limit, offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "get questions",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.getQuestionsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/faq.getQuestionsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/questions/post": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "post question",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "post question",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/faq.postQuestionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/api.EmptySuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/questions/{id}": {
+            "get": {
+                "description": "post question by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "get question",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "question id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/faq.getQuestionResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -616,17 +1134,6 @@
             "type": "object",
             "properties": {
                 "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth.Auth": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
                     "type": "string"
                 }
             }
@@ -700,6 +1207,31 @@
                 }
             }
         },
+        "auth.confirmRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.registerRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
         "commands.answerQuiz": {
             "type": "object",
             "properties": {
@@ -710,6 +1242,22 @@
                     }
                 },
                 "question_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "commands.executeTaskRequest": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string"
+                }
+            }
+        },
+        "commands.executeTaskResponse": {
+            "type": "object",
+            "properties": {
+                "output": {
                     "type": "string"
                 }
             }
@@ -725,11 +1273,79 @@
                 }
             }
         },
+        "commands.submitTaskRequest": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string"
+                }
+            }
+        },
+        "enrollments.course": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "enrollments.enrollToCourseRequest": {
             "type": "object",
             "properties": {
                 "course_id": {
                     "type": "string"
+                }
+            }
+        },
+        "enrollments.enrollment": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "$ref": "#/definitions/enrollments.course"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "enrollments.getUserEnrollmentsResponse": {
+            "type": "object",
+            "properties": {
+                "enrollments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/enrollments.enrollment"
+                    }
                 }
             }
         },
@@ -751,13 +1367,36 @@
                 "id": {
                     "type": "string"
                 },
+                "language": {
+                    "$ref": "#/definitions/enum.ProgrammingLanguage"
+                },
                 "order_number": {
                     "type": "integer"
                 },
                 "starter_code": {
                     "type": "string"
                 },
+                "test_cases": {
+                    "type": "boolean"
+                },
                 "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.QuestionCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -815,6 +1454,219 @@
                 "DifficultyMedium",
                 "DifficultyHard"
             ]
+        },
+        "enum.ProgrammingLanguage": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "x-enum-varnames": [
+                "ProgrammingLanguageGo",
+                "ProgrammingLanguagePython3",
+                "ProgrammingLanguageJava",
+                "ProgrammingLanguageRuby",
+                "ProgrammingLanguageSQL",
+                "ProgrammingLanguageNodejs",
+                "ProgrammingLanguageRust"
+            ]
+        },
+        "faq.answer": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "$ref": "#/definitions/faq.user"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.category": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.getAnswersResponse": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/faq.answer"
+                    }
+                }
+            }
+        },
+        "faq.getQuestionResponse": {
+            "type": "object",
+            "properties": {
+                "question": {
+                    "$ref": "#/definitions/faq.question"
+                }
+            }
+        },
+        "faq.getQuestionsRequest": {
+            "type": "object",
+            "properties": {
+                "category_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                }
+            }
+        },
+        "faq.getQuestionsResponse": {
+            "type": "object",
+            "properties": {
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/faq.question"
+                    }
+                }
+            }
+        },
+        "faq.postAnswerRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.postQuestionRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.question": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "$ref": "#/definitions/faq.user"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "category": {
+                    "$ref": "#/definitions/faq.category"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "faq.user": {
+            "type": "object",
+            "properties": {
+                "account_role": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ports_http_handlers_admin_auth.Auth": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ports_http_handlers_auth.Auth": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
         },
         "queries.category": {
             "type": "object",
@@ -921,6 +1773,9 @@
         "queries.getTopicQuizzesResponse": {
             "type": "object",
             "properties": {
+                "passed": {
+                    "type": "boolean"
+                },
                 "quizzes": {
                     "type": "array",
                     "items": {
@@ -932,6 +1787,12 @@
         "queries.quizz": {
             "type": "object",
             "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "boolean"
+                    }
+                },
                 "created_at": {
                     "type": "string"
                 },

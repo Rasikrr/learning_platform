@@ -29,7 +29,9 @@ import (
 	coursesS "github.com/Rasikrr/learning_platform/internal/services/courses"
 	enrollmentsS "github.com/Rasikrr/learning_platform/internal/services/enrollments"
 	faqS "github.com/Rasikrr/learning_platform/internal/services/faq"
+	filesS "github.com/Rasikrr/learning_platform/internal/services/files"
 	submissionS "github.com/Rasikrr/learning_platform/internal/services/submissions"
+	usersS "github.com/Rasikrr/learning_platform/internal/services/users"
 	"github.com/Rasikrr/learning_platform/internal/util"
 	"github.com/Rasikrr/learning_platform/internal/workers"
 	"github.com/hashicorp/go-multierror"
@@ -38,6 +40,7 @@ import (
 	HTTP "net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"sync"
 	"syscall"
 )
@@ -81,12 +84,16 @@ type App struct {
 	enrollmentsService enrollmentsS.Service
 	faqService         faqS.Service
 	submissionsService submissionS.Service
+	usersService       usersS.Service
+	filesService       filesS.Service
 
 	httpServer *http.Server
 }
 
 // nolint: gocritic
 func InitApp(ctx context.Context, name string) *App {
+	log.Printf("starting app initialization: %s\n", name)
+	log.Printf("go version: %s\n", runtime.Version())
 	cfg, err := configs.Parse()
 	if err != nil {
 		panic(err)
@@ -172,6 +179,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.quizzesRepository,
 		a.tasksRepository,
 		a.contentRepository,
+		a.quizzesSubmissionRepository,
 	)
 
 	a.enrollmentsService = enrollmentsS.NewService(
@@ -182,15 +190,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.questionsRepository,
 		a.questionCategoriesRepository,
 		a.answersRepository,
-	)
-
-	a.courseService = coursesS.NewService(
-		a.courseRepository,
-		a.categoriesRepository,
-		a.topicsRepository,
-		a.quizzesRepository,
-		a.tasksRepository,
-		a.contentRepository,
+		a.usersRepository,
 	)
 
 	a.submissionsService = submissionS.NewService(
@@ -201,6 +201,11 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.taskExecutorClient,
 	)
+
+	a.usersService = usersS.NewService(
+		a.usersRepository,
+	)
+	a.filesService = filesS.NewService()
 	return nil
 }
 
@@ -212,6 +217,8 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.enrollmentsService,
 		a.submissionsService,
 		a.faqService,
+		a.usersService,
+		a.filesService,
 	)
 	return nil
 }
@@ -230,7 +237,7 @@ func (a *App) Start(ctx context.Context) error {
 
 	stop := make(chan struct{})
 
-	go a.handleShutdown(cancel, stop)
+	go a.handleShutdown(ctx, cancel, stop)
 
 	fns := make([]any, 0, len(a.workers)+1)
 	fns = append(fns, a.httpServer.Start)
@@ -245,7 +252,7 @@ func (a *App) Start(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
+func (a *App) handleShutdown(_ context.Context, cancel context.CancelFunc, s chan struct{}) {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
@@ -256,6 +263,13 @@ func (a *App) handleShutdown(cancel context.CancelFunc, s chan struct{}) {
 	if err := a.httpServer.Shutdown(context.Background()); err != nil {
 		log.Println("Error while shutting down HTTP server:", err)
 	}
+
+	a.postgres.Close()
+
+	if err := a.redisClient.Close(); err != nil {
+		log.Println("Error while closing redis client:", err)
+	}
+	log.Println("Redis client closed gracefully")
 	cancel()
 	close(s)
 }

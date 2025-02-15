@@ -11,6 +11,7 @@ type model struct {
 	ID         uuid.UUID
 	CategoryID uuid.UUID
 	UserID     uuid.UUID
+	ImageURL   *string
 	Title      string
 	Body       string
 	CreatedAt  time.Time
@@ -30,6 +31,7 @@ func (m model) convert() (*entity.Question, error) {
 		ID:        m.ID,
 		Category:  &category,
 		Author:    &user,
+		ImageURL:  m.ImageURL,
 		Title:     m.Title,
 		Body:      m.Body,
 		CreatedAt: m.CreatedAt,

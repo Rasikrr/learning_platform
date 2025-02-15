@@ -16,9 +16,14 @@ const (
 	passwordHashKey = "password:%s"
 )
 
+var (
+	ErrSpamDetected = errors.New("spam detected")
+)
+
 type Cache interface {
 	GetCode(ctx context.Context, email string) (string, error)
 	SetCode(ctx context.Context, email string, code string) error
+	CheckSpam(ctx context.Context, key string) (bool, error)
 	GetPasswordHash(ctx context.Context, email string) (string, error)
 	SetPasswordHash(ctx context.Context, email string, passwordHash string) error
 }
@@ -51,6 +56,13 @@ func (c *cache) GetCode(ctx context.Context, email string) (string, error) {
 
 func (c *cache) SetCode(ctx context.Context, email string, code string) error {
 	key := c.genKey(codeKey, email)
+	spam, err := c.CheckSpam(ctx, key)
+	if err != nil {
+		return err
+	}
+	if spam {
+		return ErrSpamDetected
+	}
 	return c.client.SetWithExpiration(ctx, key, code, codeLifeTime)
 }
 
@@ -73,6 +85,14 @@ func (c *cache) GetPasswordHash(ctx context.Context, email string) (string, erro
 func (c *cache) SetPasswordHash(ctx context.Context, email string, passwordHash string) error {
 	key := c.genKey(passwordHashKey, email)
 	return c.client.SetWithExpiration(ctx, key, passwordHash, credsLifeTime)
+}
+
+func (c *cache) CheckSpam(ctx context.Context, key string) (bool, error) {
+	val, err := c.client.Exists(ctx, key)
+	if err != nil {
+		return false, err
+	}
+	return val, nil
 }
 
 func (c *cache) genKey(format, arg string) string {

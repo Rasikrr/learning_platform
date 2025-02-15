@@ -19,7 +19,11 @@ func NewController(authMiddleware *middlewares.AuthMiddleware, faqService faq.Se
 }
 
 func (c *Controller) Init(r *http.ServeMux) {
-	r.HandleFunc("POST /api/v1/faq/question/post", c.m.Handle(c.postQuestion))
 	r.HandleFunc("GET /api/v1/faq/answers", c.getAnswers)
-	r.HandleFunc("POST /api/v1/faq/answer/post", c.m.Handle(c.postAnswer))
+	r.HandleFunc("GET /api/v1/faq/questions/{id}", c.getQuestion)
+	r.HandleFunc("POST /api/v1/faq/questions", c.getQuestions)
+	r.HandleFunc("GET /api/v1/faq/categories", c.getCategories)
+
+	r.HandleFunc("POST /api/v1/faq/questions/post", c.m.Handle(c.postQuestion))
+	r.HandleFunc("POST /api/v1/faq/answers/post", c.m.Handle(c.postAnswer))
 }

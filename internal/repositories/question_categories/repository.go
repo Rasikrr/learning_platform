@@ -9,10 +9,13 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
+	GetAll(ctx context.Context) ([]*entity.QuestionCategory, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*entity.QuestionCategory, error)
+	GetByIDs(ctx context.Context, ids []string) ([]*entity.QuestionCategory, error)
 }
 
 type repository struct {
@@ -33,4 +36,20 @@ func (r *repository) GetByID(ctx context.Context, id uuid.UUID) (*entity.Questio
 	}
 
 	return m.convert()
+}
+
+func (r *repository) GetAll(ctx context.Context) ([]*entity.QuestionCategory, error) {
+	var mm models
+	if err := pgxscan.Select(ctx, r.db, &mm, getAllStmt); err != nil {
+		return nil, err
+	}
+	return mm.convert()
+}
+
+func (r *repository) GetByIDs(ctx context.Context, ids []string) ([]*entity.QuestionCategory, error) {
+	var mm models
+	if err := pgxscan.Select(ctx, r.db, &mm, getByIDsStmt, pq.Array(ids)); err != nil {
+		return nil, err
+	}
+	return mm.convert()
 }

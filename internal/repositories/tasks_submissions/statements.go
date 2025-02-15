@@ -7,4 +7,7 @@ const (
 	checkPassesStmt = `SELECT EXISTS(SELECT id 
 								FROM practical_tasks_submissions 
 								WHERE user_id = $1 AND task_id = $2 AND passed = true)`
+
+	deleteByUserAndTaskIDStmt = `DELETE FROM practical_tasks_submissions
+								WHERE user_id = $1 AND task_id = $2`
 )

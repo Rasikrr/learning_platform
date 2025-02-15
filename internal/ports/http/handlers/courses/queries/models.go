@@ -76,6 +76,7 @@ type topic struct {
 
 type getTopicQuizzesResponse struct {
 	Quizzes []quizz `json:"quizzes"`
+	Passed  bool    `json:"passed"`
 }
 
 type quizz struct {
@@ -83,21 +84,23 @@ type quizz struct {
 	TopicID        string    `json:"topic_id"`
 	Question       string    `json:"question"`
 	Options        []string  `json:"options"`
+	Answers        []bool    `json:"answers,omitempty"`
 	MultipleChoice bool      `json:"multiple_choice"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
-func convertToGetTopicQuizzesResponse(quizzes []*entity.Quiz) getTopicQuizzesResponse {
+func convertToGetTopicQuizzesResponse(quizzes []*entity.Quiz, passed bool) getTopicQuizzesResponse {
 	return getTopicQuizzesResponse{
+		Passed: passed,
 		Quizzes: lo.Map(quizzes, func(e *entity.Quiz, _ int) quizz {
-			return convertQuiz(e)
+			return convertQuiz(e, passed)
 		}),
 	}
 }
 
-func convertQuiz(e *entity.Quiz) quizz {
-	return quizz{
+func convertQuiz(e *entity.Quiz, passed bool) quizz {
+	q := quizz{
 		ID:             e.ID.String(),
 		TopicID:        e.TopicID.String(),
 		Question:       e.Question,
@@ -106,6 +109,10 @@ func convertQuiz(e *entity.Quiz) quizz {
 		CreatedAt:      e.CreatedAt,
 		UpdatedAt:      e.UpdatedAt,
 	}
+	if passed {
+		q.Answers = e.CorrectAnswers
+	}
+	return q
 }
 
 func convertToGetCoursesListResponse(courses []*entity.Course) getCoursesListResponse {

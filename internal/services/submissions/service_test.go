@@ -38,6 +38,7 @@ func TestQuizSubmission(t *testing.T) {
 		mockTaskRepository,
 		nil,
 	)
+
 	testCases := []quizTestCase{
 		{
 			Name:     "Test quiz submission success",

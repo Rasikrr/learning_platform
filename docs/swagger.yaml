@@ -201,6 +201,14 @@ definitions:
           type: string
         type: array
     type: object
+  enum.AccountRole:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - AccountRoleAdmin
+    - AccountRoleUser
   enum.Difficulty:
     enum:
     - 0
@@ -467,6 +475,37 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  users.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/enum.AccountRole'
+      updated_at:
+        type: string
+    type: object
+  users.updateUserRequest:
+    properties:
+      last_name:
+        type: string
+      name:
+        type: string
+    type: object
+  users.userResponse:
+    properties:
+      user:
+        $ref: '#/definitions/users.User'
     type: object
 host: localhost:8081
 info:
@@ -1207,4 +1246,92 @@ paths:
       summary: post question
       tags:
       - FAQ
+  /api/v1/users/{id}:
+    get:
+      description: Get user by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.userResponse'
+      summary: Get user
+      tags:
+      - users
+  /api/v1/users/me:
+    get:
+      description: Get my profile
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.userResponse'
+      security:
+      - BearerAuth: []
+      summary: Get my profile
+      tags:
+      - users
+  /api/v1/users/me/delete:
+    delete:
+      description: Delete my profile
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete my profile
+      tags:
+      - users
+  /api/v1/users/update:
+    put:
+      description: Update user
+      parameters:
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.updateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.EmptySuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - users
 swagger: "2.0"

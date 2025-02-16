@@ -26,5 +26,8 @@ func NewController(
 }
 
 func (c *Controller) Init(r *http.ServeMux) {
+	r.HandleFunc("GET /api/v1/users/me", c.m.Handle(c.getMyProfile))
+	r.HandleFunc("GET /api/v1/users/{id}", c.m.Handle(c.getUser))
 	r.HandleFunc("PUT /api/v1/users/update", c.m.Handle(c.updateUser))
+	r.HandleFunc("DELETE /api/v1/users/me/delete", c.m.Handle(c.deleteUser))
 }

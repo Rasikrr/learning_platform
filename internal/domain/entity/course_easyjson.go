@@ -812,7 +812,113 @@ func (v *PracticalTask) UnmarshalJSON(data []byte) error {
 func (v *PracticalTask) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity3(l, v)
 }
-func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(in *jlexer.Lexer, out *Course) {
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(in *jlexer.Lexer, out *CreateCourseParams) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "title":
+			out.Title = string(in.String())
+		case "image":
+			if in.IsNull() {
+				in.Skip()
+				out.ImageURL = nil
+			} else {
+				if out.ImageURL == nil {
+					out.ImageURL = new(string)
+				}
+				*out.ImageURL = string(in.String())
+			}
+		case "category_id":
+			out.CategoryID = string(in.String())
+		case "description":
+			out.Description = string(in.String())
+		case "created_by":
+			out.CreatedBy = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(out *jwriter.Writer, in CreateCourseParams) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"title\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"image\":"
+		out.RawString(prefix)
+		if in.ImageURL == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.ImageURL))
+		}
+	}
+	{
+		const prefix string = ",\"category_id\":"
+		out.RawString(prefix)
+		out.String(string(in.CategoryID))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"created_by\":"
+		out.RawString(prefix)
+		out.String(string(in.CreatedBy))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v CreateCourseParams) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v CreateCourseParams) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *CreateCourseParams) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *CreateCourseParams) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(l, v)
+}
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(in *jlexer.Lexer, out *Course) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -904,7 +1010,7 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 		in.Consumed()
 	}
 }
-func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(out *jwriter.Writer, in Course) {
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(out *jwriter.Writer, in Course) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -976,27 +1082,27 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4
 // MarshalJSON supports json.Marshaler interface
 func (v Course) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(&w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Course) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity4(w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Course) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(&r, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Course) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity4(l, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(l, v)
 }
-func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(in *jlexer.Lexer, out *Category) {
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(in *jlexer.Lexer, out *Category) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1043,7 +1149,7 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5
 		in.Consumed()
 	}
 }
-func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(out *jwriter.Writer, in Category) {
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(out *jwriter.Writer, in Category) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1078,27 +1184,27 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5
 // MarshalJSON supports json.Marshaler interface
 func (v Category) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(&w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Category) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity5(w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Category) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(&r, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Category) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity5(l, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(l, v)
 }
-func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(in *jlexer.Lexer, out *AnswerQuiz) {
+func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity7(in *jlexer.Lexer, out *AnswerQuiz) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1152,7 +1258,7 @@ func easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6
 		in.Consumed()
 	}
 }
-func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(out *jwriter.Writer, in AnswerQuiz) {
+func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity7(out *jwriter.Writer, in AnswerQuiz) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1183,23 +1289,23 @@ func easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6
 // MarshalJSON supports json.Marshaler interface
 func (v AnswerQuiz) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(&w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity7(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v AnswerQuiz) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity6(w, v)
+	easyjsonCc42051bEncodeGithubComRasikrrLearningPlatformInternalDomainEntity7(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *AnswerQuiz) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(&r, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity7(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *AnswerQuiz) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity6(l, v)
+	easyjsonCc42051bDecodeGithubComRasikrrLearningPlatformInternalDomainEntity7(l, v)
 }

@@ -19,7 +19,7 @@ type Repository interface {
 	ResetPassword(ctx context.Context, email, password string) error
 	Create(ctx context.Context, user *entity.User) error
 	Update(ctx context.Context, params *entity.UpdateUserParams) error
-	Delete(ctx context.Context, email string) error
+	Delete(ctx context.Context, id string) error
 }
 
 type repository struct {
@@ -52,8 +52,8 @@ func (r *repository) Create(ctx context.Context, user *entity.User) error {
 	return nil
 }
 
-func (r *repository) Delete(ctx context.Context, email string) error {
-	_, err := r.db.Exec(ctx, deleteStmt, email)
+func (r *repository) Delete(ctx context.Context, id string) error {
+	_, err := r.db.Exec(ctx, deleteStmt, id)
 	if err != nil {
 		return err
 	}

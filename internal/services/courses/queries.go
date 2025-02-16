@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"golang.org/x/sync/errgroup"
+	"log"
 )
 
 func (s *service) GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error) {
@@ -67,7 +68,21 @@ func (s *service) GetAllCategories(ctx context.Context) ([]*entity.Category, err
 }
 
 func (s *service) GetContentByTopicID(ctx context.Context, id string) (*entity.TopicContent, error) {
-	return s.contentRepository.GetByTopicID(ctx, id)
+	content, err := s.coursesCache.GetContentByTopicID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if content != nil {
+		return content, nil
+	}
+	content, err = s.contentRepository.GetByTopicID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.coursesCache.SetContentByTopicID(ctx, id, content); err != nil {
+		return nil, err
+	}
+	return content, nil
 }
 
 func (s *service) GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error) {
@@ -78,8 +93,21 @@ func (s *service) GetQuizzesByTopicID(ctx context.Context, userID, topicID strin
 	)
 	g.Go(func() error {
 		var err error
+		quizzes, err = s.coursesCache.GetQuizzesByTopicID(ctx, topicID)
+		if err != nil {
+			return err
+		}
+		if quizzes != nil {
+			return nil
+		}
 		quizzes, err = s.quizzesRepository.GetByTopicID(ctx, topicID)
-		return err
+		if err != nil {
+			return err
+		}
+		if err = s.coursesCache.SetQuizzesByTopicID(ctx, topicID, quizzes); err != nil {
+			return err
+		}
+		return nil
 	})
 	g.Go(func() error {
 		var err error
@@ -93,7 +121,22 @@ func (s *service) GetQuizzesByTopicID(ctx context.Context, userID, topicID strin
 }
 
 func (s *service) GetTasksByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {
-	return s.tasksRepository.GetByTopicIDAndOrderNum(ctx, id, order)
+	tasks, err := s.coursesCache.GetPracticalTaskByTopicIDAndOrder(ctx, id, order)
+	if err != nil {
+		return nil, err
+	}
+	if tasks != nil {
+		log.Println("tasks from cache")
+		return tasks, nil
+	}
+	tasks, err = s.tasksRepository.GetByTopicIDAndOrderNum(ctx, id, order)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.coursesCache.SetPracticalTasksByTopicIDAndOrder(ctx, id, order, tasks); err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }
 
 // nolint: unused

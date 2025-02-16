@@ -152,53 +152,53 @@ INSERT INTO practical_tasks (id, topic_id, description, difficulty_level, starte
 VALUES
     -- Айнымалылар мен деректер түрлері (89d1bb78-aeab-4a8d-b63d-68ac28f49aca)
     (gen_random_uuid(), '89d1bb78-aeab-4a8d-b63d-68ac28f49aca', 'Айнымалыға мән тағайындап, оны экранға шығарыңыз.', 'easy',
-     'x = 10\nprint(x)', '10', NOW(), NOW(), 1, false, 'python'),
+     'x = 10\nprint(x)', '10', NOW(), NOW(), 1, false, 'python3'),
 
     (gen_random_uuid(), '89d1bb78-aeab-4a8d-b63d-68ac28f49aca', 'Жолдық айнымалы құрыңыз және оны басып шығарыңыз.', 'easy',
-     'text = "Python"\nprint(text)', 'Python', NOW(), NOW(), 2, false, 'python'),
+     'text = "Python"\nprint(text)', 'Python', NOW(), NOW(), 2, false, 'python3'),
 
     (gen_random_uuid(), '89d1bb78-aeab-4a8d-b63d-68ac28f49aca', 'Пайдаланушыдан сан сұрап, оны көбейтіп, экранға шығарыңыз.', 'medium',
-     'num = int(input())\nprint(num * 2)', '20', NOW(), NOW(), 3, true, 'python'),
+     'num = int(input())\nprint(num * 2)', '20', NOW(), NOW(), 3, true, 'python3'),
 
     -- Шартты операторлар (1dc2b89e-a4bb-48e5-a1b1-3763fa7784fd)
     (gen_random_uuid(), '1dc2b89e-a4bb-48e5-a1b1-3763fa7784fd', 'Берілген санның тақ немесе жұп екенін анықтаңыз.', 'easy',
-     'num = int(input())\nif num % 2 == 0:\n    print("Жұп")\nelse:\n    print("Тақ")', 'Жұп', NOW(), NOW(), 1, true, 'python'),
+     'num = int(input())\nif num % 2 == 0:\n    print("Жұп")\nelse:\n    print("Тақ")', 'Жұп', NOW(), NOW(), 1, true, 'python3'),
 
     (gen_random_uuid(), '1dc2b89e-a4bb-48e5-a1b1-3763fa7784fd', 'Берілген сан оң немесе теріс екенін анықтаңыз.', 'easy',
-     'num = int(input())\nif num > 0:\n    print("Оң")\nelif num < 0:\n    print("Теріс")\nelse:\n    print("Нөл")', 'Оң', NOW(), NOW(), 2, true, 'python'),
+     'num = int(input())\nif num > 0:\n    print("Оң")\nelif num < 0:\n    print("Теріс")\nelse:\n    print("Нөл")', 'Оң', NOW(), NOW(), 2, true, 'python3'),
 
     (gen_random_uuid(), '1dc2b89e-a4bb-48e5-a1b1-3763fa7784fd', 'Пайдаланушы енгізген жылдың кібісе жыл (високосный) екенін тексеріңіз.', 'medium',
-     'year = int(input())\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print("Кібісе жыл")\nelse:\n    print("Кібісе жыл емес")', 'Кібісе жыл', NOW(), NOW(), 3, true, 'python'),
+     'year = int(input())\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print("Кібісе жыл")\nelse:\n    print("Кібісе жыл емес")', 'Кібісе жыл', NOW(), NOW(), 3, true, 'python3'),
 
     -- Циклдер (b4009b69-1c08-4c31-98a4-e4965bd90852)
     (gen_random_uuid(), 'b4009b69-1c08-4c31-98a4-e4965bd90852', '1-ден 10-ға дейінгі сандарды шығару үшін for циклын пайдаланыңыз.', 'easy',
-     'for i in range(1, 11):\n    print(i)', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10', NOW(), NOW(), 1, false, 'python'),
+     'for i in range(1, 11):\n    print(i)', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10', NOW(), NOW(), 1, false, 'python3'),
 
     (gen_random_uuid(), 'b4009b69-1c08-4c31-98a4-e4965bd90852', '1-ден 100-ге дейінгі барлық жұп сандардың қосындысын есептеңіз.', 'medium',
-     'sum_even = sum(i for i in range(1, 101) if i % 2 == 0)\nprint(sum_even)', '2550', NOW(), NOW(), 2, true, 'python'),
+     'sum_even = sum(i for i in range(1, 101) if i % 2 == 0)\nprint(sum_even)', '2550', NOW(), NOW(), 2, true, 'python3'),
 
     (gen_random_uuid(), 'b4009b69-1c08-4c31-98a4-e4965bd90852', 'Қолданушы енгізген сөзді 5 рет басып шығарыңыз.', 'easy',
-     'word = input()\nfor i in range(5):\n    print(word)', 'Python\nPython\nPython\nPython\nPython', NOW(), NOW(), 3, true, 'python'),
+     'word = input()\nfor i in range(5):\n    print(word)', 'Python\nPython\nPython\nPython\nPython', NOW(), NOW(), 3, true, 'python3'),
 
     -- Функциялар (5d1a896d-c822-4250-bd2f-9a0ff71a8834)
     (gen_random_uuid(), '5d1a896d-c822-4250-bd2f-9a0ff71a8834', 'Екі санды қабылдап, олардың қосындысын қайтаратын функция жазыңыз.', 'easy',
-     'def sum_two(a, b):\n    return a + b\nprint(sum_two(3, 5))', '8', NOW(), NOW(), 1, true, 'python'),
+     'def sum_two(a, b):\n    return a + b\nprint(sum_two(3, 5))', '8', NOW(), NOW(), 1, true, 'python3'),
 
     (gen_random_uuid(), '5d1a896d-c822-4250-bd2f-9a0ff71a8834', 'Жолдық аргумент қабылдайтын және оның ұзындығын қайтаратын функция жазыңыз.', 'easy',
-     'def length(text):\n    return len(text)\nprint(length("Python"))', '6', NOW(), NOW(), 2, true, 'python'),
+     'def length(text):\n    return len(text)\nprint(length("Python"))', '6', NOW(), NOW(), 2, true, 'python3'),
 
     (gen_random_uuid(), '5d1a896d-c822-4250-bd2f-9a0ff71a8834', 'Lambda функциясын пайдаланып, екі санның көбейтіндісін есептеңіз.', 'medium',
-     'mul = lambda x, y: x * y\nprint(mul(4, 5))', '20', NOW(), NOW(), 3, true, 'python'),
+     'mul = lambda x, y: x * y\nprint(mul(4, 5))', '20', NOW(), NOW(), 3, true, 'python3'),
 
     -- Қателер мен ерекшеліктер (6c3f328c-6a03-4072-8ee7-11796ddc2676)
     (gen_random_uuid(), '6c3f328c-6a03-4072-8ee7-11796ddc2676', 'Қатені өңдеу үшін try-except блогын пайдаланып, сан енгізуді сұраңыз.', 'medium',
-     'try:\n    num = int(input("Сан енгізіңіз: "))\n    print(num * 2)\nexcept ValueError:\n    print("Қате! Сан енгізіңіз.")', '10', NOW(), NOW(), 1, true, 'python'),
+     'try:\n    num = int(input("Сан енгізіңіз: "))\n    print(num * 2)\nexcept ValueError:\n    print("Қате! Сан енгізіңіз.")', '10', NOW(), NOW(), 1, true, 'python3'),
 
     (gen_random_uuid(), '6c3f328c-6a03-4072-8ee7-11796ddc2676', 'Файлды оқуға тырысып, қатені өңдеңіз.', 'hard',
-     'try:\n    with open("file.txt", "r") as f:\n        print(f.read())\nexcept FileNotFoundError:\n    print("Файл табылмады")', 'Файл табылмады', NOW(), NOW(), 2, true, 'python'),
+     'try:\n    with open("file.txt", "r") as f:\n        print(f.read())\nexcept FileNotFoundError:\n    print("Файл табылмады")', 'Файл табылмады', NOW(), NOW(), 2, true, 'python3'),
 
     (gen_random_uuid(), '6c3f328c-6a03-4072-8ee7-11796ddc2676', 'raise көмегімен өзіңіздің қателігіңізді тастаңыз.', 'hard',
-     'def check_age(age):\n    if age < 18:\n        raise ValueError("Кіру рұқсат етілмеген!")\n    print("Рұқсат етілді")\ntry:\n    check_age(16)\nexcept ValueError as e:\n    print(e)', 'Кіру рұқсат етілмеген!', NOW(), NOW(), 3, true, 'python');
+     'def check_age(age):\n    if age < 18:\n        raise ValueError("Кіру рұқсат етілмеген!")\n    print("Рұқсат етілді")\ntry:\n    check_age(16)\nexcept ValueError as e:\n    print(e)', 'Кіру рұқсат етілмеген!', NOW(), NOW(), 3, true, 'python3');
 
 -- +goose StatementEnd
 

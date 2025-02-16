@@ -7,6 +7,7 @@ import (
 	"github.com/Rasikrr/learning_platform/configs"
 	"github.com/Rasikrr/learning_platform/internal/cache"
 	authC "github.com/Rasikrr/learning_platform/internal/cache/auth"
+	coursesC "github.com/Rasikrr/learning_platform/internal/cache/courses"
 	"github.com/Rasikrr/learning_platform/internal/clients/jdoodle"
 	"github.com/Rasikrr/learning_platform/internal/clients/mail"
 	"github.com/Rasikrr/learning_platform/internal/databases"
@@ -71,10 +72,11 @@ type App struct {
 	tasksSubmissionsRepository   tasksSubmissionsR.Repository
 	testCasesRepository          testCasesR.Repository
 
-	redisClient *redis.Client
-	cacheClient cache.Cache
-	authCache   authC.Cache
-	hasher      util.Hasher
+	redisClient  *redis.Client
+	cacheClient  cache.Cache
+	authCache    authC.Cache
+	coursesCache coursesC.Cache
+	hasher       util.Hasher
 
 	mailClient         mail.Client
 	taskExecutorClient jdoodle.Client
@@ -162,6 +164,7 @@ func (a *App) InitRedis(ctx context.Context) error {
 func (a *App) InitCache(_ context.Context) error {
 	a.cacheClient = cache.NewRedisCache(a.redisClient)
 	a.authCache = authC.NewCache(a.cacheClient)
+	a.coursesCache = coursesC.NewCache(a.cacheClient)
 	return nil
 }
 
@@ -180,6 +183,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.contentRepository,
 		a.quizzesSubmissionRepository,
+		a.coursesCache,
 	)
 
 	a.enrollmentsService = enrollmentsS.NewService(

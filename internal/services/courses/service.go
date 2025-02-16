@@ -2,6 +2,7 @@ package courses
 
 import (
 	"context"
+	coursesC "github.com/Rasikrr/learning_platform/internal/cache/courses"
 	"github.com/Rasikrr/learning_platform/internal/domain/entity"
 	"github.com/Rasikrr/learning_platform/internal/repositories/categories"
 	"github.com/Rasikrr/learning_platform/internal/repositories/content"
@@ -35,6 +36,7 @@ type service struct {
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository
 	tasksRepository             tasks.Repository
 	contentRepository           content.Repository
+	coursesCache                coursesC.Cache
 }
 
 func NewService(
@@ -45,6 +47,7 @@ func NewService(
 	tasksRepository tasks.Repository,
 	contentRepository content.Repository,
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository,
+	coursesCache coursesC.Cache,
 ) Service {
 	return &service{
 		coursesRepository:           coursesRepository,
@@ -54,5 +57,6 @@ func NewService(
 		tasksRepository:             tasksRepository,
 		contentRepository:           contentRepository,
 		quizzesSubmissionRepository: quizzesSubmissionRepository,
+		coursesCache:                coursesCache,
 	}
 }

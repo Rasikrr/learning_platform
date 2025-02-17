@@ -49,12 +49,12 @@ func (r getQuestionsRequest) ToParams() *entity.GetQuestionsParams {
 }
 
 type answer struct {
-	ID         string `json:"id"`
-	QuestionID string `json:"question_id"`
-	Body       string `json:"body"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
-	Author     user   `json:"author"`
+	ID         string    `json:"id"`
+	QuestionID string    `json:"question_id"`
+	Body       string    `json:"body"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Author     user      `json:"author"`
 }
 
 type user struct {
@@ -144,8 +144,8 @@ func convertToAnswer(a *entity.Answer) answer {
 		ID:         a.ID.String(),
 		QuestionID: a.Question.ID.String(),
 		Body:       a.Body,
-		CreatedAt:  a.CreatedAt.String(),
-		UpdatedAt:  a.UpdatedAt.String(),
+		CreatedAt:  a.CreatedAt,
+		UpdatedAt:  a.UpdatedAt,
 		Author:     convertToUser(a.Author),
 	}
 }

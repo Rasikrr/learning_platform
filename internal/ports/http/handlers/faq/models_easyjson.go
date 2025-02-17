@@ -1015,9 +1015,13 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		case "body":
 			out.Body = string(in.String())
 		case "created_at":
-			out.CreatedAt = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreatedAt).UnmarshalJSON(data))
+			}
 		case "updated_at":
-			out.UpdatedAt = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdatedAt).UnmarshalJSON(data))
+			}
 		case "author":
 			(out.Author).UnmarshalEasyJSON(in)
 		default:
@@ -1052,12 +1056,12 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 	{
 		const prefix string = ",\"created_at\":"
 		out.RawString(prefix)
-		out.String(string(in.CreatedAt))
+		out.Raw((in.CreatedAt).MarshalJSON())
 	}
 	{
 		const prefix string = ",\"updated_at\":"
 		out.RawString(prefix)
-		out.String(string(in.UpdatedAt))
+		out.Raw((in.UpdatedAt).MarshalJSON())
 	}
 	{
 		const prefix string = ",\"author\":"

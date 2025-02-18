@@ -1,4 +1,4 @@
-The moodle file size lock on 2mb. We couldn't add anything. But we send you full codes and presentation in zip archive in the MS Teams.
+The moodle file size lock on 2mb. We couldn't add anything.
 Backend repo: https://github.com/Rasikrr/learning_platform
 Frontend repo: https://github.com/Arh0rn/learning_platfrom_frontend
 Deployed project link: https://gilim-base.up.railway.app

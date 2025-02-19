@@ -14,7 +14,7 @@ import (
 // @Param course_id path string true "course id"
 // @Param topic_id path string true "topic id"
 // @Param order path string true "number of task"
-// @Success 200 {object} entity.PracticalTask "Success"
+// @Success 200 {object} getTaskResponse "Success"
 // @Router /api/v1/courses/{course_id}/topic/{topic_id}/tasks/{order} [get]
 func (c *Controller) getCourseTopicTasks(w http.ResponseWriter, r *http.Request) {
 	var req getTopicTasksRequest
@@ -23,11 +23,15 @@ func (c *Controller) getCourseTopicTasks(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	ctx := r.Context()
-
-	tasks, err := c.coursesService.GetTasksByTopicIDAndOrderNum(ctx, req.TopicID, req.Order)
+	session, err := api.GetSession(ctx)
+	if err != nil {
+		api.SendError(w, http.StatusUnauthorized, err)
+		return
+	}
+	tasks, solution, err := c.coursesService.GetTasksByTopicIDAndOrderNum(ctx, req.TopicID, req.Order, session.UserID.String())
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
 	}
-	api.SendData(w, tasks, http.StatusOK)
+	api.SendData(w, convertToGetTaskResponse(tasks, solution), http.StatusOK)
 }

@@ -19,6 +19,7 @@ type model struct {
 
 type models []model
 
+// nolint: unparam
 func (m *model) convert() (*entity.TaskSubmission, error) {
 	return &entity.TaskSubmission{
 		ID:        m.ID,

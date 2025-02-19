@@ -10,4 +10,8 @@ const (
 
 	deleteByUserAndTaskIDStmt = `DELETE FROM practical_tasks_submissions
 								WHERE user_id = $1 AND task_id = $2`
+
+	getSolvedTasksStmt = `SELECT id, task_id, user_id, input, passed, error, created_at
+							FROM practical_tasks_submissions
+							WHERE user_id = $1 AND task_id = $2 AND passed = true`
 )

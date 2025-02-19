@@ -183,6 +183,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.tasksRepository,
 		a.contentRepository,
 		a.quizzesSubmissionRepository,
+		a.tasksSubmissionsRepository,
 		a.coursesCache,
 	)
 

@@ -90,6 +90,65 @@ type quizz struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
+type getTaskResponse struct {
+	ID              string          `json:"id"`
+	TopicID         string          `json:"topic_id"`
+	Description     string          `json:"description"`
+	DifficultyLevel string          `json:"difficulty_level"`
+	StarterCode     string          `json:"starter_code"`
+	ExpectedOutput  *string         `json:"expected_output"`
+	OrderNumber     int             `json:"order_number"`
+	CreatedAt       time.Time       `json:"created_at"`
+	UpdatedAt       time.Time       `json:"updated_at"`
+	TestCases       bool            `json:"test_cases"`
+	Language        string          `json:"language"`
+	Solved          bool            `json:"solved"`
+	Submission      *taskSubmission `json:"submission"`
+}
+
+type taskSubmission struct {
+	ID        string    `json:"id"`
+	TaskID    string    `json:"task_id"`
+	UserID    string    `json:"user_id"`
+	Input     string    `json:"input"`
+	Passed    bool      `json:"passed"`
+	Error     *string   `json:"error"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func convertToGetTaskResponse(task *entity.PracticalTask, submission *entity.TaskSubmission) getTaskResponse {
+	return getTaskResponse{
+		ID:              task.ID.String(),
+		TopicID:         task.TopicID.String(),
+		Description:     task.Description,
+		DifficultyLevel: task.DifficultyLevel.String(),
+		StarterCode:     task.StarterCode,
+		ExpectedOutput:  task.ExpectedOutput,
+		OrderNumber:     task.OrderNumber,
+		CreatedAt:       task.CreatedAt,
+		UpdatedAt:       task.UpdatedAt,
+		TestCases:       task.TestCases,
+		Language:        task.Language.String(),
+		Solved:          submission != nil,
+		Submission:      convertToTaskSubmission(submission),
+	}
+}
+
+func convertToTaskSubmission(submission *entity.TaskSubmission) *taskSubmission {
+	if submission == nil {
+		return nil
+	}
+	return &taskSubmission{
+		ID:        submission.ID,
+		TaskID:    submission.TaskID,
+		UserID:    submission.UserID,
+		Input:     submission.Input,
+		Passed:    submission.Passed,
+		Error:     submission.Error,
+		CreatedAt: submission.CreatedAt,
+	}
+}
+
 func convertToGetTopicQuizzesResponse(quizzes []*entity.Quiz, passed bool) getTopicQuizzesResponse {
 	return getTopicQuizzesResponse{
 		Passed: passed,

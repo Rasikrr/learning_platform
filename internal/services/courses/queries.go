@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"golang.org/x/sync/errgroup"
-	"log"
 )
 
 func (s *service) GetCoursesByParams(ctx context.Context, params *entity.GetCoursesParams) ([]*entity.Course, error) {
@@ -120,23 +119,20 @@ func (s *service) GetQuizzesByTopicID(ctx context.Context, userID, topicID strin
 	return quizzes, passed, nil
 }
 
-func (s *service) GetTasksByTopicIDAndOrderNum(ctx context.Context, id string, order int) (*entity.PracticalTask, error) {
-	tasks, err := s.coursesCache.GetPracticalTaskByTopicIDAndOrder(ctx, id, order)
+func (s *service) GetTasksByTopicIDAndOrderNum(
+	ctx context.Context,
+	id string,
+	order int,
+	userID string) (*entity.PracticalTask, *entity.TaskSubmission, error) {
+	task, err := s.tasksRepository.GetByTopicIDAndOrderNum(ctx, id, order)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	if tasks != nil {
-		log.Println("tasks from cache")
-		return tasks, nil
-	}
-	tasks, err = s.tasksRepository.GetByTopicIDAndOrderNum(ctx, id, order)
+	solution, _, err := s.taskSubmissionRepository.GetSolvedTasks(ctx, userID, task.ID.String())
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	if err = s.coursesCache.SetPracticalTasksByTopicIDAndOrder(ctx, id, order, tasks); err != nil {
-		return nil, err
-	}
-	return tasks, nil
+	return task, solution, nil
 }
 
 // nolint: unused

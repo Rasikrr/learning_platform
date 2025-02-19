@@ -77,3 +77,19 @@ func (mr *MockRepositoryMockRecorder) DeleteByUserAndTaskID(ctx, userID, taskID 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByUserAndTaskID", reflect.TypeOf((*MockRepository)(nil).DeleteByUserAndTaskID), ctx, userID, taskID)
 }
+
+// GetSolvedTasks mocks base method.
+func (m *MockRepository) GetSolvedTasks(ctx context.Context, userID, taskID string) (*entity.TaskSubmission, bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSolvedTasks", ctx, userID, taskID)
+	ret0, _ := ret[0].(*entity.TaskSubmission)
+	ret1, _ := ret[1].(bool)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetSolvedTasks indicates an expected call of GetSolvedTasks.
+func (mr *MockRepositoryMockRecorder) GetSolvedTasks(ctx, userID, taskID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSolvedTasks", reflect.TypeOf((*MockRepository)(nil).GetSolvedTasks), ctx, userID, taskID)
+}

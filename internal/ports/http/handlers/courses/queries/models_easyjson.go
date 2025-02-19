@@ -129,7 +129,129 @@ func (v *topic) UnmarshalJSON(data []byte) error {
 func (v *topic) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(in *jlexer.Lexer, out *quizz) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(in *jlexer.Lexer, out *taskSubmission) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = string(in.String())
+		case "task_id":
+			out.TaskID = string(in.String())
+		case "user_id":
+			out.UserID = string(in.String())
+		case "input":
+			out.Input = string(in.String())
+		case "passed":
+			out.Passed = bool(in.Bool())
+		case "error":
+			if in.IsNull() {
+				in.Skip()
+				out.Error = nil
+			} else {
+				if out.Error == nil {
+					out.Error = new(string)
+				}
+				*out.Error = string(in.String())
+			}
+		case "created_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreatedAt).UnmarshalJSON(data))
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(out *jwriter.Writer, in taskSubmission) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.ID))
+	}
+	{
+		const prefix string = ",\"task_id\":"
+		out.RawString(prefix)
+		out.String(string(in.TaskID))
+	}
+	{
+		const prefix string = ",\"user_id\":"
+		out.RawString(prefix)
+		out.String(string(in.UserID))
+	}
+	{
+		const prefix string = ",\"input\":"
+		out.RawString(prefix)
+		out.String(string(in.Input))
+	}
+	{
+		const prefix string = ",\"passed\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.Passed))
+	}
+	{
+		const prefix string = ",\"error\":"
+		out.RawString(prefix)
+		if in.Error == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Error))
+		}
+	}
+	{
+		const prefix string = ",\"created_at\":"
+		out.RawString(prefix)
+		out.Raw((in.CreatedAt).MarshalJSON())
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v taskSubmission) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v taskSubmission) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *taskSubmission) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *taskSubmission) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(in *jlexer.Lexer, out *quizz) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -220,7 +342,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(out *jwriter.Writer, in quizz) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(out *jwriter.Writer, in quizz) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -290,27 +412,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v quizz) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v quizz) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *quizz) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *quizz) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries1(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(in *jlexer.Lexer, out *getTopicTasksRequest) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(in *jlexer.Lexer, out *getTopicTasksRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -345,7 +467,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(out *jwriter.Writer, in getTopicTasksRequest) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(out *jwriter.Writer, in getTopicTasksRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -370,27 +492,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getTopicTasksRequest) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getTopicTasksRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getTopicTasksRequest) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getTopicTasksRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries2(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(in *jlexer.Lexer, out *getTopicQuizzesResponse) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(in *jlexer.Lexer, out *getTopicQuizzesResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -444,7 +566,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(out *jwriter.Writer, in getTopicQuizzesResponse) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(out *jwriter.Writer, in getTopicQuizzesResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -475,27 +597,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getTopicQuizzesResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getTopicQuizzesResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getTopicQuizzesResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getTopicQuizzesResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries3(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(in *jlexer.Lexer, out *getTopicQuizzesRequest) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(in *jlexer.Lexer, out *getTopicQuizzesRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -528,7 +650,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(out *jwriter.Writer, in getTopicQuizzesRequest) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(out *jwriter.Writer, in getTopicQuizzesRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -548,27 +670,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getTopicQuizzesRequest) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getTopicQuizzesRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getTopicQuizzesRequest) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getTopicQuizzesRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries4(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(in *jlexer.Lexer, out *getTopicContentRequest) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(in *jlexer.Lexer, out *getTopicContentRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -601,7 +723,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(out *jwriter.Writer, in getTopicContentRequest) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(out *jwriter.Writer, in getTopicContentRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -621,27 +743,205 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getTopicContentRequest) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getTopicContentRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getTopicContentRequest) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getTopicContentRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries5(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(in *jlexer.Lexer, out *getCoursesListResponse) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(in *jlexer.Lexer, out *getTaskResponse) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = string(in.String())
+		case "topic_id":
+			out.TopicID = string(in.String())
+		case "description":
+			out.Description = string(in.String())
+		case "difficulty_level":
+			out.DifficultyLevel = string(in.String())
+		case "starter_code":
+			out.StarterCode = string(in.String())
+		case "expected_output":
+			if in.IsNull() {
+				in.Skip()
+				out.ExpectedOutput = nil
+			} else {
+				if out.ExpectedOutput == nil {
+					out.ExpectedOutput = new(string)
+				}
+				*out.ExpectedOutput = string(in.String())
+			}
+		case "order_number":
+			out.OrderNumber = int(in.Int())
+		case "created_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreatedAt).UnmarshalJSON(data))
+			}
+		case "updated_at":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdatedAt).UnmarshalJSON(data))
+			}
+		case "test_cases":
+			out.TestCases = bool(in.Bool())
+		case "language":
+			out.Language = string(in.String())
+		case "solved":
+			out.Solved = bool(in.Bool())
+		case "submission":
+			if in.IsNull() {
+				in.Skip()
+				out.Submission = nil
+			} else {
+				if out.Submission == nil {
+					out.Submission = new(taskSubmission)
+				}
+				(*out.Submission).UnmarshalEasyJSON(in)
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(out *jwriter.Writer, in getTaskResponse) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.ID))
+	}
+	{
+		const prefix string = ",\"topic_id\":"
+		out.RawString(prefix)
+		out.String(string(in.TopicID))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"difficulty_level\":"
+		out.RawString(prefix)
+		out.String(string(in.DifficultyLevel))
+	}
+	{
+		const prefix string = ",\"starter_code\":"
+		out.RawString(prefix)
+		out.String(string(in.StarterCode))
+	}
+	{
+		const prefix string = ",\"expected_output\":"
+		out.RawString(prefix)
+		if in.ExpectedOutput == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.ExpectedOutput))
+		}
+	}
+	{
+		const prefix string = ",\"order_number\":"
+		out.RawString(prefix)
+		out.Int(int(in.OrderNumber))
+	}
+	{
+		const prefix string = ",\"created_at\":"
+		out.RawString(prefix)
+		out.Raw((in.CreatedAt).MarshalJSON())
+	}
+	{
+		const prefix string = ",\"updated_at\":"
+		out.RawString(prefix)
+		out.Raw((in.UpdatedAt).MarshalJSON())
+	}
+	{
+		const prefix string = ",\"test_cases\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.TestCases))
+	}
+	{
+		const prefix string = ",\"language\":"
+		out.RawString(prefix)
+		out.String(string(in.Language))
+	}
+	{
+		const prefix string = ",\"solved\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.Solved))
+	}
+	{
+		const prefix string = ",\"submission\":"
+		out.RawString(prefix)
+		if in.Submission == nil {
+			out.RawString("null")
+		} else {
+			(*in.Submission).MarshalEasyJSON(out)
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v getTaskResponse) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v getTaskResponse) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *getTaskResponse) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *getTaskResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(in *jlexer.Lexer, out *getCoursesListResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -693,7 +993,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(out *jwriter.Writer, in getCoursesListResponse) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(out *jwriter.Writer, in getCoursesListResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -719,27 +1019,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getCoursesListResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getCoursesListResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getCoursesListResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getCoursesListResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries6(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(in *jlexer.Lexer, out *getCoursesListRequest) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(in *jlexer.Lexer, out *getCoursesListRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -795,7 +1095,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(out *jwriter.Writer, in getCoursesListRequest) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(out *jwriter.Writer, in getCoursesListRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -831,27 +1131,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getCoursesListRequest) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getCoursesListRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getCoursesListRequest) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getCoursesListRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries7(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(in *jlexer.Lexer, out *getCourseResponse) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(in *jlexer.Lexer, out *getCourseResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -908,7 +1208,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(out *jwriter.Writer, in getCourseResponse) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(out *jwriter.Writer, in getCourseResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -962,27 +1262,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getCourseResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getCourseResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getCourseResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getCourseResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries8(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(in *jlexer.Lexer, out *getCourseDetailedResponse) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(in *jlexer.Lexer, out *getCourseDetailedResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1036,7 +1336,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(out *jwriter.Writer, in getCourseDetailedResponse) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(out *jwriter.Writer, in getCourseDetailedResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1067,27 +1367,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getCourseDetailedResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getCourseDetailedResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getCourseDetailedResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getCourseDetailedResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries9(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(in *jlexer.Lexer, out *getCategoriesListResponse) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(in *jlexer.Lexer, out *getCategoriesListResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1139,7 +1439,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(out *jwriter.Writer, in getCategoriesListResponse) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(out *jwriter.Writer, in getCategoriesListResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1165,27 +1465,27 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v getCategoriesListResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v getCategoriesListResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *getCategoriesListResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *getCategoriesListResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries10(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries12(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(in *jlexer.Lexer, out *category) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(in *jlexer.Lexer, out *category) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1228,7 +1528,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(out *jwriter.Writer, in category) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(out *jwriter.Writer, in category) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1263,23 +1563,23 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHand
 // MarshalJSON supports json.Marshaler interface
 func (v category) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v category) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *category) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *category) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries11(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformInternalPortsHttpHandlersCoursesQueries13(l, v)
 }

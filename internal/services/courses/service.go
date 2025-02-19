@@ -10,6 +10,7 @@ import (
 	"github.com/Rasikrr/learning_platform/internal/repositories/quizzes"
 	quizzesSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/quizzes_submissions"
 	"github.com/Rasikrr/learning_platform/internal/repositories/tasks"
+	tasksSubmissionsR "github.com/Rasikrr/learning_platform/internal/repositories/tasks_submissions"
 	"github.com/Rasikrr/learning_platform/internal/repositories/topics"
 )
 
@@ -25,7 +26,11 @@ type Service interface {
 
 	GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error)
 
-	GetTasksByTopicIDAndOrderNum(ctx context.Context, topicID string, order int) (*entity.PracticalTask, error)
+	GetTasksByTopicIDAndOrderNum(
+		ctx context.Context,
+		id string,
+		order int,
+		userID string) (*entity.PracticalTask, *entity.TaskSubmission, error)
 }
 
 type service struct {
@@ -34,6 +39,7 @@ type service struct {
 	topicsRepository            topics.Repository
 	quizzesRepository           quizzes.Repository
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository
+	taskSubmissionRepository    tasksSubmissionsR.Repository
 	tasksRepository             tasks.Repository
 	contentRepository           content.Repository
 	coursesCache                coursesC.Cache
@@ -47,6 +53,7 @@ func NewService(
 	tasksRepository tasks.Repository,
 	contentRepository content.Repository,
 	quizzesSubmissionRepository quizzesSubmissionsR.Repository,
+	taskSubmissionRepository tasksSubmissionsR.Repository,
 	coursesCache coursesC.Cache,
 ) Service {
 	return &service{
@@ -57,6 +64,7 @@ func NewService(
 		tasksRepository:             tasksRepository,
 		contentRepository:           contentRepository,
 		quizzesSubmissionRepository: quizzesSubmissionRepository,
+		taskSubmissionRepository:    taskSubmissionRepository,
 		coursesCache:                coursesCache,
 	}
 }

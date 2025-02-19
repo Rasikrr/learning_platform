@@ -875,7 +875,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/entity.PracticalTask"
+                            "$ref": "#/definitions/queries.getTaskResponse"
                         }
                     }
                 }
@@ -1495,44 +1495,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.PracticalTask": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "difficulty_level": {
-                    "$ref": "#/definitions/enum.Difficulty"
-                },
-                "expected_output": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "language": {
-                    "$ref": "#/definitions/enum.ProgrammingLanguage"
-                },
-                "order_number": {
-                    "type": "integer"
-                },
-                "starter_code": {
-                    "type": "string"
-                },
-                "test_cases": {
-                    "type": "boolean"
-                },
-                "topic_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.QuestionCategory": {
             "type": "object",
             "properties": {
@@ -1597,40 +1559,6 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "AccountRoleAdmin",
                 "AccountRoleUser"
-            ]
-        },
-        "enum.Difficulty": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2
-            ],
-            "x-enum-varnames": [
-                "DifficultyEasy",
-                "DifficultyMedium",
-                "DifficultyHard"
-            ]
-        },
-        "enum.ProgrammingLanguage": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
-            ],
-            "x-enum-varnames": [
-                "ProgrammingLanguageGo",
-                "ProgrammingLanguagePython3",
-                "ProgrammingLanguageJava",
-                "ProgrammingLanguageRuby",
-                "ProgrammingLanguageSQL",
-                "ProgrammingLanguageNodejs",
-                "ProgrammingLanguageRust"
             ]
         },
         "faq.answer": {
@@ -1927,6 +1855,50 @@ const docTemplate = `{
                 }
             }
         },
+        "queries.getTaskResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "difficulty_level": {
+                    "type": "string"
+                },
+                "expected_output": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "order_number": {
+                    "type": "integer"
+                },
+                "solved": {
+                    "type": "boolean"
+                },
+                "starter_code": {
+                    "type": "string"
+                },
+                "submission": {
+                    "$ref": "#/definitions/queries.taskSubmission"
+                },
+                "test_cases": {
+                    "type": "boolean"
+                },
+                "topic_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "queries.getTopicQuizzesResponse": {
             "type": "object",
             "properties": {
@@ -1972,6 +1944,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "queries.taskSubmission": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "input": {
+                    "type": "string"
+                },
+                "passed": {
+                    "type": "boolean"
+                },
+                "task_id": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

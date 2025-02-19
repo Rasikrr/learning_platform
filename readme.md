@@ -15,8 +15,11 @@
 - Golang
 - PostgresSQL
 - net/http
+- goose (Migrations)
+- testify, go-mock (Testing)
 - Redis
 - Docker
+- GitHub Actions (CI/CD)
 - Swagger (API Documentation)
 
 ## Key Features
@@ -37,8 +40,14 @@
   - Sidebar for topic navigation.
   - Semi-header with course title and future progress bar.
 
-## Deployment
-The project has been deployed using Docker on Railway and is available at [https://gylym-base.up.railway.app/](https://gylym-base.up.railway.app/)
+
+## CI/CD
+We use **GitHub Actions** for continuous integration and deployment:
+- **Linting**: Automatically lints the codebase using golangci-lint. 
+- **Testing**: Automatically runs tests using go test.
+- **Migrations**: Automatically generates and runs database migrations.
+- **Deployment**: Automatically deploys the latest version to Railway after a successful build.
+  The project has been deployed using Docker on Railway and is available at [https://gylym-base.up.railway.app/](https://gylym-base.up.railway.app/).
 
 ## API
 API is documented in Swagger. To access, open `/swagger/index.html` after starting the backend.

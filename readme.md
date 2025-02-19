@@ -40,6 +40,8 @@
   - Sidebar for topic navigation.
   - Semi-header with course title and future progress bar.
 
+## Frontend
+Frontend Repository [Link](https://github.com/Arh0rn/learning_platfrom_frontend)
 
 ## CI/CD
 We use **GitHub Actions** for continuous integration and deployment:
